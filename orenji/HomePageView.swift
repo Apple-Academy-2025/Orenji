@@ -8,11 +8,25 @@
 import SwiftUI
 
 struct HomePageView: View {
+    @EnvironmentObject var router: Router
+
     var body: some View {
-        Text("Ini homepage")
+        VStack(spacing: 20) {
+            Text("🏠 Home Page").font(.largeTitle)
+
+            Button("🔵 Go to Record") {
+                router.goTo(.RecordPose(titlePage: "Record"))
+            }
+
+            Button("⚙️ Go to Realtime") {
+                router.goTo(.RealtimePose(titlePage: "Realtime"))
+            }
+        }
+        .padding()
     }
 }
 
 #Preview {
     HomePageView()
+        .environmentObject(Router())
 }
