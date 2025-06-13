@@ -1,0 +1,570 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F862F5682DFBAA6C00D476A9 /* .gitignore in Sources */ = {isa = PBXBuildFile; fileRef = F862F5672DFBAA6C00D476A9 /* .gitignore */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F862F54B2DFBA9F000D476A9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F862F5302DFBA9EF00D476A9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F862F5372DFBA9EF00D476A9;
+			remoteInfo = orenji;
+		};
+		F862F5552DFBA9F000D476A9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F862F5302DFBA9EF00D476A9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F862F5372DFBA9EF00D476A9;
+			remoteInfo = orenji;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		F862F5382DFBA9EF00D476A9 /* orenji.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = orenji.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F862F54A2DFBA9F000D476A9 /* orenjiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = orenjiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F862F5542DFBA9F000D476A9 /* orenjiUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = orenjiUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F862F5672DFBAA6C00D476A9 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		F862F53A2DFBA9EF00D476A9 /* orenji */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = orenji;
+			sourceTree = "<group>";
+		};
+		F862F54D2DFBA9F000D476A9 /* orenjiTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = orenjiTests;
+			sourceTree = "<group>";
+		};
+		F862F5572DFBA9F000D476A9 /* orenjiUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = orenjiUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F862F5352DFBA9EF00D476A9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F862F5472DFBA9F000D476A9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F862F5512DFBA9F000D476A9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F862F52F2DFBA9EF00D476A9 = {
+			isa = PBXGroup;
+			children = (
+				F862F5672DFBAA6C00D476A9 /* .gitignore */,
+				F862F53A2DFBA9EF00D476A9 /* orenji */,
+				F862F54D2DFBA9F000D476A9 /* orenjiTests */,
+				F862F5572DFBA9F000D476A9 /* orenjiUITests */,
+				F862F5392DFBA9EF00D476A9 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F862F5392DFBA9EF00D476A9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F862F5382DFBA9EF00D476A9 /* orenji.app */,
+				F862F54A2DFBA9F000D476A9 /* orenjiTests.xctest */,
+				F862F5542DFBA9F000D476A9 /* orenjiUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F862F5372DFBA9EF00D476A9 /* orenji */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F862F55E2DFBA9F000D476A9 /* Build configuration list for PBXNativeTarget "orenji" */;
+			buildPhases = (
+				F862F5342DFBA9EF00D476A9 /* Sources */,
+				F862F5352DFBA9EF00D476A9 /* Frameworks */,
+				F862F5362DFBA9EF00D476A9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F862F53A2DFBA9EF00D476A9 /* orenji */,
+			);
+			name = orenji;
+			packageProductDependencies = (
+			);
+			productName = orenji;
+			productReference = F862F5382DFBA9EF00D476A9 /* orenji.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F862F5492DFBA9F000D476A9 /* orenjiTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F862F5612DFBA9F000D476A9 /* Build configuration list for PBXNativeTarget "orenjiTests" */;
+			buildPhases = (
+				F862F5462DFBA9F000D476A9 /* Sources */,
+				F862F5472DFBA9F000D476A9 /* Frameworks */,
+				F862F5482DFBA9F000D476A9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F862F54C2DFBA9F000D476A9 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				F862F54D2DFBA9F000D476A9 /* orenjiTests */,
+			);
+			name = orenjiTests;
+			packageProductDependencies = (
+			);
+			productName = orenjiTests;
+			productReference = F862F54A2DFBA9F000D476A9 /* orenjiTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		F862F5532DFBA9F000D476A9 /* orenjiUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F862F5642DFBA9F000D476A9 /* Build configuration list for PBXNativeTarget "orenjiUITests" */;
+			buildPhases = (
+				F862F5502DFBA9F000D476A9 /* Sources */,
+				F862F5512DFBA9F000D476A9 /* Frameworks */,
+				F862F5522DFBA9F000D476A9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F862F5562DFBA9F000D476A9 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				F862F5572DFBA9F000D476A9 /* orenjiUITests */,
+			);
+			name = orenjiUITests;
+			packageProductDependencies = (
+			);
+			productName = orenjiUITests;
+			productReference = F862F5542DFBA9F000D476A9 /* orenjiUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F862F5302DFBA9EF00D476A9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1620;
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					F862F5372DFBA9EF00D476A9 = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					F862F5492DFBA9F000D476A9 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = F862F5372DFBA9EF00D476A9;
+					};
+					F862F5532DFBA9F000D476A9 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = F862F5372DFBA9EF00D476A9;
+					};
+				};
+			};
+			buildConfigurationList = F862F5332DFBA9EF00D476A9 /* Build configuration list for PBXProject "orenji" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F862F52F2DFBA9EF00D476A9;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = F862F5392DFBA9EF00D476A9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F862F5372DFBA9EF00D476A9 /* orenji */,
+				F862F5492DFBA9F000D476A9 /* orenjiTests */,
+				F862F5532DFBA9F000D476A9 /* orenjiUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F862F5362DFBA9EF00D476A9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F862F5482DFBA9F000D476A9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F862F5522DFBA9F000D476A9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F862F5342DFBA9EF00D476A9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F862F5682DFBAA6C00D476A9 /* .gitignore in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F862F5462DFBA9F000D476A9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F862F5502DFBA9F000D476A9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F862F54C2DFBA9F000D476A9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F862F5372DFBA9EF00D476A9 /* orenji */;
+			targetProxy = F862F54B2DFBA9F000D476A9 /* PBXContainerItemProxy */;
+		};
+		F862F5562DFBA9F000D476A9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F862F5372DFBA9EF00D476A9 /* orenji */;
+			targetProxy = F862F5552DFBA9F000D476A9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		F862F55C2DFBA9F000D476A9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F862F55D2DFBA9F000D476A9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F862F55F2DFBA9F000D476A9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"orenji/Preview Content\"";
+				DEVELOPMENT_TEAM = KMD5NUN6BL;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ios.challenge.orenji;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F862F5602DFBA9F000D476A9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"orenji/Preview Content\"";
+				DEVELOPMENT_TEAM = KMD5NUN6BL;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ios.challenge.orenji;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		F862F5622DFBA9F000D476A9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KMD5NUN6BL;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ios.challenge.orenjiTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/orenji.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/orenji";
+			};
+			name = Debug;
+		};
+		F862F5632DFBA9F000D476A9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KMD5NUN6BL;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ios.challenge.orenjiTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/orenji.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/orenji";
+			};
+			name = Release;
+		};
+		F862F5652DFBA9F000D476A9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KMD5NUN6BL;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ios.challenge.orenjiUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = orenji;
+			};
+			name = Debug;
+		};
+		F862F5662DFBA9F000D476A9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KMD5NUN6BL;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ios.challenge.orenjiUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = orenji;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F862F5332DFBA9EF00D476A9 /* Build configuration list for PBXProject "orenji" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F862F55C2DFBA9F000D476A9 /* Debug */,
+				F862F55D2DFBA9F000D476A9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F862F55E2DFBA9F000D476A9 /* Build configuration list for PBXNativeTarget "orenji" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F862F55F2DFBA9F000D476A9 /* Debug */,
+				F862F5602DFBA9F000D476A9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F862F5612DFBA9F000D476A9 /* Build configuration list for PBXNativeTarget "orenjiTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F862F5622DFBA9F000D476A9 /* Debug */,
+				F862F5632DFBA9F000D476A9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F862F5642DFBA9F000D476A9 /* Build configuration list for PBXNativeTarget "orenjiUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F862F5652DFBA9F000D476A9 /* Debug */,
+				F862F5662DFBA9F000D476A9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F862F5302DFBA9EF00D476A9 /* Project object */;
+}

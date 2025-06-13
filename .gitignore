@@ -1,0 +1,52 @@
+//
+//  .gitignore.swift
+//  orenji
+//
+//  Created by Muhamad Alif Anwar on 13/06/25.
+//
+
+# Xcode
+build/
+DerivedData/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+*.xcscmblueprint
+*.xcuserstate
+
+# SwiftPM
+.build/
+Packages/
+.swiftpm/xcode/package.xcworkspace/
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/Build/
+
+# Xcode Cloud
+.xcresult/
+
+# Fastlane
+fastlane/report.xml
+fastlane/screenshots
+fastlane/test_output
+
+# SwiftUI previews
+*.icloud/
+
+# macOS
+.DS_Store
+
+# Env / Secrets (jika ada)
+.env
+Secrets.plist
+
