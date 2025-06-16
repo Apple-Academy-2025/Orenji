@@ -13,6 +13,10 @@ struct HomePageView: View {
     var body: some View {
         VStack(spacing: 20) {
             Text("🏠 Home Page").font(.largeTitle)
+            
+            Button("Go to History "){
+                router.goTo(.History)
+            }
 
             Button("🔵 Go to Record") {
                 router.goTo(.RecordPose(titlePage: "Record"))

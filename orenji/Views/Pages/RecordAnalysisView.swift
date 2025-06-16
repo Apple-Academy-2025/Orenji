@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct RealtimePageView: View {
+struct RecordAnalysisView: View {
     
     let titlePage: String
         @EnvironmentObject var router: Router
 
         var body: some View {
             VStack(spacing: 20) {
-                Text("👤 Pages : \(titlePage)").font(.title)
+                Text("👤 Pages : of \(titlePage)").font(.title)
 
                 Button("🔙 Back") {
                     router.pop()
@@ -25,6 +25,6 @@ struct RealtimePageView: View {
 }
 
 #Preview {
-    RealtimePageView(titlePage: "Realtime")
+    RecordAnalysisView(titlePage: "Record")
         .environmentObject(Router())
 }

@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct RecordPageView: View {
+struct EvaluateRealtimeView: View {
     
     let titlePage: String
         @EnvironmentObject var router: Router
 
         var body: some View {
             VStack(spacing: 20) {
-                Text("👤 Pages : of \(titlePage)").font(.title)
+                Text("👤 Pages : \(titlePage)").font(.title)
 
                 Button("🔙 Back") {
                     router.pop()
@@ -25,6 +25,6 @@ struct RecordPageView: View {
 }
 
 #Preview {
-    RecordPageView(titlePage: "Record")
+    EvaluateRealtimeView(titlePage: "Realtime")
         .environmentObject(Router())
 }

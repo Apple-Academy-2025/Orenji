@@ -20,9 +20,11 @@ struct orenjiApp: App {
                         case .Home:
                             HomePageView()
                         case .RecordPose(let titlePage):
-                            RecordPageView(titlePage: titlePage)
+                            RecordAnalysisView(titlePage: titlePage)
                         case .RealtimePose(let titlePage):
-                            RealtimePageView(titlePage: titlePage)
+                            EvaluateRealtimeView(titlePage: titlePage)
+                        case .History:
+                            HistoryView()
                         }
                     }
             }

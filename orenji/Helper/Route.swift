@@ -13,10 +13,13 @@ import SwiftUI
 
 enum Route: Hashable {
     case Home
+    case History
     case RecordPose(titlePage: String)
     case RealtimePose(titlePage: String)
 }
 
+
+// jangan di ubah ubah ya bre yg ini
 class Router: ObservableObject {
     @Published var path = NavigationPath()
 
