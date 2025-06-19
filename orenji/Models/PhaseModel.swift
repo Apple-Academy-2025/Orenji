@@ -6,3 +6,29 @@
 //
 
 import Foundation
+
+struct PhaseModel: Identifiable, Codable {
+    let id: UUID
+    var name: String
+    var image: String
+    var elbowAngle: Double?
+    var legAngle: Double?
+    var improvements: [String]
+    
+    init(
+        id: UUID = UUID(),
+        name: String,
+        image: String,
+        elbowAngle: Double? = nil,
+        legAngle: Double? = nil,
+        improvements: [String] = []
+    ) {
+        self.id = id
+        self.name = name
+        self.image = image
+        self.elbowAngle = elbowAngle
+        self.legAngle = legAngle
+        self.improvements = improvements
+    }
+}
+
