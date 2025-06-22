@@ -37,6 +37,10 @@ struct PostureBasketApp: App {
                                 switch route {
                                 case .Home:
                                     HomePageView()
+                                case .Tutorial:
+                                    TutorialView()
+                                case .Instruksi:
+                                    InstruksiView()
                                 case .RecordPose(let titlePage):
                                     RecordAnalysisView(titlePage: titlePage)
                                 case .RealtimePose(let titlePage):

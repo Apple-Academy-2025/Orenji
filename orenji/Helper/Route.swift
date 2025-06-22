@@ -14,6 +14,8 @@ import SwiftUI
 enum Route: Hashable {
     case Home
     case History
+    case Tutorial
+    case Instruksi
     case RecordPose(titlePage: String)
     case RealtimePose(titlePage: String)
 }
