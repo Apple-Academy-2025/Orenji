@@ -12,8 +12,8 @@ struct PostureBasketApp: App {
     @State private var showSplash = true
     @StateObject private var router = Router()
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
-
-
+    
+    
     var body: some Scene {
         WindowGroup {
             if showSplash {
@@ -39,12 +39,12 @@ struct PostureBasketApp: App {
                                     HomePageView()
                                 case .Tutorial:
                                     TutorialView()
-                                case .Instruksi:
-                                    InstruksiView()
+                                case .Instruksi(let destination, let idPage):
+                                        InstruksiView(destination: destination, idPage: idPage)
                                 case .RecordPose(let titlePage):
                                     RecordAnalysisView(titlePage: titlePage)
                                 case .RealtimePose(let titlePage):
-                                    EvaluateRealtimeView(titlePage: titlePage)
+                                    EvaluateRealtimeView()
                                 case .History:
                                     HistoryView()
                                 }
@@ -53,7 +53,7 @@ struct PostureBasketApp: App {
                     .environmentObject(router)
                 }
             }
-
+            
         }
     }
 }

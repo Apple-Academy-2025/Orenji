@@ -1,30 +1,25 @@
-//
-//  ExamplePagesView.swift
-//  orenji
-//
-//  Created by Muhamad Alif Anwar on 13/06/25.
-//
-
 import SwiftUI
 
 struct EvaluateRealtimeView: View {
+    @EnvironmentObject var router: Router
+    @StateObject private var cameraService = CameraService()
+    @StateObject private var poseDetector = PoseDetectionViewModel()
+    var page: String = "realtime"
     
-    let titlePage: String
-        @EnvironmentObject var router: Router
 
-        var body: some View {
-            VStack(spacing: 20) {
-                Text("👤 Pages : \(titlePage)").font(.title)
+    // ukuran bounding box
+    private let boxSize = CGSize(width: 250, height: 500)
 
-                Button("🔙 Back") {
-                    router.pop()
-                }
-            }
-            .padding()
-        }
+    var body: some View {
+        PreRecordView(warningText: "FOLLOW THE INSTRUCTIONS EACH PHASE!")
+    }
+
+    
+    
 }
 
+// Preview
 #Preview {
-    EvaluateRealtimeView(titlePage: "Realtime")
+    EvaluateRealtimeView()
         .environmentObject(Router())
 }

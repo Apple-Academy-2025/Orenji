@@ -9,13 +9,31 @@ import SwiftUI
 
 struct TutorialView: View {
     @EnvironmentObject var router: Router
-
+    
     var body: some View {
-        Text("Ini tutorial page")
-        Button("instruksi analisis "){
-            router.goTo(.Instruksi)
+        VStack{
+            VStack{
+                Text("Record Analysis")
+                Text("Free-Throw Shooting").foregroundStyle(Color("Primer"))
+                Text("Guidelines")
+            }.font(.system(size: 28))
+                .fontWeight(.bold)
+                .foregroundStyle(.white)
+            
+//            Button("instruksi analisis "){
+//                router.goTo(.Instruksi)
+//            }
         }
+        
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.black)
+        
+        
+        
+        
+        
     }
+    
 }
 
 #Preview {
