@@ -20,43 +20,37 @@ struct OnboardingView: View {
         VStack() {
             
             TabView(selection: $currentPage) {
-                OnboardingContainer(
-                    imageName: "WaveOnb",
-                    title: "Recorded Analysis",
-                    subtitle: "Start by analyzing your free-throw form using the recorded analysis feature.",
-                    showStartButton: false,
-                    onFinish: onFinish
-                )
-                .tag(0)
                 
                 OnboardingContainer(
-                    imageName: "WaveOnbD",
+                    imageName: "onboardiwave1",
+                    anotherImage: "Hands",
                     downWave: true,
                     title: "Know What Went Wrong",
                     subtitle: "Identify incorrect postures with a detailed report.",
                     showStartButton: false,
                     onFinish: onFinish
                 )
-                .tag(1)
+                .tag(0)
                 
                 OnboardingContainer(
-                    imageName: "WaveOnb",
+                    imageName: "onboardiwave2",
+                    anotherImage: "Hands",
                     title: "Correct Your Posture Instantly",
                     subtitle: "Real-time tips to help perfect your free-throw form.",
                     showStartButton: false,
                     onFinish: onFinish
                 )
-                .tag(2)
+                .tag(1)
                 
                 OnboardingContainer(
-                    imageName: "WaveOnbD",
+                    imageName: "onboardiwave3",
                     anotherImage: "Hands",
                     title: "Hands-Free Session Control",
                     subtitle: "Integrated with your Apple Watch — stop sessions and view posture guidance from a distance!",
                     showStartButton: true,
                     onFinish: onFinish
                 )
-                .tag(3)
+                .tag(2)
                 
             }
             
