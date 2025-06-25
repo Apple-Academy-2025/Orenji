@@ -34,6 +34,7 @@ struct PostureBasketApp: App {
                 if !hasSeenOnboarding {
                     OnboardingView {
                         hasSeenOnboarding = true
+                        router.goTo(.Prefereces)
                     }
                 } else {
                     NavigationStack(path: $router.path) {
@@ -46,12 +47,14 @@ struct PostureBasketApp: App {
                                     TutorialView()
                                 case .Instruksi(let destination, let idPage):
                                     InstruksiView(destination: destination, idPage: idPage)
-                                case .RecordPose(let titlePage):
-                                    RecordAnalysisView(titlePage: titlePage)
-                                case .RealtimePose(let titlePage):
+                                case .RecordPose:
+                                    RecordAnalysisView()
+                                case .RealtimePose:
                                     EvaluateRealtimeView()
                                 case .History:
                                     HistoryView()
+                                case .Prefereces:
+                                    PreferencesView()
                                 }
                             }
                     }

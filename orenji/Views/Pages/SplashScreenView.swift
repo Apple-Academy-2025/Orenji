@@ -20,8 +20,7 @@ struct SplashScreenView: View {
                     .padding(.top,200)
                
                 Spacer()
-                Image("WaveSplash") // wave
-//                    .resizable()
+                Image("WaveSplash")
                     .scaledToFit()
                     .frame(width: 300, height:200)
 
