@@ -6,11 +6,8 @@
 //
 
 import SwiftUI
-
 import Vision
 
-
-// Model prediksi frame
 struct FramePrediction {
     var imageForDisplay : UIImage?
     let imageForMLProcess: UIImage

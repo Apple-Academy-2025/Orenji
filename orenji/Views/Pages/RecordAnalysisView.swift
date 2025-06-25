@@ -7,12 +7,13 @@
 
 import SwiftUI
 
+
+
 struct RecordAnalysisView: View {
     @State private var lastVideoURL: URL? = nil
     @State private var showCamera = true
     @StateObject private var vm = RecordFeatureViewModel()
     @State private var reportView: Bool = false
-    
     
     var body: some View {
         ZStack {
@@ -39,6 +40,8 @@ struct RecordAnalysisView: View {
             }
         }
         .background(Color.black.ignoresSafeArea())
+        .navigationBarBackButtonHidden(true)
+        .ignoresSafeArea()
     }
 }
 
