@@ -8,21 +8,31 @@
 import SwiftUI
 
 @main
-struct PostureBasketApp: App {
-    @State private var showSplash = true
-    @StateObject private var router = Router()
+struct orenjiApp: App {
+    
+    @StateObject var router = Router()
+    @State private var showSplash = true 
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
     
     
+    init() {
+        UIPageControl.appearance().currentPageIndicatorTintColor = UIColor.orange
+        UIPageControl.appearance().pageIndicatorTintColor = UIColor.brown
+    }
+    
+
     var body: some Scene {
         WindowGroup {
-            if showSplash {
-                SplashScreenView()
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                            withAnimation {
-                                showSplash = false
-                            }
+            NavigationStack(path: $router.path) {
+                HomePageView()
+                    .navigationDestination(for: Route.self) { route in
+                        switch route {
+                        case .Home:
+                            HomePageView()
+                        case .RecordPose:
+                            RecordPageView()
+                        case .RealtimePose(let titlePage):
+                            RealtimePageView(titlePage: titlePage)
                         }
                     }
             } else {
