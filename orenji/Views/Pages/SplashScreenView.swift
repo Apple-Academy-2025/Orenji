@@ -12,7 +12,7 @@ struct SplashScreenView: View {
 
         var body: some View {
             VStack {
-                Image("AppLogo") // LOGO                        .resizable()
+                Image("AppLogo")
                     .scaledToFit()
                     .frame(width: 150, height: 150)
                 Text("PostureBasket")

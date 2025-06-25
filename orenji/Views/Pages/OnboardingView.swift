@@ -63,6 +63,7 @@ struct OnboardingView: View {
                         onFinish: onFinish
                     )
                     .tag(4)
+                    PreferencesView()
                 }
             
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
