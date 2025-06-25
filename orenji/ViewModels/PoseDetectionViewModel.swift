@@ -9,7 +9,7 @@ class PoseDetectionViewModel: ObservableObject {
     @Published var jointPoints: [PoseJoint] = []
     @Published var recognizedPoints: [VNHumanBodyPoseObservation.JointName: VNRecognizedPoint] = [:]
 
-    @Published var holdProgress: CGFloat = 0       // 🔁 untuk fill hijau
+    @Published var holdProgress: CGFloat = 0       // Progress fill hijau
     @Published var isHoldingPose: Bool = false     // true saat proses hold aktif
     @Published var holdCompleted: Bool = false     // true jika sukses hold 3 detik
 
@@ -67,7 +67,6 @@ class PoseDetectionViewModel: ObservableObject {
                 self.isUserInFrame = allInside
                 self.jointPoints = detected
                 self.recognizedPoints = recognizedPoints
-
             }
         }
 
@@ -83,11 +82,12 @@ class PoseDetectionViewModel: ObservableObject {
         holdCompleted = false
         isHoldingPose = true
 
-        // Timer update per 0.1 detik
         holdTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] t in
             guard let self = self else { return }
 
-            if self.isRightHandRaised() {
+            let currentPhase = self.currentPhaseType()
+
+            if currentPhase != .unknown {
                 self.holdTime += 0.1
                 self.holdProgress = min(self.holdTime / 3.0, 1.0)
 
@@ -95,10 +95,9 @@ class PoseDetectionViewModel: ObservableObject {
                     t.invalidate()
                     self.holdCompleted = true
                     self.isHoldingPose = false
-                    print("✅ Pose sukses ditahan 3 detik")
+                    print("✅ Pose '\(currentPhase)' sukses ditahan 3 detik")
                 }
             } else {
-                // Reset jika gagal
                 self.holdTime = 0
                 self.holdProgress = 0
                 print("🔁 Gagal tahan pose, ulangi dari awal")
@@ -114,18 +113,57 @@ class PoseDetectionViewModel: ObservableObject {
         holdCompleted = false
     }
 
-    // MARK: - Pose Check
+    // MARK: - Pose Phase Detection
 
-    func isRightHandRaised() -> Bool {
-        guard let wrist = recognizedPoints[.rightWrist],
-              let shoulder = recognizedPoints[.rightShoulder],
-              wrist.confidence > 0.4,
-              shoulder.confidence > 0.4 else {
-            return false
-        }
-
-        let deltaY = shoulder.y - wrist.y
-        return deltaY > 0.05 // makin besar makin ketat
+    enum ShootingPhase {
+        case preparation, bending, release, unknown
     }
 
+    func currentPhaseType() -> ShootingPhase {
+        guard let rightHip = recognizedPoints[.rightHip],
+              let rightKnee = recognizedPoints[.rightKnee],
+              let rightAnkle = recognizedPoints[.rightAnkle],
+              let rightShoulder = recognizedPoints[.rightShoulder],
+              let rightElbow = recognizedPoints[.rightElbow],
+              let rightWrist = recognizedPoints[.rightWrist],
+              rightHip.confidence > 0.3,
+              rightKnee.confidence > 0.3,
+              rightAnkle.confidence > 0.3,
+              rightShoulder.confidence > 0.3,
+              rightElbow.confidence > 0.3,
+              rightWrist.confidence > 0.3 else {
+            return .unknown
+        }
+
+        let legAngle = calculateAngle(a: rightHip.location, b: rightKnee.location, c: rightAnkle.location)
+        let elbowAngle = calculateAngle(a: rightShoulder.location, b: rightElbow.location, c: rightWrist.location)
+
+        print("🔍 Leg Angle: \(Int(legAngle))°, Elbow Angle: \(Int(elbowAngle))°")
+
+        // 💡 Berdasarkan data Kinovea (PDF)
+        if (155...165).contains(legAngle) && (90...100).contains(elbowAngle) {
+            return .preparation
+        } else if (113...123).contains(legAngle) && (90...105).contains(elbowAngle) {
+            return .bending
+        } else if (120...128).contains(legAngle) && (55...70).contains(elbowAngle) {
+            return .release
+        } else {
+            return .unknown
+        }
+    }
+
+
+
+    // MARK: - Angle Calculation
+
+    func calculateAngle(a: CGPoint, b: CGPoint, c: CGPoint) -> CGFloat {
+        let ab = CGVector(dx: a.x - b.x, dy: a.y - b.y)
+        let cb = CGVector(dx: c.x - b.x, dy: c.y - b.y)
+        let dot = ab.dx * cb.dx + ab.dy * cb.dy
+        let magnitudeAB = sqrt(ab.dx * ab.dx + ab.dy * ab.dy)
+        let magnitudeCB = sqrt(cb.dx * cb.dx + cb.dy * cb.dy)
+        let cosineAngle = dot / (magnitudeAB * magnitudeCB)
+        let angle = acos(cosineAngle) * 180 / .pi
+        return angle
+    }
 }
