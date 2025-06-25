@@ -13,6 +13,9 @@ class PoseDetectionViewModel: ObservableObject {
     @Published var isHoldingPose: Bool = false     // true saat proses hold aktif
     @Published var holdCompleted: Bool = false     // true jika sukses hold 3 detik
 
+    @Published var legAngleNow: Int = 0
+    @Published var elbowAngleNow: Int = 0
+
     private var sequenceHandler = VNSequenceRequestHandler()
     private var holdTimer: Timer? = nil
     private var holdTime: CGFloat = 0
@@ -87,7 +90,7 @@ class PoseDetectionViewModel: ObservableObject {
 
             let currentPhase = self.currentPhaseType()
 
-            if currentPhase != .unknown {
+            if self.isCorrectPoseForCurrentPhase(currentPhase) {
                 self.holdTime += 0.1
                 self.holdProgress = min(self.holdTime / 3.0, 1.0)
 
@@ -100,11 +103,23 @@ class PoseDetectionViewModel: ObservableObject {
             } else {
                 self.holdTime = 0
                 self.holdProgress = 0
-                print("🔁 Gagal tahan pose, ulangi dari awal")
             }
+
+            
+            print("🔁 Gagal tahan pose, ulangi dari awal")
+        }
+    }
+    
+    func isCorrectPoseForCurrentPhase(_ current: ShootingPhase) -> Bool {
+        switch current {
+        case .preparation: return EvaluateRealtimeView.currentGlobalPhase == .checkPhase1
+        case .bending: return EvaluateRealtimeView.currentGlobalPhase == .checkPhase2
+        case .release: return EvaluateRealtimeView.currentGlobalPhase == .checkPhase3
+        default: return false
         }
     }
 
+    
     func cancelHold() {
         holdTimer?.invalidate()
         holdProgress = 0
@@ -138,21 +153,24 @@ class PoseDetectionViewModel: ObservableObject {
         let legAngle = calculateAngle(a: rightHip.location, b: rightKnee.location, c: rightAnkle.location)
         let elbowAngle = calculateAngle(a: rightShoulder.location, b: rightElbow.location, c: rightWrist.location)
 
+        DispatchQueue.main.async {
+            self.legAngleNow = Int(legAngle)
+            self.elbowAngleNow = Int(elbowAngle)
+        }
+
         print("🔍 Leg Angle: \(Int(legAngle))°, Elbow Angle: \(Int(elbowAngle))°")
 
         // 💡 Berdasarkan data Kinovea (PDF)
-        if (155...165).contains(legAngle) && (90...100).contains(elbowAngle) {
+        if (150...165).contains(legAngle) && (115...125).contains(elbowAngle) {
             return .preparation
-        } else if (113...123).contains(legAngle) && (90...105).contains(elbowAngle) {
+        } else if (70...80).contains(legAngle) && (45...55).contains(elbowAngle) {
             return .bending
-        } else if (120...128).contains(legAngle) && (55...70).contains(elbowAngle) {
+        } else if (160...170).contains(legAngle) && (165...175).contains(elbowAngle) {
             return .release
         } else {
             return .unknown
         }
     }
-
-
 
     // MARK: - Angle Calculation
 
@@ -167,3 +185,4 @@ class PoseDetectionViewModel: ObservableObject {
         return angle
     }
 }
+

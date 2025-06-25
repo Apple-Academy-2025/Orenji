@@ -10,6 +10,7 @@ import SwiftUI
 
 
 struct OnboardingView: View {
+    
     @State private var currentPage = 0
     var onFinish: () -> Void
     
@@ -168,5 +169,6 @@ struct OnboardingContainer: View {
 
 #Preview {
     OnboardingView(onFinish: {})
+    
 }
 
