@@ -30,38 +30,59 @@ struct HoldPose: View {
                     )
                     .animation(.linear(duration: 0.1), value: holdProgress)
 
-                // Warning banner di ujung atas layar
-                if let message = warningMessage {
-                    VStack(spacing: 0) {
-                        Color.red
-                            .frame(height: 120) // tinggi minimal, seperti nav bar
-                            .overlay(
-                                Text(message)
-                                    .font(.system(size: 30, weight: .bold))
-                                    .foregroundColor(.white)
-                                    .lineLimit(1)
-                                    .minimumScaleFactor(0.8)
-                                    .scaleEffect(warningScale)
-                                    .offset(y:20)
-                            )
-                        Spacer()
+                
+                VStack{
+                    // Warning banner di ujung atas layar
+                    if let message = warningMessage {
+                        VStack(spacing: 0) {
+                            Color.red
+                                .frame(height: 120) // tinggi minimal, seperti nav bar
+                                .overlay(
+                                    Text(message)
+                                        .font(.system(size: 30, weight: .bold))
+                                        .foregroundColor(.white)
+                                        .lineLimit(1)
+                                        .minimumScaleFactor(0.8)
+                                        .scaleEffect(warningScale)
+                                        .offset(y:20)
+                                )
+                            Spacer()
+                        }
+                        .frame(maxWidth: .infinity)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                        .animation(.easeInOut(duration: 0.25), value: warningScale)
                     }
-                    .frame(maxWidth: .infinity)
-                    .transition(.move(edge: .top).combined(with: .opacity))
-                    .animation(.easeInOut(duration: 0.25), value: warningScale)
+                    
+                    
                 }
-
-                VStack(spacing: 16) {
-                    Spacer()
+                
+               
+                
+                
+                VStack(spacing: 8) {
+                    // phaseTitle (selalu tampil, di bawah warning)
                     Text(phaseTitle)
-                        .font(.title2)
+                        .font(.system(size: 24, weight: .bold))
                         .foregroundColor(.white)
-                        .bold()
-                    Text("Hold: \(Int(holdProgress * 100))%")
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                        .background(Color.black.opacity(0.4))
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .offset(y:-90)
+                    
+
+                      
+                    Text("HOLD POSITION IN")
+                        .font(.system(size: 28, weight: .bold))
                         .foregroundColor(.white)
-                    Spacer()
+                        .multilineTextAlignment(.center)
+
+                    Text("\(Int((1 - holdProgress) * 3))") // hitung mundur dari 3 ke 0
+                        .font(.system(size: 72, weight: .heavy))
+                        .foregroundColor(.white)
                 }
-                .padding(.bottom, 40)
+                .frame(maxWidth: .infinity)
+                .position(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height * 0.45)
 
                
             }
