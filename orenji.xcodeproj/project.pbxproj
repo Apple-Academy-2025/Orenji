@@ -403,7 +403,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"orenji/Preview Content\"";
-				DEVELOPMENT_TEAM = Y495W87DS2;
+				DEVELOPMENT_TEAM = 8BSYY8W6GT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Need camera access for recording your posture.";
@@ -433,7 +433,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"orenji/Preview Content\"";
-				DEVELOPMENT_TEAM = Y495W87DS2;
+				DEVELOPMENT_TEAM = 8BSYY8W6GT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Need camera access for recording your posture.";

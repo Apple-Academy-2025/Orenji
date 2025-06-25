@@ -57,7 +57,6 @@ struct OnboardingView: View {
                 )
                 .tag(3)
                 
-                
             }
             
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
@@ -96,21 +95,16 @@ struct OnboardingContainer: View {
             ZStack{
                 Image(imageName)
                     .resizable()
-                    .scaledToFill()
+                    .scaledToFit()
                     .frame(maxWidth: .infinity, maxHeight: 350)
                     .clipped()
-                
-                
-                
+
                 if let overlay = anotherImage {
                     Image(overlay)
                         .resizable()
                         .scaledToFit()
                         .frame(height: 580)
-                    
                         .offset(x:20, y: -45)
-                    
-                    
                 }
             }
             .frame(height: 350)
