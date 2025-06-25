@@ -19,7 +19,7 @@ struct HomePageView: View {
             }
 
             Button("🔵 Go to Record") {
-                router.goTo(.Instruksi(destination: .RecordPose(titlePage: "Record"), idPage: "record"))
+                router.goTo(.RecordAnalysisView)
             }
 
             Button("⚙️ Go to Realtime") {

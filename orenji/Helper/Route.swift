@@ -16,7 +16,9 @@ enum Route: Hashable {
     case History
     case Tutorial
     indirect case Instruksi(destination: Route, idPage: String)
-    case RecordPose(titlePage: String)
+    case RecordAnalysisView
+    case HistoryView
+    case TutorialView
     case RealtimePose(titlePage:String)
 }
 

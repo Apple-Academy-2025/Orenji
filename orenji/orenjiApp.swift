@@ -23,25 +23,8 @@ struct orenjiApp: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationStack(path: $router.path) {
-                HomePageView()
-                    .navigationDestination(for: Route.self) { route in
-                        switch route {
-                        case .Home:
-                            HomePageView()
-                        case .RecordPose:
-                            RecordPageView()
-                        case .RealtimePose(let titlePage):
-                            RealtimePageView(titlePage: titlePage)
-                        }
-                    }
-            } else {
-                if !hasSeenOnboarding {
-                    OnboardingView {
-                        hasSeenOnboarding = true
-                    }
-                } else {
-                    NavigationStack(path: $router.path) {
+                NavigationStack(path: $router.path) {
+                    if showSplash {
                         HomePageView()
                             .navigationDestination(for: Route.self) { route in
                                 switch route {
@@ -50,22 +33,59 @@ struct orenjiApp: App {
                                 case .Tutorial:
                                     TutorialView()
                                 case .Instruksi(let destination, let idPage):
-                                        InstruksiView(destination: destination, idPage: idPage)
-                                case .RecordPose(let titlePage):
-                                    RecordAnalysisView(titlePage: titlePage)
+                                    InstruksiView(destination: destination, idPage: idPage)
+                                case .RecordAnalysisView:
+                                    RecordAnalysisView()
                                 case .RealtimePose(let titlePage):
                                     EvaluateRealtimeView()
                                 case .History:
                                     HistoryView()
+                                case .HistoryView:
+                                    HistoryView()
+                                case .TutorialView:
+                                    TutorialView()
                                 }
                             }
+                    } else {
+                        if !hasSeenOnboarding {
+                            OnboardingView {
+                                hasSeenOnboarding = true
+                            }
+                        } else {
+                            NavigationStack(path: $router.path) {
+                                HomePageView()
+                                    .navigationDestination(for: Route.self) { route in
+                                        switch route {
+                                        case .Home:
+                                            HomePageView()
+                                        case .Tutorial:
+                                            TutorialView()
+                                        case .Instruksi(let destination, let idPage):
+                                            InstruksiView(destination: destination, idPage: idPage)
+                                        case .RecordAnalysisView:
+                                            RecordAnalysisView()
+                                        case .RealtimePose(let titlePage):
+                                            EvaluateRealtimeView()
+                                        case .History:
+                                            HistoryView()
+                                        case .HistoryView:
+                                            HistoryView()
+                                        case .TutorialView:
+                                            TutorialView()
+                                        }
+                                    }
+                            }
+                            .environmentObject(router)
+                        }
+                        
                     }
-                    .environmentObject(router)
+
+                }
+        }
                 }
             }
             
-        }
-    }
-}
+
+
 
 

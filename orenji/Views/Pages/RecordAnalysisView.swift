@@ -36,7 +36,7 @@ struct RecordAnalysisView: View {
                 ReportView(vm: vm)
             }
             else{
-                RecordPageView()
+                RecordLoadingView()
             }
         }
         .background(Color.black.ignoresSafeArea())
