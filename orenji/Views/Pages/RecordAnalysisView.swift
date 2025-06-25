@@ -7,24 +7,45 @@
 
 import SwiftUI
 
+
+
 struct RecordAnalysisView: View {
+    @State private var lastVideoURL: URL? = nil
+    @State private var showCamera = true
+    @StateObject private var vm = RecordFeatureViewModel()
+    @State private var reportView: Bool = false
     
-    let titlePage: String
-        @EnvironmentObject var router: Router
-
-        var body: some View {
-            VStack(spacing: 20) {
-                Text("👤 Pages : \(titlePage)").font(.title)
-
-                Button("🔙 Back") {
-                    router.pop()
+    var body: some View {
+        ZStack {
+            if vm.isExtracting {
+                RecordLoadingView()
+            }
+            else if vm.isProcessingML {
+                RecordLoadingView()
+                
+            }
+            else if showCamera {
+                RecordPageCameraFrame(showCamera: $showCamera) { url in
+                    DispatchQueue.main.async {
+                        vm.extractAllFramesProcess(from: url)
+                        reportView = true
+                    }
                 }
             }
-            .padding()
+            else if reportView {
+                ReportView(vm: vm)
+            }
+            else{
+                RecordPageView()
+            }
         }
+        .background(Color.black.ignoresSafeArea())
+        .navigationBarBackButtonHidden(true)
+        .ignoresSafeArea()
+    }
 }
 
 #Preview {
-    RecordAnalysisView(titlePage: "Realtime")
+    RecordAnalysisView()
         .environmentObject(Router())
 }
