@@ -14,7 +14,7 @@ struct RecordAnalysisView: View {
 
         var body: some View {
             VStack(spacing: 20) {
-                Text("👤 Pages : of \(titlePage)").font(.title)
+                Text("👤 Pages : \(titlePage)").font(.title)
 
                 Button("🔙 Back") {
                     router.pop()
@@ -25,6 +25,6 @@ struct RecordAnalysisView: View {
 }
 
 #Preview {
-    RecordAnalysisView(titlePage: "Record")
+    RecordAnalysisView(titlePage: "Realtime")
         .environmentObject(Router())
 }
