@@ -57,7 +57,6 @@ struct OnboardingView: View {
                 )
                 .tag(3)
                 
-                
             }
             
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
@@ -96,7 +95,7 @@ struct OnboardingContainer: View {
             ZStack{
                 Image(imageName)
                     .resizable()
-                    .scaledToFill()
+                    .scaledToFit()
                     .frame(maxWidth: .infinity, maxHeight: 350)
                     .clipped()
                 

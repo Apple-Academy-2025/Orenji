@@ -29,6 +29,7 @@ struct PostureBasketApp: App {
                 if !hasSeenOnboarding {
                     OnboardingView {
                         hasSeenOnboarding = true
+                        router.goTo(.Prefereces)
                     }
                 } else {
                     NavigationStack(path: $router.path) {
@@ -47,6 +48,8 @@ struct PostureBasketApp: App {
                                     EvaluateRealtimeView()
                                 case .History:
                                     HistoryView()
+                                case .Prefereces:
+                                    PreferencesView()
                                 }
                             }
                     }

@@ -9,6 +9,7 @@
 import SwiftUI
 
 struct PreferencesView: View {
+    @EnvironmentObject var router: Router
     @AppStorage("shootingHand") private var selectedHand: String = ""
 
     var body: some View {
@@ -71,8 +72,8 @@ struct PreferencesView: View {
             Spacer()
             Spacer()
 
-            Button("Let's Get Started", action: {
-                
+            Button("Next", action: {
+                router.goTo(.Home)
             })
             .padding()
             .frame(maxWidth: .infinity)
@@ -90,4 +91,5 @@ struct PreferencesView: View {
 
 #Preview {
     PreferencesView()
+        .environmentObject(Router())
 }
