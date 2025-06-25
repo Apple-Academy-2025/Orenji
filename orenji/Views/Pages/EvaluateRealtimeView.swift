@@ -16,17 +16,21 @@ struct EvaluateRealtimeView: View {
     @State private var warningTimer: Timer?
     @State private var showWarningText = false
 
-    // PreRecord Logic States
+    // PreRecord
     @State private var showInFrameText = false
     @State private var countdown = 3
     @State private var isCountingDown = false
     @State private var showStartText = false
     @State private var isRecordingStarted = false
-    @State private var warningText: String = "Ayo mulai!"
+    @State private var warningText: String = "FOLLOW THE INSTRUCTIONS EACH PHASE!"
     @State private var isOverlayVisible = true
     @State private var holdSeconds = 3
     @State private var holdTimer: Timer? = nil
     @State private var everDetected = false
+
+    // Loop tracking
+    @State private var loopCount = 0
+    @State private var showExitConfirmation = false
 
     private let boxSize = CGSize(width: 250, height: 500)
 
@@ -40,80 +44,22 @@ struct EvaluateRealtimeView: View {
             }
 
             if phase == .preRecord {
-                if !isRecordingStarted && isOverlayVisible {
-                    FrameOverlay(boxSize: boxSize, borderColor: borderColor)
-
-                    GeometryReader { geo in
-                        VStack {
-                            Text(statusText)
-                                .font(.system(size: 20, weight: .bold))
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 8)
-                                .background(borderColor)
-                                .cornerRadius(20)
-                                .padding(.top, 12)
-                        }
-                        .position(x: geo.size.width / 2,
-                                  y: (geo.size.height - boxSize.height) / 2 - 40)
-                    }
-                    .offset(y: -10)
-
-                    VStack {
-                        HStack {
-                            Button { router.pop() } label: {
-                                Image(systemName: "chevron.left")
-                                    .foregroundColor(.black)
-                                    .padding()
-                                    .background(Color.orange)
-                                    .clipShape(Circle())
-                            }
-                            Spacer()
-                        }
-                        .padding([.horizontal, .top], 20)
-                        Spacer()
-                    }
-                }
-
-                if !isRecordingStarted && isOverlayVisible && poseDetector.isUserInFrame {
-                    VStack(spacing: 8) {
-                        Text("✅ Hold still...")
-                            .foregroundColor(.green)
-                            .bold()
-                        Text("\(holdSeconds)")
-                            .font(.title)
-                            .foregroundColor(.green)
-                    }
-                    .offset(y: 180)
-                }
-
-                if showWarningText {
-                    VStack {
-                        Text(warningText)
-                            .font(.system(size: 40, weight: .bold))
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(.white)
-                            .padding()
-                            .cornerRadius(16)
-                            .scaleEffect(warningScale)
-                            .opacity(showWarningText ? 1 : 0)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .transition(.scale.combined(with: .opacity))
-                }
-
-                if isCountingDown {
-                    Text("\(countdown)")
-                        .font(.system(size: 100, weight: .bold))
-                        .foregroundColor(.primer)
-                }
-
-                if showStartText {
-                    Text("START!")
-                        .font(.system(size: 100, weight: .heavy))
-                        .foregroundColor(.white)
-                        .transition(.opacity)
-                }
+                PreRecordOverlay(
+                    isRecordingStarted: isRecordingStarted,
+                    isOverlayVisible: isOverlayVisible,
+                    isUserInFrame: poseDetector.isUserInFrame,
+                    holdSeconds: holdSeconds,
+                    showWarningText: showWarningText,
+                    warningText: warningText,
+                    warningScale: warningScale,
+                    isCountingDown: isCountingDown,
+                    countdown: countdown,
+                    showStartText: showStartText,
+                    boxSize: boxSize,
+                    borderColor: borderColor,
+                    statusText: statusText
+                )
+                .environmentObject(router)
             }
 
             switch phase {
@@ -121,38 +67,53 @@ struct EvaluateRealtimeView: View {
                 HoldPose(
                     phaseTitle: phase == .checkPhase1 ? "Phase 1: Raise Hand" : "Phase 2: Repeat Pose",
                     holdProgress: poseDetector.holdProgress,
-                    showWarning: showWarning,
+                    warningMessage: currentWarningMessage,
                     warningScale: warningScale
+                    
                 )
+                .environmentObject(router)
 
             case .finished:
-                VStack(spacing: 20) {
-                    Text("✅ All Phases Completed!")
-                        .foregroundColor(.green)
-                        .font(.largeTitle)
-                        .bold()
-                    Button("Done") {
-                        router.pop()
-                    }
-                    .padding()
-                    .background(Color.green)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-                }
+                EvaluationFinishedView(loopCount: loopCount)
+                    .environmentObject(router)
 
             default: EmptyView()
+            }
+
+            // Global STOP button
+            if phase == .checkPhase1 || phase == .checkPhase2 {
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            showExitConfirmation = true
+                        }) {
+                            Text("STOP")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .padding()
+                                .background(Color.red)
+                                .clipShape(Circle())
+                        }
+                        .padding(24)
+                        .confirmationDialog("Are you sure you want to stop?", isPresented: $showExitConfirmation, titleVisibility: .visible) {
+                            Button("Yes, Stop", role: .destructive) {
+                                phase = .finished
+                            }
+                            Button("Cancel", role: .cancel) {}
+                        }
+                    }
+                }
             }
         }
         .onAppear(perform: setupCamera)
         .onChange(of: poseDetector.holdCompleted) { completed in
             if completed {
                 poseDetector.cancelHold()
-                if phase == .checkPhase1 {
-                    phase = .checkPhase2
-                    poseDetector.startHoldPose()
-                } else if phase == .checkPhase2 {
-                    phase = .finished
-                }
+                loopCount += 1
+                phase = (phase == .checkPhase1) ? .checkPhase2 : .checkPhase1
+                poseDetector.startHoldPose()
             }
         }
         .onChange(of: poseDetector.isUserInFrame, perform: handleFrameChange)
@@ -165,6 +126,16 @@ struct EvaluateRealtimeView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
+    }
+
+    private var currentWarningMessage: String? {
+        if !poseDetector.isUserInFrame {
+            return "You're out of frame!"
+        } else if poseDetector.isHoldingPose && !poseDetector.isRightHandRaised() {
+            return "Raise your right hand!"
+        } else {
+            return nil
+        }
     }
 
     private func setupCamera() {
@@ -279,6 +250,49 @@ struct EvaluateRealtimeView: View {
         else { return "Make sure to **keep your body**\naligned within this frame to start" }
     }
 }
+
+
+
+struct EvaluationFinishedView: View {
+    @EnvironmentObject var router: Router
+    var loopCount: Int
+
+    var body: some View {
+        ZStack {
+            // Latar gelap transparan
+            Color.black.opacity(0.6)
+                .ignoresSafeArea()
+
+            VStack(spacing: 20) {
+                Text("✅ You have completed")
+                    .font(.title2)
+                    .foregroundColor(.white)
+
+                Text("\(loopCount) phase\(loopCount > 1 ? "s" : "")!")
+                    .font(.system(size: 48, weight: .bold))
+                    .foregroundColor(.green)
+
+                Button(action: {
+                    router.pop()
+                }) {
+                    Text("Done")
+                        .font(.headline)
+                        .padding()
+                        .frame(width: 120)
+                        .background(Color.green)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                .padding(.top, 20)
+            }
+            .padding()
+            .background(Color.black.opacity(0.75))
+            .cornerRadius(20)
+            .padding(.horizontal, 40)
+        }
+    }
+}
+
 
 #Preview {
     EvaluateRealtimeView()
