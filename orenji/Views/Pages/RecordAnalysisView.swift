@@ -35,9 +35,6 @@ struct RecordAnalysisView: View {
             else if reportView {
                 ReportView(vm: vm)
             }
-            else{
-                RecordPageView()
-            }
         }
         .background(Color.black.ignoresSafeArea())
         .navigationBarBackButtonHidden(true)

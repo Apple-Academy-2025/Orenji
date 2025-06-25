@@ -17,8 +17,8 @@ enum Route: Hashable {
     case Tutorial
     case Prefereces
     indirect case Instruksi(destination: Route, idPage: String)
-    case RecordPose(titlePage: String)
-    case RealtimePose(titlePage:String)
+    case RecordPose
+    case RealtimePose
 }
 
 

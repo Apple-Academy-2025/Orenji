@@ -98,18 +98,13 @@ struct OnboardingContainer: View {
                     .scaledToFit()
                     .frame(maxWidth: .infinity, maxHeight: 350)
                     .clipped()
-                
-                
-                
+
                 if let overlay = anotherImage {
                     Image(overlay)
                         .resizable()
                         .scaledToFit()
                         .frame(height: 580)
-                    
                         .offset(x:20, y: -45)
-                    
-                    
                 }
             }
             .frame(height: 350)

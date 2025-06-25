@@ -19,10 +19,6 @@ struct TutorialView: View {
             }.font(.system(size: 28))
                 .fontWeight(.bold)
                 .foregroundStyle(.white)
-            
-//            Button("instruksi analisis "){
-//                router.goTo(.Instruksi)
-//            }
         }
         
         .frame(maxWidth: .infinity, maxHeight: .infinity)
