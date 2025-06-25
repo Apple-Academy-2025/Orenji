@@ -30,16 +30,16 @@ struct PreferencesView: View {
                     Text("Right Hand")
                         .bold()
                         .font(.title)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(selectedHand == "Right" ? Color.black : Color.white)
                 }
                 .frame(maxWidth: .infinity, maxHeight: 112)
                 .padding(.horizontal, 10)
                 .padding(.top, 8)
-                .background(selectedHand == "Right" ? Color.primaryApp : Color.clear)
+                .background(selectedHand == "Right" ? Color.primer : Color.clear)
                 .cornerRadius(18)
                 .overlay(
                     RoundedRectangle(cornerRadius: 18)
-                        .stroke(Color.primaryApp, lineWidth: 2)
+                        .stroke(Color.primer, lineWidth: 2)
                 )
             }
             .padding(.horizontal,25)
@@ -52,7 +52,7 @@ struct PreferencesView: View {
                     Text("Left Hand")
                         .bold()
                         .font(.title)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(selectedHand == "Left" ? Color.black : Color.white)
                     Image("imageLeftHand")
                         .resizable()
                         .scaledToFit()
@@ -60,11 +60,11 @@ struct PreferencesView: View {
                 .frame(maxWidth: .infinity, maxHeight: 112)
                 .padding(.horizontal, 10)
                 .padding(.top, 8)
-                .background(selectedHand == "Left" ? Color.primaryApp : Color.clear)
+                .background(selectedHand == "Left" ? Color.primer : Color.clear)
                 .cornerRadius(18)
                 .overlay(
                     RoundedRectangle(cornerRadius: 18)
-                        .stroke(Color.primaryApp, lineWidth: 2)
+                        .stroke(Color.primer, lineWidth: 2)
                 )
             }
             .padding(.horizontal,25)
@@ -77,7 +77,7 @@ struct PreferencesView: View {
             })
             .padding()
             .frame(maxWidth: .infinity)
-            .background(Color.primaryApp)
+            .background(Color.primer)
             .foregroundStyle(.black)
             .cornerRadius(14)
         }
