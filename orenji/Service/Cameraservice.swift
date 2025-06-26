@@ -8,6 +8,8 @@
 
 import AVFoundation
 import Combine
+import CoreImage
+import UIKit
 
 /// Menangani seluruh setup kamera dan meneruskan frame (jika perlu).
 final class CameraService: NSObject, ObservableObject {
@@ -22,6 +24,7 @@ final class CameraService: NSObject, ObservableObject {
     private let videoOutput = AVCaptureVideoDataOutput()
     let session = AVCaptureSession()
     private let sessionQueue = DispatchQueue(label: "camera.session.queue")
+    private var lastFrameTimestamp: TimeInterval = 0
 
     // MARK: - Setup
     func configure() {
@@ -59,7 +62,7 @@ final class CameraService: NSObject, ObservableObject {
 
             // ⬇️ iOS 17 compatible
             if let connection = videoOutput.connection(with: .video) {
-                connection.videoRotationAngle = 0 // portrait
+                connection.videoRotationAngle = 90
             }
         }
 
@@ -90,10 +93,38 @@ final class CameraService: NSObject, ObservableObject {
 
 // MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
 extension CameraService: AVCaptureVideoDataOutputSampleBufferDelegate {
-    func captureOutput(_ output: AVCaptureOutput,
-                       didOutput sampleBuffer: CMSampleBuffer,
-                       from connection: AVCaptureConnection) {
-        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
-        onFrameCaptured?(pixelBuffer) // lempar ke closure (bisa diproses di ViewModel)
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        let currentTime = CFAbsoluteTimeGetCurrent()
+        if currentTime - lastFrameTimestamp > 0.1 {
+            self.lastFrameTimestamp = currentTime
+            
+            if let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
+                let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+                let context = CIContext()
+                if let cgImage = context.createCGImage(ciImage, from: ciImage.extent) {
+                    let originalUIImage = UIImage(cgImage: cgImage)
+                    if let resizedImage = resizeImage(image: originalUIImage, targetWidth: 250) {
+                        if let imageData = resizedImage.jpegData(compressionQuality: 0.2) {
+                            WatchConnectivityManager.shared.sendFrameToWatch(imageData)
+                        }
+                    }
+                }
+                onFrameCaptured?(pixelBuffer)
+            }
+        }
+    }
+    
+    private func resizeImage(image: UIImage, targetWidth: CGFloat) -> UIImage? {
+        let size = image.size
+        let widthRatio  = targetWidth / size.width
+        let newSize = CGSize(width: size.width * widthRatio, height: size.height * widthRatio)
+        let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
+        
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+        image.draw(in: rect)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return newImage
     }
 }

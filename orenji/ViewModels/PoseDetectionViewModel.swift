@@ -7,6 +7,7 @@ import SwiftUI
 class PoseDetectionViewModel: ObservableObject {
     @Published var isUserInFrame: Bool = false
     @Published var jointPoints: [PoseJoint] = []
+    @StateObject var connectivity =  WatchConnectivityManager.shared
     @Published var recognizedPoints: [VNHumanBodyPoseObservation.JointName: VNRecognizedPoint] = [:]
 
     @Published var holdProgress: CGFloat = 0       // Progress fill hijau

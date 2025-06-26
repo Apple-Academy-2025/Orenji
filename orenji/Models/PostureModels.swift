@@ -45,3 +45,7 @@ enum PostureStatus: Codable {
     case critical(String)
 }
 
+enum SessionType: String {
+    case recording
+    case realtime
+}
