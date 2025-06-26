@@ -81,8 +81,23 @@ struct HomePageView: View {
             .frame(maxWidth: .infinity)
             .foregroundStyle(.white)
             .frame(maxHeight: .infinity, alignment: .center)
+            
+            VStack{
+                Button(action: {
+                    router.goTo(.Prefereces)
+                }, label: {
+                    Image(systemName: "gear")
+                        .font(.title)
+                        .foregroundStyle(.white)
+                })
+            }
+            .padding(30)
+            .frame(maxWidth: .infinity, alignment: .trailing)
+            .offset(y: 50)
+            
         }
         .ignoresSafeArea()
+        .navigationBarBackButtonHidden(true)
     }
     
     private func startSession(type: SessionType) {
