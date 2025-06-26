@@ -120,14 +120,15 @@ struct EvaluateRealtimeView: View {
         }
         .onChange(of: poseDetector.isUserInFrame, perform: handleFrameChange)
         .onChange(of: phase) { newPhase in
-            EvaluateRealtimeView.currentGlobalPhase = newPhase
             if [.checkPhase1, .checkPhase2, .checkPhase3].contains(newPhase) {
+                EvaluateRealtimeView.currentGlobalPhase = newPhase // 🔄 Pindahkan ke dalam kondisi yang tepat
                 startWarningLoop()
                 poseDetector.startHoldPose()
             } else {
                 stopWarningLoop()
             }
         }
+
         .navigationBarBackButtonHidden(true)
     }
 

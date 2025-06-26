@@ -41,8 +41,8 @@ struct HomePageView: View {
                 
                 FeatureCardView(
                     title: "Evaluate Realtime", subtitle: "Learn to free-throw shooting in realtime", imageName: "evaluateRealtimeImage", action: {
-                        router.goTo(.RealtimePose)
-                        print("realtime")
+                        router.goTo(.Instruksi(destination: .RealtimePose, idPage: "realtime"))
+                        startSession(type: .realtime)
                     }
                 )
                 
@@ -82,6 +82,8 @@ struct HomePageView: View {
         }
         .ignoresSafeArea()
     }
+    
+    
 }
 
 #Preview {
@@ -99,53 +101,53 @@ struct FeatureCardView: View {
     var body: some View {
         Button(action: action, label: {
             HStack {
-            ZStack(alignment: .leading) {
-                Image(imageName)
-                    .resizable()
-                    .scaledToFill()
+                ZStack(alignment: .leading) {
+                    Image(imageName)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 150)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    LinearGradient(
+                        colors: [.backgroundGray, .clear],
+                        startPoint: .trailing,
+                        endPoint: .leading
+                    )
                     .frame(width: 150)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                LinearGradient(
-                    colors: [.backgroundGray, .clear],
-                    startPoint: .trailing,
-                    endPoint: .leading
-                )
-                .frame(width: 150)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(title)
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
                     
-                    Text(subtitle)
-                        .font(.caption)
-                        .foregroundColor(.white.opacity(0.8))
-                        .padding(.bottom,20)
-                        .multilineTextAlignment(.leading)
-                    
-                    Text("Start")
-                        .font(.headline)
-                        .foregroundColor(.black)
-                        .padding(.horizontal, 30)
-                        .padding(.vertical, 10)
-                        .background(Color.primer)
-                        .cornerRadius(20)
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(title)
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                        
+                        Text(subtitle)
+                            .font(.caption)
+                            .foregroundColor(.white.opacity(0.8))
+                            .padding(.bottom,20)
+                            .multilineTextAlignment(.leading)
+                        
+                        Text("Start")
+                            .font(.headline)
+                            .foregroundColor(.black)
+                            .padding(.horizontal, 30)
+                            .padding(.vertical, 10)
+                            .background(Color.primer)
+                            .cornerRadius(20)
+                    }
+                    .padding()
+                    .frame(width: 250)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
                 }
-                .padding()
-                .frame(width: 250)
-                .frame(maxWidth: .infinity, alignment: .trailing)
             }
-        }
-        .frame(maxWidth: .infinity)
-        .frame(height: 175)
-        .background(.backgroundGray)
-        .cornerRadius(18)
-        .overlay(
-            RoundedRectangle(cornerRadius: 18)
-                .stroke(Color.primer, lineWidth: 2)
-        )
+            .frame(maxWidth: .infinity)
+            .frame(height: 175)
+            .background(.backgroundGray)
+            .cornerRadius(18)
+            .overlay(
+                RoundedRectangle(cornerRadius: 18)
+                    .stroke(Color.primer, lineWidth: 2)
+            )
             .padding(.bottom,20)}
         )
         

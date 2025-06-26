@@ -103,13 +103,11 @@ class PoseDetectionViewModel: ObservableObject {
             } else {
                 self.holdTime = 0
                 self.holdProgress = 0
+                print("🔁 Gagal tahan pose, ulangi dari awal")
             }
-
-            
-            print("🔁 Gagal tahan pose, ulangi dari awal")
         }
     }
-    
+
     func isCorrectPoseForCurrentPhase(_ current: ShootingPhase) -> Bool {
         switch current {
         case .preparation: return EvaluateRealtimeView.currentGlobalPhase == .checkPhase1
@@ -119,7 +117,6 @@ class PoseDetectionViewModel: ObservableObject {
         }
     }
 
-    
     func cancelHold() {
         holdTimer?.invalidate()
         holdProgress = 0
@@ -160,7 +157,6 @@ class PoseDetectionViewModel: ObservableObject {
 
         print("🔍 Leg Angle: \(Int(legAngle))°, Elbow Angle: \(Int(elbowAngle))°")
 
-        // 💡 Berdasarkan data Kinovea (PDF)
         if (150...165).contains(legAngle) && (115...125).contains(elbowAngle) {
             return .preparation
         } else if (70...80).contains(legAngle) && (45...55).contains(elbowAngle) {
@@ -185,4 +181,3 @@ class PoseDetectionViewModel: ObservableObject {
         return angle
     }
 }
-
