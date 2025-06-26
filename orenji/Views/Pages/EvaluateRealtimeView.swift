@@ -5,6 +5,7 @@ struct EvaluateRealtimeView: View {
     @EnvironmentObject var router: Router
     @StateObject private var cameraService = CameraService()
     @StateObject private var poseDetector = PoseDetectionViewModel()
+    @StateObject var connectivity =  WatchConnectivityManager.shared
     
     enum Phase {
         case preRecord, checkPhase1, checkPhase2, checkPhase3, finished
@@ -29,13 +30,15 @@ struct EvaluateRealtimeView: View {
     
     @State private var loopCount = 0
     @State private var showExitConfirmation = false
+    @State private var lastSpokenMessage: String = ""
     
+    private let speechSynthesizer = AVSpeechSynthesizer()
     private let boxSize = CGSize(width: 250, height: 500)
+    static var currentGlobalPhase: Phase = .preRecord
     
     var body: some View {
         ZStack {
-            CameraPreview(service: cameraService)
-                .ignoresSafeArea()
+            CameraPreview(service: cameraService).ignoresSafeArea()
             
             if !poseDetector.recognizedPoints.isEmpty {
                 PoseOverlayView(points: poseDetector.recognizedPoints, evaluationColor: .yellow)
@@ -56,8 +59,7 @@ struct EvaluateRealtimeView: View {
                     boxSize: boxSize,
                     borderColor: borderColor,
                     statusText: statusText
-                )
-                .environmentObject(router)
+                ).environmentObject(router)
             }
             
             switch phase {
@@ -67,24 +69,21 @@ struct EvaluateRealtimeView: View {
                     holdProgress: poseDetector.holdProgress,
                     warningMessage: currentWarningMessage,
                     warningScale: warningScale
-                )
-                .environmentObject(router)
+                ).environmentObject(router)
                 
             case .finished:
                 EvaluationFinishedView(loopCount: loopCount)
                     .environmentObject(router)
-                
-            default: EmptyView()
+            default:
+                EmptyView()
             }
             
-            if phase == .checkPhase1 || phase == .checkPhase2 || phase == .checkPhase3 {
+            if [.checkPhase1, .checkPhase2, .checkPhase3].contains(phase) {
                 VStack {
                     Spacer()
                     HStack {
                         Spacer()
-                        Button(action: {
-                            showExitConfirmation = true
-                        }) {
+                        Button(action: { showExitConfirmation = true }) {
                             Text("STOP")
                                 .font(.headline)
                                 .foregroundColor(.white)
@@ -96,6 +95,8 @@ struct EvaluateRealtimeView: View {
                         .confirmationDialog("Are you sure you want to stop?", isPresented: $showExitConfirmation, titleVisibility: .visible) {
                             Button("Yes, Stop", role: .destructive) {
                                 phase = .finished
+                                connectivity.sendStopSessionCommand(sessionType: .realtime)
+                                connectivity.sendRealtimeResultsToWatch(total: loopCount)
                             }
                             Button("Cancel", role: .cancel) {}
                         }
@@ -104,17 +105,13 @@ struct EvaluateRealtimeView: View {
             }
         }
         .onAppear(perform: setupCamera)
-        // Deteksi selesai tahan pose → lanjut fase berikutnya (looping)
-        .onChange(of: poseDetector.holdCompleted) { completed in
+        .onChange(of: poseDetector.holdCompleted) { oldCompled, completed in
             if completed {
                 poseDetector.cancelHold()
                 loopCount += 1
-                
-                // ⬇️ Batas maksimal loop (misalnya 3x, artinya total 9 fase)
                 if loopCount >= 9 {
                     phase = .finished
                 } else {
-                    // ⬇️ Pindah ke fase berikutnya dengan loop
                     switch phase {
                     case .checkPhase1: phase = .checkPhase2
                     case .checkPhase2: phase = .checkPhase3
@@ -125,16 +122,20 @@ struct EvaluateRealtimeView: View {
                 }
             }
         }
-        //        Proses deteksi awal saat pre-record
         .onChange(of: poseDetector.isUserInFrame, perform: handleFrameChange)
-        //        Menjalankan fungsi saat ganti fase
-        .onChange(of: phase) { newPhase in
-            if newPhase == .checkPhase1 || newPhase == .checkPhase2 || newPhase == .checkPhase3 {
+        .onChange(of: phase) { oldPhase, newPhase in
+            EvaluateRealtimeView.currentGlobalPhase = newPhase
+            if [.checkPhase1, .checkPhase2, .checkPhase3].contains(newPhase) {
                 startWarningLoop()
                 poseDetector.startHoldPose()
             } else {
                 stopWarningLoop()
             }
+        }
+        .onChange(of: poseDetector.holdProgress) { oldProgress, progress in
+            guard progress > 0, progress < 1 else { return }
+            let countdown = Int(ceil(3.0 - (progress * 3.0)))
+            sendRealtimePoseToWatch(isCorrect: true, correctionMessage: nil, countdown: countdown)
         }
         .navigationBarBackButtonHidden(true)
     }
@@ -157,14 +158,41 @@ struct EvaluateRealtimeView: View {
         
         switch phase {
         case .checkPhase1 where currentPhase != .preparation:
+            if poseDetector.elbowAngleNow < 115 {
+                return "Elbow too close, stretch more"
+            } else if poseDetector.elbowAngleNow > 125 {
+                return "Elbow too wide, lower slightly"
+            }
             return "Hold Preparation Pose!"
+            
         case .checkPhase2 where currentPhase != .bending:
+            if poseDetector.legAngleNow < 70 {
+                return "Leg too bent, straighten slightly"
+            } else if poseDetector.legAngleNow > 80 {
+                return "Leg too straight, bend more"
+            }
             return "Hold Bending Pose!"
+            
         case .checkPhase3 where currentPhase != .release:
+            if poseDetector.elbowAngleNow < 165 {
+                return "Elbow too low, raise your arm"
+            } else if poseDetector.elbowAngleNow > 175 {
+                return "Elbow too high, relax a bit"
+            }
             return "Hold Release Pose!"
+            
         default:
             return nil
         }
+    }
+    
+    private func speak(_ message: String) {
+        guard message != lastSpokenMessage else { return }
+        lastSpokenMessage = message
+        let utterance = AVSpeechUtterance(string: message)
+        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+        utterance.rate = 0.45
+        speechSynthesizer.speak(utterance)
     }
     
     private func setupCamera() {
@@ -214,6 +242,7 @@ struct EvaluateRealtimeView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             withAnimation(.spring(response: 0.4, dampingFraction: 0.6)) {
                 isOverlayVisible = false
+                connectivity.sendDisplayStateToWatch("showMessage")
                 showWarningText = true
                 warningScale = 1.0
             }
@@ -232,10 +261,12 @@ struct EvaluateRealtimeView: View {
         countdown = 3
         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
             if countdown > 1 {
+                connectivity.sendDisplayStateToWatch("showNumber", value: countdown)
                 countdown -= 1
             } else {
                 timer.invalidate()
                 isCountingDown = false
+                connectivity.sendDisplayStateToWatch("showStart")
                 withAnimation(.easeIn(duration: 0.2)) { showStartText = true }
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
@@ -247,6 +278,7 @@ struct EvaluateRealtimeView: View {
     }
     
     private func beginRecording() {
+        connectivity.sendDisplayStateToWatch("activelyRealtime")
         isRecordingStarted = true
         phase = .checkPhase1
         poseDetector.startHoldPose()
@@ -254,10 +286,18 @@ struct EvaluateRealtimeView: View {
     
     private func startWarningLoop() {
         warningTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
-            let show = poseDetector.isHoldingPose && currentWarningMessage != nil
-            withAnimation(.easeInOut(duration: 0.3)) {
-                showWarning = show
-                warningScale = show ? 1.2 : 1.0
+            if poseDetector.isHoldingPose, let msg = currentWarningMessage {
+                sendRealtimePoseToWatch(isCorrect: false, correctionMessage: msg, countdown: nil)
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    showWarning = true
+                    warningScale = 1.2
+                }
+                speak(msg)
+            } else {
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    showWarning = false
+                    warningScale = 1.0
+                }
             }
         }
     }
@@ -268,8 +308,14 @@ struct EvaluateRealtimeView: View {
     }
     
     private var borderColor: Color {
-        if poseDetector.isUserInFrame { return .green }
-        else if everDetected { return .red }
+        if poseDetector.isUserInFrame {
+            connectivity.sendCameraPoseStatusToWatch(isCorrect: true)
+            return .green
+        }
+        else if everDetected {
+            connectivity.sendCameraPoseStatusToWatch(isCorrect: false)
+            return .red
+        }
         else { return Color.clear }
     }
     
@@ -278,9 +324,22 @@ struct EvaluateRealtimeView: View {
         else if everDetected { return "TOO CLOSE" }
         else { return "Make sure to **keep your body**\naligned within this frame to start" }
     }
+    
+    func sendRealtimePoseToWatch(isCorrect: Bool, correctionMessage: String?, countdown: Int?) {
+        let phaseName = self.phaseTitleText
+        
+        let poseData = RealtimePoseData(
+            phase: phaseName,
+            isPoseCorrect: isCorrect,
+            correctionMessage: correctionMessage,
+            holdCountdown: countdown
+        )
+        
+        if let encoded = try? JSONEncoder().encode(poseData) {
+            WatchConnectivityManager.shared.sendPoseUpdate(data: encoded)
+        }
+    }
 }
-
-
 
 
 struct EvaluationFinishedView: View {
@@ -289,7 +348,6 @@ struct EvaluationFinishedView: View {
     
     var body: some View {
         ZStack {
-            // Latar gelap transparan
             Color.black.opacity(0.6)
                 .ignoresSafeArea()
             

@@ -6,14 +6,21 @@
 //
 
 import SwiftUI
+import AVFoundation // ⬅️ Tambahkan ini untuk akses audio session
 
 @main
 struct PostureBasketApp: App {
     @State private var showSplash = true
+    @StateObject var connectivity = WatchConnectivityManager.shared
     @StateObject private var router = Router()
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
-    
-    
+    @Environment(\.scenePhase) private var scenePhase
+
+    // ✅ Aktifkan audio session saat app dijalankan
+    init() {
+        configureAudioSession()
+    }
+
     var body: some Scene {
         WindowGroup {
             if showSplash {
@@ -53,12 +60,33 @@ struct PostureBasketApp: App {
                                 }
                             }
                     }
+                    .onChange(of: scenePhase){ oldPhase, newPhase in
+                                            switch newPhase{
+                                            case .active:
+                                                print("")
+                                                connectivity.sendAppState(state: true)
+                                            case .inactive:
+                                                connectivity.sendAppState(state: false)
+                                            case .background:
+                                                print("")
+                                            default:
+                                                break
+                                            }
+                                        }
                     .environmentObject(router)
                 }
             }
-            
+        }
+    }
+
+    /// 🔊 Fungsi untuk setup audio session
+    private func configureAudioSession() {
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
+            try AVAudioSession.sharedInstance().setActive(true)
+            print("✅ AVAudioSession is active and ready for TTS playback")
+        } catch {
+            print("❌ Failed to set AVAudioSession: \(error.localizedDescription)")
         }
     }
 }
-
-
