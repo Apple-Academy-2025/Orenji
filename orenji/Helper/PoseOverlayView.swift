@@ -4,31 +4,28 @@ import Vision
 struct PoseOverlayView: View {
     let points: [VNHumanBodyPoseObservation.JointName: VNRecognizedPoint]
     let evaluationColor: Color
-    
-    
-    let jointPairs: [(VNHumanBodyPoseObservation.JointName, VNHumanBodyPoseObservation.JointName)] = [
-        //        (.leftShoulder, .leftElbow),
-        //        (.leftElbow, .leftWrist),
-        //        (.rightShoulder, .rightElbow),
-        //        (.rightElbow, .rightWrist),
-        //        (.leftShoulder, .rightShoulder),
-        //        (.leftHip, .rightHip),
-        //        (.leftShoulder, .leftHip),
-        //        (.rightShoulder, .rightHip),
-        //        (.leftHip, .leftKnee),
-        //        (.leftKnee, .leftAnkle),
-        //        (.rightHip, .rightKnee),
-        //        (.rightKnee, .rightAnkle)
-        
-        //
-        
-        
-        (.rightShoulder, .rightElbow),
-        (.rightElbow, .rightWrist),
-        (.rightShoulder, .rightHip),
-        (.rightHip, .rightKnee),
-        (.rightKnee, .rightAnkle)
-    ]
+    let isRightHand: Bool  // ✅ Tambahkan ini
+
+    var jointPairs: [(VNHumanBodyPoseObservation.JointName, VNHumanBodyPoseObservation.JointName)] {
+        if isRightHand {
+            return [
+                (.rightShoulder, .rightElbow),
+                (.rightElbow, .rightWrist),
+                (.rightShoulder, .rightHip),
+                (.rightHip, .rightKnee),
+                (.rightKnee, .rightAnkle)
+            ]
+        } else {
+            return [
+                (.leftShoulder, .leftElbow),
+                (.leftElbow, .leftWrist),
+                (.leftShoulder, .leftHip),
+                (.leftHip, .leftKnee),
+                (.leftKnee, .leftAnkle)
+            ]
+        }
+    }
+
     
     
     var body: some View {

@@ -73,6 +73,28 @@
 		F862F5672DFBAA6C00D476A9 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		F854A4A22E0D09C90079D7EC /* Exceptions for "orenji" folder in "orenjiWatchOS Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Models/AppState.swift,
+				Models/PhaseModel.swift,
+				Models/PosePhase.swift,
+				Models/PostureModels.swift,
+				Models/RealtimePoseData.swift,
+				Models/RecordAnalysisModel.swift,
+			);
+			target = F854A33E2E0C5E150079D7EC /* orenjiWatchOS Watch App */;
+		};
+		F854A4A92E0D0B870079D7EC /* Exceptions for "orenji" folder in "orenji" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = F862F5372DFBA9EF00D476A9 /* orenji */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		F854A3402E0C5E150079D7EC /* orenjiWatchOS Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -91,6 +113,10 @@
 		};
 		F862F53A2DFBA9EF00D476A9 /* orenji */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F854A4A92E0D0B870079D7EC /* Exceptions for "orenji" folder in "orenji" target */,
+				F854A4A22E0D09C90079D7EC /* Exceptions for "orenji" folder in "orenjiWatchOS Watch App" target */,
+			);
 			path = orenji;
 			sourceTree = "<group>";
 		};
@@ -766,6 +792,8 @@
 				DEVELOPMENT_TEAM = KMD5NUN6BL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = orenji/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera to detect your posture in real-time.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -795,6 +823,8 @@
 				DEVELOPMENT_TEAM = KMD5NUN6BL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = orenji/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera to detect your posture in real-time.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

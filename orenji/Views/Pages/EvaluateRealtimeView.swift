@@ -41,7 +41,12 @@ struct EvaluateRealtimeView: View {
             CameraPreview(service: cameraService).ignoresSafeArea()
             
             if !poseDetector.recognizedPoints.isEmpty {
-                PoseOverlayView(points: poseDetector.recognizedPoints, evaluationColor: .yellow)
+                PoseOverlayView(
+                    points: poseDetector.recognizedPoints,
+                    evaluationColor: .yellow,
+                    isRightHand: UserDefaults.standard.string(forKey: "shootingHand") != "Left"
+                )
+
             }
             
             if phase == .preRecord {
@@ -105,17 +110,13 @@ struct EvaluateRealtimeView: View {
             if completed {
                 poseDetector.cancelHold()
                 loopCount += 1
-                if loopCount >= 9 {
-                    phase = .finished
-                } else {
-                    switch phase {
+                switch phase {
                     case .checkPhase1: phase = .checkPhase2
                     case .checkPhase2: phase = .checkPhase3
                     case .checkPhase3: phase = .checkPhase1
                     default: break
-                    }
-                    poseDetector.startHoldPose()
                 }
+                poseDetector.startHoldPose()
             }
         }
         .onChange(of: poseDetector.isUserInFrame, perform: handleFrameChange)
@@ -129,15 +130,15 @@ struct EvaluateRealtimeView: View {
                 stopWarningLoop()
             }
             if newPhase == .finished {
-                    connectivity.sendRealtimeResultsToWatch(total: loopCount)
-                }
+                connectivity.sendRealtimeResultsToWatch(total: loopCount)
+            }
         }
         .onChange(of: poseDetector.holdProgress) { oldProgress, progress in
             guard progress > 0, progress < 1 else { return }
             let countdown = Int(ceil(3.0 - (progress * 3.0)))
             sendRealtimePoseToWatch(isCorrect: true, correctionMessage: nil, countdown: countdown)
         }
-
+        
         .navigationBarBackButtonHidden(true)
     }
     

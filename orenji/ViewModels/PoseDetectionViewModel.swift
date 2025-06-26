@@ -158,11 +158,11 @@ class PoseDetectionViewModel: ObservableObject {
 
         print("🔍 Leg Angle: \(Int(legAngle))°, Elbow Angle: \(Int(elbowAngle))°")
 
-        if (150...165).contains(legAngle) && (115...125).contains(elbowAngle) {
+        if (140...165).contains(legAngle) && (80...125).contains(elbowAngle) {
             return .preparation
-        } else if (70...80).contains(legAngle) && (45...55).contains(elbowAngle) {
+        } else if (70...150).contains(legAngle) && (65...120).contains(elbowAngle) {
             return .bending
-        } else if (160...170).contains(legAngle) && (165...175).contains(elbowAngle) {
+        } else if (145...170).contains(legAngle) && (165...190).contains(elbowAngle) {
             return .release
         } else {
             return .unknown
