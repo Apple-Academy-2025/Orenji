@@ -117,60 +117,69 @@ struct FeatureCardView: View {
     let subtitle: String
     let imageName: String
     let action: () -> Void
-    
+
     var body: some View {
-        Button(action: action, label: {
+        Button(action: action) {
             HStack {
-            ZStack(alignment: .leading) {
-                Image(imageName)
-                    .resizable()
-                    .scaledToFill()
+                ZStack(alignment: .leading) {
+                    Image(imageName)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 150)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    LinearGradient(
+                        colors: [.backgroundGray, .clear],
+                        startPoint: .trailing,
+                        endPoint: .leading
+                    )
                     .frame(width: 150)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                LinearGradient(
-                    colors: [.backgroundGray, .clear],
-                    startPoint: .trailing,
-                    endPoint: .leading
-                )
-                .frame(width: 150)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(title)
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
-                    
-                    Text(subtitle)
-                        .font(.caption)
-                        .foregroundColor(.white.opacity(0.8))
-                        .padding(.bottom,20)
-                        .multilineTextAlignment(.leading)
-                    
-                    Text("Start")
-                        .font(.headline)
-                        .foregroundColor(.black)
-                        .padding(.horizontal, 30)
-                        .padding(.vertical, 10)
-                        .background(Color.primer)
-                        .cornerRadius(20)
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(title)
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+
+                        Text(subtitle)
+                            .font(.caption)
+                            .foregroundColor(.white.opacity(0.8))
+                            .padding(.bottom,20)
+                            .multilineTextAlignment(.leading)
+
+                        Text("Start")
+                            .font(.headline)
+                            .foregroundColor(.black)
+                            .padding(.horizontal, 30)
+                            .padding(.vertical, 10)
+                            .background(Color.primer)
+                            .cornerRadius(20)
+                    }
+                    .padding()
+                    .frame(width: 250)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
                 }
-                .padding()
-                .frame(width: 250)
-                .frame(maxWidth: .infinity, alignment: .trailing)
             }
         }
+        .buttonStyle(ShrinkOnPressButtonStyle())
         .frame(maxWidth: .infinity)
         .frame(height: 175)
-        .background(.backgroundGray)
+        .background(Color.backgroundGray)
         .cornerRadius(18)
         .overlay(
             RoundedRectangle(cornerRadius: 18)
                 .stroke(Color.primer, lineWidth: 2)
         )
-            .padding(.bottom,20)}
-        )
-        
+        .padding(.bottom,20)
     }
 }
 
+struct ShrinkOnPressButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
+            .opacity(configuration.isPressed ? 0.95 : 1.0)
+            .animation(.easeOut(duration: 0.2), value: configuration.isPressed)
+    }
+}
