@@ -5,17 +5,18 @@ struct EvaluateRealtimeView: View {
     @EnvironmentObject var router: Router
     @StateObject private var cameraService = CameraService()
     @StateObject private var poseDetector = PoseDetectionViewModel()
-
+    @StateObject var connectivity =  WatchConnectivityManager.shared
+    
     enum Phase {
         case preRecord, checkPhase1, checkPhase2, checkPhase3, finished
     }
-
+    
     @State private var phase: Phase = .preRecord
     @State private var showWarning = false
     @State private var warningScale: CGFloat = 1.0
     @State private var warningTimer: Timer?
     @State private var showWarningText = false
-
+    
     @State private var showInFrameText = false
     @State private var countdown = 3
     @State private var isCountingDown = false
@@ -26,23 +27,23 @@ struct EvaluateRealtimeView: View {
     @State private var holdSeconds = 3
     @State private var holdTimer: Timer? = nil
     @State private var everDetected = false
-
+    
     @State private var loopCount = 0
     @State private var showExitConfirmation = false
     @State private var lastSpokenMessage: String = ""
-
+    
     private let speechSynthesizer = AVSpeechSynthesizer()
     private let boxSize = CGSize(width: 250, height: 500)
     static var currentGlobalPhase: Phase = .preRecord
-
+    
     var body: some View {
         ZStack {
             CameraPreview(service: cameraService).ignoresSafeArea()
-
+            
             if !poseDetector.recognizedPoints.isEmpty {
                 PoseOverlayView(points: poseDetector.recognizedPoints, evaluationColor: .yellow)
             }
-
+            
             if phase == .preRecord {
                 PreRecordOverlay(
                     isRecordingStarted: isRecordingStarted,
@@ -60,7 +61,7 @@ struct EvaluateRealtimeView: View {
                     statusText: statusText
                 ).environmentObject(router)
             }
-
+            
             switch phase {
             case .checkPhase1, .checkPhase2, .checkPhase3:
                 HoldPose(
@@ -69,15 +70,14 @@ struct EvaluateRealtimeView: View {
                     warningMessage: currentWarningMessage,
                     warningScale: warningScale
                 ).environmentObject(router)
-
+                
             case .finished:
                 EvaluationFinishedView(loopCount: loopCount)
                     .environmentObject(router)
-
             default:
                 EmptyView()
             }
-
+            
             if [.checkPhase1, .checkPhase2, .checkPhase3].contains(phase) {
                 VStack {
                     Spacer()
@@ -101,7 +101,7 @@ struct EvaluateRealtimeView: View {
             }
         }
         .onAppear(perform: setupCamera)
-        .onChange(of: poseDetector.holdCompleted) { completed in
+        .onChange(of: poseDetector.holdCompleted) { oldCompled, completed in
             if completed {
                 poseDetector.cancelHold()
                 loopCount += 1
@@ -119,7 +119,7 @@ struct EvaluateRealtimeView: View {
             }
         }
         .onChange(of: poseDetector.isUserInFrame, perform: handleFrameChange)
-        .onChange(of: phase) { newPhase in
+        .onChange(of: phase) { oldPhase, newPhase in
             EvaluateRealtimeView.currentGlobalPhase = newPhase
             if [.checkPhase1, .checkPhase2, .checkPhase3].contains(newPhase) {
                 startWarningLoop()
@@ -127,10 +127,18 @@ struct EvaluateRealtimeView: View {
             } else {
                 stopWarningLoop()
             }
+            if newPhase == .finished {
+                    connectivity.sendRealtimeResultsToWatch(total: loopCount)
+                }
+        }
+        .onChange(of: poseDetector.holdProgress) { oldProgress, progress in
+            guard progress > 0, progress < 1 else { return }
+            let countdown = Int(ceil(3.0 - (progress * 3.0)))
+            sendRealtimePoseToWatch(isCorrect: true, correctionMessage: nil, countdown: countdown)
         }
         .navigationBarBackButtonHidden(true)
     }
-
+    
     private var phaseTitleText: String {
         switch phase {
         case .checkPhase1: return "Preparation"
@@ -139,14 +147,14 @@ struct EvaluateRealtimeView: View {
         default: return ""
         }
     }
-
+    
     private var currentWarningMessage: String? {
         if !poseDetector.isUserInFrame {
             return "You're out of frame!"
         }
-
+        
         let currentPhase = poseDetector.currentPhaseType()
-
+        
         switch phase {
         case .checkPhase1 where currentPhase != .preparation:
             if poseDetector.elbowAngleNow < 115 {
@@ -155,7 +163,7 @@ struct EvaluateRealtimeView: View {
                 return "Elbow too wide, lower slightly"
             }
             return "Hold Preparation Pose!"
-
+            
         case .checkPhase2 where currentPhase != .bending:
             if poseDetector.legAngleNow < 70 {
                 return "Leg too bent, straighten slightly"
@@ -163,7 +171,7 @@ struct EvaluateRealtimeView: View {
                 return "Leg too straight, bend more"
             }
             return "Hold Bending Pose!"
-
+            
         case .checkPhase3 where currentPhase != .release:
             if poseDetector.elbowAngleNow < 165 {
                 return "Elbow too low, raise your arm"
@@ -171,12 +179,12 @@ struct EvaluateRealtimeView: View {
                 return "Elbow too high, relax a bit"
             }
             return "Hold Release Pose!"
-
+            
         default:
             return nil
         }
     }
-
+    
     private func speak(_ message: String) {
         guard message != lastSpokenMessage else { return }
         lastSpokenMessage = message
@@ -185,14 +193,14 @@ struct EvaluateRealtimeView: View {
         utterance.rate = 0.45
         speechSynthesizer.speak(utterance)
     }
-
+    
     private func setupCamera() {
         cameraService.configure()
         cameraService.start()
         cameraService.onFrameCaptured = { buffer in
             poseDetector.processBuffer(buffer)
         }
-
+        
         DispatchQueue.main.async {
             let screen = UIScreen.main.bounds
             let boxWidth = screen.width * 0.8
@@ -202,7 +210,7 @@ struct EvaluateRealtimeView: View {
             poseDetector.overlayFrame = CGRect(x: originX, y: originY, width: boxWidth, height: boxHeight)
         }
     }
-
+    
     private func handleFrameChange(_ inFrame: Bool) {
         if phase != .preRecord { return }
         if inFrame {
@@ -225,18 +233,19 @@ struct EvaluateRealtimeView: View {
             holdSeconds = 3
         }
     }
-
+    
     private func triggerRecordingSequence() {
         guard !isRecordingStarted && !isCountingDown else { return }
         withAnimation(.easeOut(duration: 0.4)) { showInFrameText = true }
-
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             withAnimation(.spring(response: 0.4, dampingFraction: 0.6)) {
                 isOverlayVisible = false
+                connectivity.sendDisplayStateToWatch("showMessage")
                 showWarningText = true
                 warningScale = 1.0
             }
-
+            
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
                 withAnimation(.easeOut(duration: 0.3)) {
                     showWarningText = false
@@ -245,18 +254,20 @@ struct EvaluateRealtimeView: View {
             }
         }
     }
-
+    
     private func startCountdown() {
         isCountingDown = true
         countdown = 3
         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
             if countdown > 1 {
+                connectivity.sendDisplayStateToWatch("showNumber", value: countdown)
                 countdown -= 1
             } else {
                 timer.invalidate()
                 isCountingDown = false
+                connectivity.sendDisplayStateToWatch("showStart")
                 withAnimation(.easeIn(duration: 0.2)) { showStartText = true }
-
+                
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
                     withAnimation(.easeOut(duration: 0.2)) { showStartText = false }
                     beginRecording()
@@ -264,16 +275,18 @@ struct EvaluateRealtimeView: View {
             }
         }
     }
-
+    
     private func beginRecording() {
+        connectivity.sendDisplayStateToWatch("activelyRealtime")
         isRecordingStarted = true
         phase = .checkPhase1
         poseDetector.startHoldPose()
     }
-
+    
     private func startWarningLoop() {
         warningTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
             if poseDetector.isHoldingPose, let msg = currentWarningMessage {
+                sendRealtimePoseToWatch(isCorrect: false, correctionMessage: msg, countdown: nil)
                 withAnimation(.easeInOut(duration: 0.3)) {
                     showWarning = true
                     warningScale = 1.2
@@ -287,22 +300,43 @@ struct EvaluateRealtimeView: View {
             }
         }
     }
-
+    
     private func stopWarningLoop() {
         warningTimer?.invalidate()
         warningTimer = nil
     }
-
+    
     private var borderColor: Color {
-        if poseDetector.isUserInFrame { return .green }
-        else if everDetected { return .red }
+        if poseDetector.isUserInFrame {
+            connectivity.sendCameraPoseStatusToWatch(isCorrect: true)
+            return .green
+        }
+        else if everDetected {
+            connectivity.sendCameraPoseStatusToWatch(isCorrect: false)
+            return .red
+        }
         else { return Color.clear }
     }
-
+    
     private var statusText: String {
         if poseDetector.isUserInFrame { return "DETECTED" }
         else if everDetected { return "TOO CLOSE" }
         else { return "Make sure to **keep your body**\naligned within this frame to start" }
+    }
+    
+    func sendRealtimePoseToWatch(isCorrect: Bool, correctionMessage: String?, countdown: Int?) {
+        let phaseName = self.phaseTitleText
+        
+        let poseData = RealtimePoseData(
+            phase: phaseName,
+            isPoseCorrect: isCorrect,
+            correctionMessage: correctionMessage,
+            holdCountdown: countdown
+        )
+        
+        if let encoded = try? JSONEncoder().encode(poseData) {
+            WatchConnectivityManager.shared.sendPoseUpdate(data: encoded)
+        }
     }
 }
 
@@ -313,7 +347,6 @@ struct EvaluationFinishedView: View {
     
     var body: some View {
         ZStack {
-            // Latar gelap transparan
             Color.black.opacity(0.6)
                 .ignoresSafeArea()
             

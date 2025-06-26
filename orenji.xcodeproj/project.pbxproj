@@ -73,6 +73,21 @@
 		F862F5672DFBAA6C00D476A9 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		ADA3BC122E0C626600D9E1BA /* Exceptions for "orenji" folder in "orenjiWatchOS Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Models/AppState.swift,
+				Models/PhaseModel.swift,
+				Models/PosePhase.swift,
+				Models/PostureModels.swift,
+				Models/RealtimePoseData.swift,
+				Models/RecordAnalysisModel.swift,
+			);
+			target = F854A33E2E0C5E150079D7EC /* orenjiWatchOS Watch App */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		F854A3402E0C5E150079D7EC /* orenjiWatchOS Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -91,6 +106,9 @@
 		};
 		F862F53A2DFBA9EF00D476A9 /* orenji */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				ADA3BC122E0C626600D9E1BA /* Exceptions for "orenji" folder in "orenjiWatchOS Watch App" target */,
+			);
 			path = orenji;
 			sourceTree = "<group>";
 		};
@@ -506,7 +524,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"orenjiWatchOS Watch App/Preview Content\"";
-				DEVELOPMENT_TEAM = KMD5NUN6BL;
+				DEVELOPMENT_TEAM = 8BSYY8W6GT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = orenjiWatchOS;
@@ -536,7 +554,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"orenjiWatchOS Watch App/Preview Content\"";
-				DEVELOPMENT_TEAM = KMD5NUN6BL;
+				DEVELOPMENT_TEAM = 8BSYY8W6GT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = orenjiWatchOS;
@@ -763,7 +781,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"orenji/Preview Content\"";
-				DEVELOPMENT_TEAM = KMD5NUN6BL;
+				DEVELOPMENT_TEAM = 8BSYY8W6GT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -792,7 +810,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"orenji/Preview Content\"";
-				DEVELOPMENT_TEAM = KMD5NUN6BL;
+				DEVELOPMENT_TEAM = 8BSYY8W6GT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

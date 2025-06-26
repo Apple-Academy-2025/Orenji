@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct HomePageView: View {
+    @StateObject var connectivity = WatchConnectivityManager.shared
     @EnvironmentObject var router: Router
+    @State private var activeSession: SessionType? = nil
     
     var body: some View {
         ZStack(alignment: .top) {
@@ -35,14 +37,14 @@ struct HomePageView: View {
                 FeatureCardView(
                     title: "Record Analysis", subtitle: "Record and review your free-throw posture", imageName: "imageRecordAnalysis", action: {
                         router.goTo(.RecordPose)
-                        print("record")
+                        startSession(type: .recording)
                     }
                 )
                 
                 FeatureCardView(
                     title: "Evaluate Realtime", subtitle: "Learn to free-throw shooting in realtime", imageName: "evaluateRealtimeImage", action: {
-                        router.goTo(.RealtimePose)
-                        print("realtime")
+                        router.goTo(.Instruksi(destination: .RealtimePose, idPage: "realtime"))
+                        startSession(type: .realtime)
                     }
                 )
                 
@@ -81,6 +83,11 @@ struct HomePageView: View {
             .frame(maxHeight: .infinity, alignment: .center)
         }
         .ignoresSafeArea()
+    }
+    
+    private func startSession(type: SessionType) {
+        activeSession = type
+        connectivity.sendStartSessionCommand(type: type)
     }
 }
 
@@ -151,3 +158,4 @@ struct FeatureCardView: View {
         
     }
 }
+
