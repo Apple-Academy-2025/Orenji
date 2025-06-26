@@ -93,7 +93,11 @@ struct EvaluateRealtimeView: View {
                         }
                         .padding(24)
                         .confirmationDialog("Are you sure you want to stop?", isPresented: $showExitConfirmation, titleVisibility: .visible) {
-                            Button("Yes, Stop", role: .destructive) { phase = .finished }
+                            Button("Yes, Stop", role: .destructive) {
+                                phase = .finished
+                                connectivity.sendStopSessionCommand(sessionType: .realtime)
+                                connectivity.sendRealtimeResultsToWatch(total: loopCount)
+                            }
                             Button("Cancel", role: .cancel) {}
                         }
                     }
@@ -127,9 +131,6 @@ struct EvaluateRealtimeView: View {
             } else {
                 stopWarningLoop()
             }
-            if newPhase == .finished {
-                    connectivity.sendRealtimeResultsToWatch(total: loopCount)
-                }
         }
         .onChange(of: poseDetector.holdProgress) { oldProgress, progress in
             guard progress > 0, progress < 1 else { return }

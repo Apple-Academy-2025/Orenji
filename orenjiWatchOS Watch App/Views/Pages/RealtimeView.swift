@@ -52,7 +52,7 @@ struct RealtimeView: View {
             .background(Color.black)
         }
         .tabViewStyle(.page)
-        .navigationTitle(Text("Evaluate Realtime").foregroundColor(.blue))
+        .navigationTitle("Evaluate Realtime")
         .navigationBarBackButtonHidden(true)
         .navigationBarTitleDisplayMode(.inline)
     }

@@ -10,6 +10,7 @@ import WatchConnectivity
 import SwiftUI
 
 class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
+    
     static let shared = WatchConnectivityManager()
     
     @Published var receivedImage: UIImage?
@@ -23,20 +24,25 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
     @Published var realtimePoseData: RealtimePoseData?
     @Published var realtimeResult: Int?
     
+    // MARK: - Initializer
     override init() {
         super.init()
+        
         if WCSession.isSupported() {
             let session = WCSession.default
             session.delegate = self
             session.activate()
         }
     }
-    
+
+    // MARK: - Session Message Handlers
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
         DispatchQueue.main.async {
+            
             if let fullState = message["fullStateUpdate"] as? [String: Any] {
                 self.isCompanionAppReachable = true
                 print("Menerima full state update dari iPhone.")
+                
                 if let sessionControl = fullState["sessionControl"] as? String {
                     self.handleSessionControl(action: sessionControl, message: fullState)
                 }
@@ -67,6 +73,12 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
                 }
             }
             
+            if let realtimeResultData = message["realtimeResultCount"] as? Int {
+                print(realtimeResultData)
+                self.realtimeResult = realtimeResultData
+                self.appState = .resultRealtime
+            }
+            
             if let displayStateString = message["displayState"] as? String {
                 self.handleDisplayStateChange(displayStateString, message: message)
             }
@@ -74,47 +86,17 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
             if let sessionControl = message["sessionControl"] as? String {
                 self.handleSessionControl(action: sessionControl, message: message)
             }
+            
             if let appState = message["appState"] as? Bool {
                 self.isCompanionAppReachable = appState
             }
         }
     }
-    
-    private func requestStateUpdateFromPhone() {
-        guard WCSession.default.isReachable else { return }
-        let message: [String: Any] = ["requestStateUpdate": true]
-        WCSession.default.sendMessage(message, replyHandler: nil) { error in
-            print("Gagal mengirim permintaan state: \(error.localizedDescription)")
-        }
-    }
-    
-    private func handleSessionControl(action: String, message: [String: Any]) {
-        switch action {
-        case "start":
-            print("Menerima: start session")
-            if let typeString = message["sessionType"] as? String, let type = SessionType(rawValue: typeString) {
-                self.activeSessionType = type
-                self.trainingSessions = []
-                self.appState = .record
-            }
-        case "stop":
-            print("Menerima: stop session")
-            self.activeSessionType = nil
-        default:
-            break
-        }
-    }
 
-    
     func session(_ session: WCSession, didReceiveUserInfo userInfo: [String : Any] = [:]) {
         guard let resultData = userInfo["analysisResult"] as? Data else {
             print("Gagal menerima userInfo atau data tidak valid")
             return
-        }
-        
-        if let total = userInfo["realtimeResultCount"] as? Int {
-            self.realtimeResult = total
-            self.appState = .resultRealtime
         }
         
         do {
@@ -128,25 +110,18 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
             print("Gagal men-decode [TrainingSession]: \(error.localizedDescription)")
         }
     }
-    
+
     func session(_ session: WCSession, didReceiveMessageData messageData: Data) {
         guard self.appState == .record else { return }
+        
         DispatchQueue.main.async {
             if let image = UIImage(data: messageData) {
                 self.receivedImage = image
             }
         }
     }
-    
-    func resetToIdle() {
-        self.appState = .idle
-        self.activeSessionType = nil
-        self.trainingSessions = []
-        self.receivedImage = nil
-        self.isCameraPoseCorrect = false
-        self.recordingDisplay = .detectingPose
-    }
-    
+
+    // MARK: - Session Events
     func sessionReachabilityDidChange(_ session: WCSession) {
         DispatchQueue.main.async {
             self.isCompanionAppReachable = session.isReachable
@@ -156,7 +131,7 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
             }
         }
     }
-    
+
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         DispatchQueue.main.async {
             if let error = error {
@@ -169,13 +144,35 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
             }
         }
     }
-    
-    func sendRealtimeAction(_ action: [String: Any]) {
+
+    // MARK: - Helpers
+    private func requestStateUpdateFromPhone() {
         guard WCSession.default.isReachable else { return }
-        let message = ["realtimeAction": action]
-        WCSession.default.sendMessage(message, replyHandler: nil)
+        
+        let message: [String: Any] = ["requestStateUpdate": true]
+        WCSession.default.sendMessage(message, replyHandler: nil) { error in
+            print("Gagal mengirim permintaan state: \(error.localizedDescription)")
+        }
     }
-    
+
+    private func handleSessionControl(action: String, message: [String: Any]) {
+        switch action {
+        case "start":
+            print("Menerima: start session")
+            if let typeString = message["sessionType"] as? String,
+               let type = SessionType(rawValue: typeString) {
+                self.activeSessionType = type
+                self.trainingSessions = []
+                self.appState = .record
+            }
+        case "stop":
+            print("Menerima: stop session")
+            self.activeSessionType = nil
+        default:
+            break
+        }
+    }
+
     private func decodePoseData(from data: Data) -> RealtimePoseData? {
         do {
             return try JSONDecoder().decode(RealtimePoseData.self, from: data)
@@ -184,18 +181,39 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
             return nil
         }
     }
-    
+
     private func handleDisplayStateChange(_ stateString: String, message: [String: Any]) {
         switch stateString {
-        case "detectingPose": recordingDisplay = .detectingPose
-        case "showMessage": recordingDisplay = .showingMessage
+        case "detectingPose":
+            recordingDisplay = .detectingPose
+        case "showMessage":
+            recordingDisplay = .showingMessage
         case "showNumber":
             let number = message["value"] as? Int ?? 0
             recordingDisplay = .countingDown(number)
-        case "showStart": recordingDisplay = .showingStart
-        case "activelyRecording": recordingDisplay = .activelyRecording
-        case "activelyRealtime": recordingDisplay = .activelyRealtime
-        default: break
+        case "showStart":
+            recordingDisplay = .showingStart
+        case "activelyRecording":
+            recordingDisplay = .activelyRecording
+        case "activelyRealtime":
+            recordingDisplay = .activelyRealtime
+        default:
+            break
         }
+    }
+
+    func resetToIdle() {
+        self.appState = .idle
+        self.activeSessionType = nil
+        self.trainingSessions = []
+        self.receivedImage = nil
+        self.isCameraPoseCorrect = false
+        self.recordingDisplay = .detectingPose
+    }
+
+    func sendRealtimeAction(_ action: [String: Any]) {
+        guard WCSession.default.isReachable else { return }
+        let message = ["realtimeAction": action]
+        WCSession.default.sendMessage(message, replyHandler: nil)
     }
 }
