@@ -135,6 +135,7 @@ struct EvaluateRealtimeView: View {
         .onChange(of: phase) { oldPhase, newPhase in
             EvaluateRealtimeView.currentGlobalPhase = newPhase
             if [.checkPhase1, .checkPhase2, .checkPhase3].contains(newPhase) {
+                EvaluateRealtimeView.currentGlobalPhase = newPhase // 🔄 Pindahkan ke dalam kondisi yang tepat
                 startWarningLoop()
                 poseDetector.startHoldPose()
             } else {

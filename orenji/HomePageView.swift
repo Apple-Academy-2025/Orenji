@@ -106,6 +106,8 @@ struct HomePageView: View {
         activeSession = type
         connectivity.sendStartSessionCommand(type: type)
     }
+    
+    
 }
 
 #Preview {
@@ -129,7 +131,6 @@ struct FeatureCardView: View {
                         .scaledToFill()
                         .frame(width: 150)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    
                     LinearGradient(
                         colors: [.backgroundGray, .clear],
                         startPoint: .trailing,
@@ -137,19 +138,16 @@ struct FeatureCardView: View {
                     )
                     .frame(width: 150)
                     .frame(maxWidth: .infinity, alignment: .leading)
-
                     VStack(alignment: .leading, spacing: 8) {
                         Text(title)
                             .font(.title2)
                             .fontWeight(.bold)
                             .foregroundColor(.white)
-
                         Text(subtitle)
                             .font(.caption)
                             .foregroundColor(.white.opacity(0.8))
                             .padding(.bottom,20)
                             .multilineTextAlignment(.leading)
-
                         Text("Start")
                             .font(.headline)
                             .foregroundColor(.black)
