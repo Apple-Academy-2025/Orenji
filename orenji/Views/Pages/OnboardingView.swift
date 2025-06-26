@@ -8,13 +8,11 @@
 import SwiftUI
 
 
-
 struct OnboardingView: View {
-    
     @State private var currentPage = 0
     var onFinish: () -> Void
     
-    let totalPages = 4
+    let totalPages = 3
     
     var body: some View {
         VStack() {
@@ -22,40 +20,41 @@ struct OnboardingView: View {
             TabView(selection: $currentPage) {
                 
                 OnboardingContainer(
-                    imageName: "onboardiwave1",
-                    anotherImage: "Hands",
+                    imageName: "onboardwave3",
+                    anotherImage: "imageOnboarding1",
                     downWave: true,
                     title: "Know What Went Wrong",
-                    subtitle: "Identify incorrect postures with a detailed report.",
+                    subtitle: "Capturing your posture and Identify incorrect postures with a detailed report.",
                     showStartButton: false,
                     onFinish: onFinish
                 )
                 .tag(0)
                 
                 OnboardingContainer(
-                    imageName: "onboardiwave2",
-                    anotherImage: "Hands",
+                    imageName: "onboardwave2",
+                    anotherImage: "imageOnboarding2",
                     title: "Correct Your Posture Instantly",
                     subtitle: "Real-time tips to help perfect your free-throw form.",
                     showStartButton: false,
-                    onFinish: onFinish
+                    onFinish: onFinish,
+                    pageIndex: 2
                 )
                 .tag(1)
                 
                 OnboardingContainer(
-                    imageName: "onboardiwave3",
-                    anotherImage: "Hands",
+                    imageName: "onboardwave1",
+                    anotherImage: "Hand",
                     title: "Hands-Free Session Control",
                     subtitle: "Integrated with your Apple Watch — stop sessions and view posture guidance from a distance!",
                     showStartButton: true,
-                    onFinish: onFinish
+                    onFinish: onFinish,
+                    pageIndex: 3
                 )
                 .tag(2)
                 
             }
-            
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-            .frame(maxHeight: .infinity) // 💡 Tambahkan ini agar TabView ambil ruang penuh
+            .frame(maxHeight: .infinity)
             
             HStack(spacing: 8) {
                 ForEach(0..<totalPages, id: \.self) { index in
@@ -64,12 +63,11 @@ struct OnboardingView: View {
                         .frame(width: 8, height: 8)
                 }
             }
-            .padding(.bottom, 30) // tambahkan jarak aman dari bawah
+            .padding(.bottom, 30)
         }
         .frame(maxHeight: .infinity)
         .background(Color.black)
-        
-        
+        .ignoresSafeArea()
     }
 }
 
@@ -81,32 +79,59 @@ struct OnboardingContainer: View {
     var title: String
     var subtitle: String
     var showStartButton: Bool
-    var onFinish: () -> Void // ✅ Tambahkan ini
+    var onFinish: () -> Void
+    var pageIndex: Int?
     
     var body: some View {
-        VStack(spacing:17) {
-            
-            Spacer()
-            ZStack{
-                Image(imageName)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(maxWidth: .infinity, maxHeight: 350)
-                    .clipped()
-
-                if let overlay = anotherImage {
-                    Image(overlay)
+        GeometryReader { geo in
+            VStack(spacing: 0) {
+                ZStack {
+                    Image(imageName)
                         .resizable()
                         .scaledToFit()
-                        .frame(height: 580)
-                        .offset(x:20, y: -45)
+                        .frame(width: geo.size.width * 1)
+                        .offset(y: {
+                            if pageIndex == 2 {
+                                return geo.size.height * -0.01
+                            } else if pageIndex == 3 {
+                                return geo.size.height * 0.095
+                            } else {
+                                return geo.size.height * 0.125
+                            }
+                        }())
+
+                    switch pageIndex {
+                    case 2:
+                        if let overlay = anotherImage {
+                            Image(overlay)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 500)
+                                .offset(x: 15, y: 50)
+                        }
+                    case 3:
+                        if let overlay = anotherImage {
+                            Image(overlay)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 580)
+                                .offset(x: 15, y: 20)
+                        }
+                    default:
+                        if let overlay = anotherImage {
+                            Image(overlay)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 480)
+                                .offset(x:50, y: 50)
+                        }
+                    }
                 }
-            }
-            .frame(height: 350)
-            
-            
-            VStack{
-                VStack(spacing: 17){
+                .frame(height: geo.size.height * 0.5)
+                
+                Spacer()
+
+                VStack(spacing: 17) {
                     Text(title)
                         .font(.system(size: 45))
                         .fontWeight(.bold)
@@ -119,40 +144,33 @@ struct OnboardingContainer: View {
                         .font(.system(size: 20))
                         .foregroundColor(.white)
                         .multilineTextAlignment(.center)
-                        .padding(.horizontal)
+                        .padding(.horizontal,20)
                         .fixedSize(horizontal: false, vertical: true)
                     
-                }
-                .frame(height:180, alignment: .top)
-                .offset(y:30)
-                
-                
-                if showStartButton {
-                    Spacer(minLength: 40)
-                    
-                    Button(action: {
-                        onFinish()
-                    }) {
-                        
-                        Text("Let’s Get Started")
-                            .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.primer)
-                            .foregroundColor(.black)
-                            .cornerRadius(12)
-                            .padding(.horizontal)
+                    if showStartButton {
+                        Button(action: {
+                            onFinish()
+                        }) {
+                            Text("Let’s Get Started")
+                                .fontWeight(.semibold)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.primer)
+                                .foregroundColor(.black)
+                                .cornerRadius(12)
+                                .padding(.horizontal)
+                        }
+                        .padding(.top, 20)
                     }
-                    .padding(.bottom, 10)
-                    .offset(y:30)
                 }
-                
+                .padding(.bottom, 40)
+                .frame(maxWidth: .infinity)
             }
-            
-            Spacer(minLength: 30)
+            .frame(width: geo.size.width, height: geo.size.height)
         }
     }
 }
+
 
 
 #Preview {
