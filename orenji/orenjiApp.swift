@@ -45,7 +45,7 @@ struct orenjiApp: App {
                                 case .TutorialView:
                                     TutorialView()
                                 }
-                            }
+                            }.environmentObject(router)   
                     } else {
                         if !hasSeenOnboarding {
                             OnboardingView {

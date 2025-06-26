@@ -36,7 +36,7 @@ struct RecordPageCameraFrame: View {
                     .clipShape(Circle())
                     .shadow(radius: 5)
             }
-            .padding(.top, 8)
+            .padding(.top, 50)
             .padding(.trailing, 24)
             
             VStack {

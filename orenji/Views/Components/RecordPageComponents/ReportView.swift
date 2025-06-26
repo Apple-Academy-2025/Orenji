@@ -1,4 +1,11 @@
 //
+//  Test.swift
+//  orenji
+//
+//  Created by Fariz Ajy Putra on 25/06/25.
+//
+
+//
 //  ReportView.swift
 //  RecordFeature
 //
@@ -7,126 +14,277 @@
 
 import SwiftUI
 
+struct ReportTabItem: View {
+    let prediction: FramePrediction
+    let idx: Int
+    let selectedTab: Int
+    let vm: RecordFeatureViewModel
+
+    var body: some View {
+        let elbowAngle = Int(prediction.elbowAngle ?? 0)
+        let legAngle = Int(prediction.kneeAngle ?? 0)
+
+        VStack {
+            if vm.predictions[idx].label == "Preparation"{
+                ReportComponent(
+                    myImage: drawSkeleton(
+                        image: prediction.imageForDisplay ?? UIImage(),
+                        handLineColor:(elbowAngle < 86 || elbowAngle > 93) ? .red : .green,
+                        legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green,
+                    ),
+                    joints: prediction.joints,
+                    phase: vm.predictions[idx].label,
+                    elbowAngle: elbowAngle,
+                    elbowImprovement:
+                        (elbowAngle < 86 || elbowAngle > 93) ? "Need\nImprovement" : "Pass",
+                    elbowfeedback1:
+                        (elbowAngle < 86 || elbowAngle > 93) ? "Should be close to 86°–93°" : "Already close to 86°–93°",
+                    elbowfeedback2:
+                        vm.feedbackMethod(angle: elbowAngle, lowAngle: 86, highAngle: 93, whatAngle: "elbow"),
+                    legAngle: legAngle,
+                    legImprovement:
+                        (legAngle < 160 || legAngle > 160) ? "Need\nImprovement" : "Pass",
+                    legFeedback1:
+                        (legAngle < 160 || legAngle > 160) ? "Should be close to 160°" : "Already close to 160°",
+                    legFeedback2:
+                        vm.feedbackMethod(angle: legAngle, lowAngle: 160, highAngle: 160, whatAngle: "leg")
+                )
+                Spacer()
+
+            } else if vm.predictions[idx].label == "Bending" {
+                ReportComponent(
+                    myImage: drawSkeleton(
+                        image: prediction.imageForDisplay ?? UIImage(),
+                        handLineColor:(elbowAngle < 75 || elbowAngle > 90) ? .red : .green,
+                        legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green,
+                    ),
+                    joints: prediction.joints,
+                    phase: vm.predictions[idx].label,
+                    elbowAngle: elbowAngle,
+                    elbowImprovement:
+                        (elbowAngle < 75 || elbowAngle > 90) ? "Need\nImprovement" : "Pass",
+                    elbowfeedback1:
+                        (elbowAngle < 75 || elbowAngle > 90) ? "Should be close to 75°–93°" : "Already close to 86°–93°",
+                    elbowfeedback2:
+                        vm.feedbackMethod(angle: elbowAngle, lowAngle: 86, highAngle: 93, whatAngle: "elbow"),
+                    legAngle: legAngle,
+                    legImprovement:
+                        (legAngle < 124 || legAngle > 124) ? "Need\nImprovement" : "Pass",
+                    legFeedback1:
+                        (legAngle < 124 || legAngle > 124) ? "Should be close to 124°" : "Already close to 124°",
+                    legFeedback2:
+                        vm.feedbackMethod(angle: legAngle, lowAngle: 160, highAngle: 160, whatAngle: "leg")
+                )
+                Spacer()
+            } else if vm.predictions[idx].label == "FollowThrough" {
+                ReportComponent(
+                    myImage: drawSkeleton(
+                        image: prediction.imageForDisplay ?? UIImage(),
+                        handLineColor:(elbowAngle < 160 || elbowAngle > 170) ? .red : .green,
+                        legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green,
+                    ),
+                    joints: prediction.joints,
+                    phase: vm.predictions[idx].label,
+                    elbowAngle: elbowAngle,
+                    elbowImprovement:
+                        (elbowAngle < 160 || elbowAngle > 170) ? "Need\nImprovement" : "Pass",
+                    elbowfeedback1:
+                        (elbowAngle < 160 || elbowAngle > 170) ? "Should be close to 160°–170°" : "Already close to 160°–170°",
+                    elbowfeedback2:
+                        vm.feedbackMethod(angle: elbowAngle, lowAngle: 86, highAngle: 93, whatAngle: "elbow"),
+                    legAngle: legAngle,
+                    legImprovement:
+                        (legAngle < 160 || legAngle > 160) ? "Need\nImprovement" : "Pass",
+                    legFeedback1:
+                        (legAngle < 160 || legAngle > 160) ? "Should be close to 160°" : "Already close to 160°",
+                    legFeedback2:
+                        vm.feedbackMethod(angle: legAngle, lowAngle: 160, highAngle: 160, whatAngle: "leg")
+                )
+                Spacer()
+            }
+        }
+        .tag(idx)
+        .ignoresSafeArea()
+    }
+}
+
+
+
 struct ReportView: View {
     @ObservedObject var vm: RecordFeatureViewModel
     @State private var showFullImage = false
-    @State private var selectedTab = 0
+    @State private var selectedTab: Int = 0
 
+    
+    func colorFunction(angle: Int, whatAngle: String) -> UIColor {
+        if whatAngle == "elbowPreparation" {
+            if angle < 86 {
+                return .red
+            } else if angle > 93 {
+                return .red
+            } else {
+                return .green
+            }
+        } else if whatAngle == "kneePreparation" {
+            if angle < 160 {
+                return .red
+            } else if angle > 160 {
+                return .red
+            } else {
+                return .green
+            }
+        } else if whatAngle == "elbowBending" {
+            if angle < 75 {
+                return .red
+            } else if angle > 90 {
+                return .red
+            } else {
+                return .green
+            }
+        } else if whatAngle == "kneeBending" {
+            if angle < 124 {
+                return .red
+            } else if angle > 124 {
+                return .red
+            } else {
+                return .green
+            }
+        } else if whatAngle == "elbowFollowThrough" {
+            if angle < 160 {
+                return .red
+            } else if angle > 170 {
+                return .red
+            } else {
+                return .green
+            }
+        } else if whatAngle == "kneeFollowThrough" {
+            if angle < 160 {
+                return .red
+            } else if angle > 160 {
+                return .red
+            } else {
+                return .green
+            }
+        }
+        return .gray // fallback jika label tidak cocok
+    }
+    
     var body: some View {
+        
         ZStack {
-                VStack {
-                        TabView(selection: $selectedTab) {
-                            ForEach(0..<vm.predictions.count, id: \.self) { idx in
-                                    ReportComponent(
-                                        myImage: vm.predictions[idx].imageForDisplay,
-                                        joints: vm.predictions[idx].joints,
-                                        phase: vm.predictions[idx].label,
-                                        elbowAngle: Int(vm.predictions[idx].elbowAngle ?? 0),
-                                        elbowImprovement: "String",
-                                        elbowfeedback1: "test",
-                                        elbowfeedback2: "Halo",
-                                        legAngle: Int(vm.predictions[idx].kneeAngle ?? 0),
-                                        legImprovement: "String",
-                                        legFeedback1: "String",
-                                        legFeedback2: "String"
-                                    )
-                                
-                                .tag(idx)
-                            }
-                        }
-                        .tabViewStyle(.page)
-                        .frame(height: UIScreen.main.bounds.height)
-                        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                    HStack(spacing: 8) {
-                        ForEach(0..<vm.predictions.count, id: \.self) { idx in
-                            if idx == selectedTab {
-                                Capsule()
-                                    .frame(width: 24, height: 8)
-                                    .foregroundColor(.orange)
-                            } else {
-                                Circle()
-                                    .frame(width: 8, height: 8)
-                                    .foregroundColor(.brown)
-                            }
-                        }
-                    }
-                    // Tombol aksi di bawah TabView
-                    VStack(spacing: 16) {
-                        Button("Back to Home") {
-                            // aksi kembali home
-                        }
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundColor(.black)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
-                        .background(Color(uiColor: UIColor(hex: "#FF7200")))
-                        .cornerRadius(12)
-                        .padding(.horizontal, 48)
-
-                        Button("Try record analysis again") {
-                            // aksi ulang
-                        }
-                        .font(.system(size: 16))
-                        .foregroundColor(.orange)
-                    }
-                    .padding(.bottom, 64)
-                    
-                    
-                    
+            TabView(selection: $selectedTab) {
+                ForEach(Array(vm.predictions.enumerated()), id: \.offset) { idx, prediction in
+                    ReportTabItem(
+                        prediction: prediction,
+                        idx: idx,
+                        selectedTab: selectedTab,
+                        vm: vm
+                    )
                 }
+            }
+            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+            .frame(alignment: .top)
+            
             VStack {
-                ZStack(alignment: .top) {
+                LinearGradient(colors: [Color.black.opacity(1), Color.black.opacity(0)], startPoint: .top, endPoint:.bottom )
+                    .frame(height: 300)
+                Spacer()
+                LinearGradient(colors: [Color.black, Color(uiColor: UIColor(hex: "#FF7200")).opacity(0.5)], startPoint: .top, endPoint:.bottom )
+                    .frame(height: 30)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            
+            VStack{
+                Spacer()
+                HStack{
+                    ForEach(0..<vm.predictions.count, id: \.self) { idx in
+                        if idx == selectedTab {
+                            Capsule()
+                                .frame(width: 24, height: 8)
+                                .foregroundColor(.orange)
+                        } else {
+                            Circle()
+                                .frame(width: 8, height: 8)
+                                .foregroundColor(.brown)
+                        }
+                    }
+                }
+                .padding(.top, 8)
+                .padding(.bottom, 16)
+                
+                VStack(spacing: 16) {
+                    Button("Back to Home") {
+                        // aksi kembali home
+                    }
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundColor(.black)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 8)
+                    .background(Color(uiColor: UIColor(hex: "#FF7200")))
+                    .cornerRadius(12)
+                    .padding(.horizontal, 48)
+                    
+                    Button("Try record analysis again") {
+                        // aksi ulang
+                    }
+                    .font(.system(size: 16))
+                    .foregroundColor(.orange)
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.bottom, 32)
+            
+            VStack {
+                ZStack {
                     Text("Report Analysis")
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(.white)
-                        .padding(.top, 8)
-                }
-                HStack {
-                    Spacer()
-                    Button {
-                        showFullImage = true
-                    } label: {
-                        Image(systemName: "plus.magnifyingglass")
-                            .font(.system(size: 27))
-                            .foregroundColor(Color(uiColor: UIColor(hex: "#FF7200")))
+                    HStack{
+                        Spacer()
+                        Button {
+                            showFullImage = true
+                        } label: {
+                            Image(systemName: "plus.magnifyingglass")
+                                .font(.system(size: 27))
+                                .foregroundColor(Color(uiColor: UIColor(hex: "#FF7200")))
+                        }
                     }
                     .padding(.trailing, 16)
+                    .frame(maxWidth: .infinity)
                 }
-                .padding(.top, 8)   // aman dari notch
-                .padding(.horizontal, 8)
-
                 Spacer()
             }
-            HStack(){
-                VStack{
-                    LinearGradient(colors: [Color.black,Color.black.opacity(0.5)], startPoint: .bottom, endPoint: .top)
-                        .frame(maxHeight: 50)
-                    Spacer()
-                        LinearGradient(colors: [Color(uiColor: UIColor(hex: "#FF7200")).opacity(0.5),Color.black], startPoint: .bottom, endPoint: .top)
-                            .frame(maxHeight: 30)
-
-                }
-            }
+            .padding(.top, 54)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .ignoresSafeArea()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        // 3) Preview full screen
         .fullScreenCover(isPresented: $showFullImage) {
             ZStack(alignment: .topLeading) {
+                
                 Color.black.ignoresSafeArea()
-                if let uiImg = vm.predictions[selectedTab].imageForDisplay {
+                
+                if let uiImg =
+                    drawSkeleton(
+                    image: vm.predictions[selectedTab].imageForDisplay ?? UIImage(),
+                    handLineColor:colorFunction(angle: Int(vm.predictions[selectedTab].elbowAngle ?? 0),whatAngle:"elbow\(vm.predictions[selectedTab].label)" ),
+                    legLineColor:colorFunction(angle: Int(vm.predictions[selectedTab].elbowAngle ?? 0),whatAngle:"knee\(vm.predictions[selectedTab].label)" )
+                    )
+                {
                     Image(uiImage: uiImg)
                         .resizable()
                         .scaledToFit()
                         .ignoresSafeArea()
                 } else {
                     Color.gray.opacity(0.3)
-                        .overlay(Image(systemName: "photo")
-                            .font(.largeTitle)
-                            .foregroundColor(.white.opacity(0.7))
+                        .overlay(
+                            Image(systemName: "photo")
+                                .font(.largeTitle)
+                                .foregroundColor(.white.opacity(0.7))
                         )
                         .ignoresSafeArea()
                 }
+                
                 Button(action: { showFullImage = false }) {
                     HStack(spacing: 4) {
                         Image(systemName: "chevron.left")
@@ -134,27 +292,11 @@ struct ReportView: View {
                     }
                     .foregroundColor(.orange)
                     .padding(12)
-                    .background(Color.black.opacity(0.5))
                     .cornerRadius(24)
-                    .padding(.top, 40)
+                    .padding(.top, 54)
                     .padding(.leading, 16)
                 }
             }
         }
     }
 }
-
-
-//HStack(spacing: 8) {
-//    ForEach(0..<vm.predictions.count, id: \.self) { idx in
-//        if idx == selectedTab {
-//            Capsule()
-//                .frame(width: 24, height: 8)
-//                .foregroundColor(.orange)
-//        } else {
-//            Circle()
-//                .frame(width: 8, height: 8)
-//                .foregroundColor(.brown)
-//        }
-//    }
-//}

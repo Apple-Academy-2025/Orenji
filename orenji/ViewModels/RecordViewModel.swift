@@ -149,6 +149,7 @@ class RecordFeatureViewModel: ObservableObject {
             }
         }
     }
+    
 
     // -- Fungsi untuk ambil image di waktu tertentu pada video --
     func extractFrameForDisplay(
@@ -293,6 +294,8 @@ class RecordFeatureViewModel: ObservableObject {
             }
         }
         guard let cgImage = cgImage else { return (nil, nil) }
+        print("DEBUG: Ukuran gambar saat ekstrak joint: \(cgImage.width)x\(cgImage.height)")
+        print("DEBUG: Ukuran image.size: \(image.size.width)x\(image.size.height) (scale: \(image.scale))")
         var points: [VNHumanBodyPoseObservation.JointName: CGPoint] = [:]
         var leftConf: Float = 0
         var rightConf: Float = 0
@@ -398,6 +401,16 @@ class RecordFeatureViewModel: ObservableObject {
         return buffer
     }
     ////===================================================
+       func feedbackMethod(angle: Int, lowAngle: Int, highAngle: Int, whatAngle: String) -> String {
+        if angle < lowAngle {
+            return "Your \(whatAngle) was too low. Try to open more your elbow"
+        } else if angle > highAngle {
+            return "Your \(whatAngle) was too high. Try to close more your elbow"
+        } else {
+            return "Your \(whatAngle) fit perfectly on your posture"
+        }
+    }
+    ////===================================================
     func processFramesWithModel(
         frames: [UIImage],
         model: FreethrowModel,
@@ -425,5 +438,4 @@ class RecordFeatureViewModel: ObservableObject {
         }
     }
     ////===================================================
-    
 }
