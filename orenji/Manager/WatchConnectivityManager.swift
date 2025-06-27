@@ -107,13 +107,9 @@ class WatchConnectivityManager: NSObject, ObservableObject, WCSessionDelegate {
         WCSession.default.sendMessage(message, replyHandler: nil) { error in
             print("Gagal mengirim stop session command: \(error.localizedDescription)")
         }
-        
-        if sessionType == .recording {
-            sendAnalysisResultsToWatch(sessions: MockData.sessions)
-        }
     }
 
-    private func sendAnalysisResultsToWatch(sessions: [RecordAnalysisModel]) {
+    func sendAnalysisResultsToWatch(sessions: [RecordAnalysisModel]) {
         do {
             let encodedData = try JSONEncoder().encode(sessions)
             let userInfo = ["analysisResult": encodedData]

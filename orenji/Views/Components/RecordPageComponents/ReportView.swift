@@ -143,19 +143,24 @@ struct ReportView: View {
         }
     }
     
-    private func phaseModel(for prediction: FramePrediction) -> PhaseModel {
-        return PhaseModel(
-            name: prediction.label,
-            image: "", // atau kosongkan jika tidak pakai nama aset
-            elbowAngle: prediction.elbowAngle.map { Double($0) },
-            legAngle: prediction.kneeAngle.map { Double($0) },
-            improvements: [],
-            image: prediction.imageForDisplay
-        )
+    private func phaseModel(for prediction: FramePrediction) -> RecordAnalysisModel {
+        let phases: [PhaseModel] = vm.predictions.map { prediction in
+            let imageData = prediction.imageForDisplay?.jpegData(compressionQuality: 0.8)
+            return PhaseModel(
+                name: prediction.label,
+                image: "",
+                elbowAngle: Double(prediction.elbowAngle ?? 0),
+                legAngle: Double(prediction.kneeAngle ?? 0),
+                improvements: [
+                    "Elbow feedback otomatis di sini",
+                    "Knee feedback otomatis di sini"
+                ],
+                imageModel: imageData
+            )
+        }
+        return RecordAnalysisModel(date: Date(), phases: phases)
     }
-
 }
-
 
 
 //HStack(spacing: 8) {

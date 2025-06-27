@@ -15,26 +15,28 @@ struct SessionItemView: View {
         VStack {
             ScrollView {
                 ZStack(alignment: .top) {
-                    Image("image1")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 180)
-                        .frame(maxWidth: .infinity)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.orange, lineWidth: 2)
-                        )
-                        .overlay(
-                            Text("Preparation")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .padding(.vertical, 10)
-                                .frame(maxWidth: .infinity)
-                                .background(.black.opacity(0.6))
-                                .clipShape(RoundedRectangle(cornerRadius: 10)),
-                            alignment: .bottom
-                        )
+                    if let data = session.phases.first?.imageModel, let uiImage = UIImage(data: data) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 180)
+                            .frame(maxWidth: .infinity)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color.orange, lineWidth: 2)
+                            )
+                            .overlay(
+                                Text(session.phases.first?.name ?? "")
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                    .padding(.vertical, 10)
+                                    .frame(maxWidth: .infinity)
+                                    .background(.black.opacity(0.6))
+                                    .clipShape(RoundedRectangle(cornerRadius: 10)),
+                                alignment: .bottom
+                            )
+                    }
                 }
                 .padding(.vertical,20)
                 .padding(.horizontal)
