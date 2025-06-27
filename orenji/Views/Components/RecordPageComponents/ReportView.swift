@@ -5,21 +5,15 @@
 //  Created by Fariz Ajy Putra on 25/06/25.
 //
 
-//
-//  ReportView.swift
-//  RecordFeature
-//
-//  Created by Fariz Ajy Putra on 23/06/25.
-//
 
 import SwiftUI
+import SwiftData
 
 struct ReportTabItem: View {
     let prediction: FramePrediction
     let idx: Int
     let selectedTab: Int
     let vm: RecordFeatureViewModel
-
     var body: some View {
         let elbowAngle = Int(prediction.elbowAngle ?? 0)
         let legAngle = Int(prediction.kneeAngle ?? 0)
@@ -111,10 +105,14 @@ struct ReportTabItem: View {
 
 
 struct ReportView: View {
+    @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var router: Router
     @ObservedObject var vm: RecordFeatureViewModel
     @State private var showFullImage = false
+    @Binding var reportView: Bool
+    @Binding var showCamera : Bool
     @State private var selectedTab: Int = 0
-
+    @Query var phase: [PhaseData]
     
     func colorFunction(angle: Int, whatAngle: String) -> UIColor {
         if whatAngle == "elbowPreparation" {
@@ -168,9 +166,8 @@ struct ReportView: View {
         }
         return .gray // fallback jika label tidak cocok
     }
-    
+
     var body: some View {
-        
         ZStack {
             TabView(selection: $selectedTab) {
                 ForEach(Array(vm.predictions.enumerated()), id: \.offset) { idx, prediction in
@@ -214,7 +211,15 @@ struct ReportView: View {
                 
                 VStack(spacing: 16) {
                     Button("Back to Home") {
-                        // aksi kembali home
+                        vm.printAllPhaseData(phase)
+                        reportView.toggle()
+                        presentationMode.wrappedValue.dismiss()
+                        vm.lastVideoURL = nil
+                        vm.frames = []
+                        vm.frameTimes = []
+                        vm.predictions = []
+                        vm.bestFrame = []
+                        vm.bestFrameData = []
                     }
                     .font(.system(size: 18, weight: .bold))
                     .foregroundColor(.black)
@@ -225,7 +230,14 @@ struct ReportView: View {
                     .padding(.horizontal, 48)
                     
                     Button("Try record analysis again") {
-                        // aksi ulang
+                        reportView.toggle()
+                        showCamera.toggle()
+                        vm.lastVideoURL = nil
+                        vm.frames = []
+                        vm.frameTimes = []
+                        vm.predictions = []
+                        vm.bestFrame = []
+                        vm.bestFrameData = []
                     }
                     .font(.system(size: 16))
                     .foregroundColor(.orange)
@@ -257,6 +269,7 @@ struct ReportView: View {
             .padding(.top, 54)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+
         .ignoresSafeArea()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .fullScreenCover(isPresented: $showFullImage) {

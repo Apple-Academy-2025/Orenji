@@ -13,6 +13,7 @@ struct orenjiApp: App {
     @StateObject var router = Router()
     @State private var showSplash = true 
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
+
     
     
     init() {
@@ -38,14 +39,14 @@ struct orenjiApp: App {
                                     RecordAnalysisView()
                                 case .RealtimePose(let titlePage):
                                     EvaluateRealtimeView()
+                                case .HistoryDetailView(let PhaseData, let selectedTab):
+                                    HistoryDetailView(PhaseDatas: PhaseData, selectedTab:selectedTab)
                                 case .History:
-                                    HistoryView()
-                                case .HistoryView:
                                     HistoryView()
                                 case .TutorialView:
                                     TutorialView()
                                 }
-                            }.environmentObject(router)   
+                            } 
                     } else {
                         if !hasSeenOnboarding {
                             OnboardingView {
@@ -66,22 +67,23 @@ struct orenjiApp: App {
                                             RecordAnalysisView()
                                         case .RealtimePose(let titlePage):
                                             EvaluateRealtimeView()
+                                        case .HistoryDetailView(let PhaseData, let selectedTab):
+                                            HistoryDetailView(PhaseDatas: PhaseData, selectedTab: selectedTab)
                                         case .History:
-                                            HistoryView()
-                                        case .HistoryView:
                                             HistoryView()
                                         case .TutorialView:
                                             TutorialView()
                                         }
                                     }
                             }
-                            .environmentObject(router)
                         }
                         
                     }
 
                 }
-        }
+        }.modelContainer(for: [PhaseData.self])
+            .environmentObject(router)
+            
                 }
             }
             
