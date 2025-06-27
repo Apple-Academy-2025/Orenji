@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AnalysisPoseView: View {
     @ObservedObject var connectivity = WatchConnectivityManager.shared
-
+    
     var body: some View {
         VStack(spacing: 0) {
             Spacer()
@@ -18,11 +18,12 @@ struct AnalysisPoseView: View {
                     Text(data.phase.uppercased())
                         .font(.headline.bold())
                         .foregroundStyle(.white)
-
+                    
                     Spacer()
-                    Image(systemName: "figure.stand")
-                        .font(.system(size: 80))
-                        .foregroundColor(data.isPoseCorrect ? .primerGreen : .primer)
+                    imageForPhase(data.phase, isCorrect: data.isPoseCorrect)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 80, height: 80)
                 }
                 .padding()
                 .frame(maxHeight: .infinity)
@@ -50,11 +51,21 @@ struct AnalysisPoseView: View {
                     .foregroundColor(.white)
                     .font(.headline)
             }
-
+            
             Spacer()
         }
         .padding()
         .animation(.easeInOut, value: connectivity.realtimePoseData?.isPoseCorrect)
     }
+    
+    private func imageForPhase(_ phase: String, isCorrect: Bool) -> Image {
+        let formattedPhase = phase.lowercased()
+        let suffix = isCorrect ? "Good" : "Bad"
+        let imageName = "\(formattedPhase)\(suffix)"
+        if UIImage(named: imageName) != nil {
+            return Image(imageName)
+        } else {
+            return Image(systemName: "figure.stand")
+        }
+    }
 }
-

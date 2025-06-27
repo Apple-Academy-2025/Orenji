@@ -142,7 +142,20 @@ struct ReportView: View {
             }
         }
     }
+    
+    private func phaseModel(for prediction: FramePrediction) -> PhaseModel {
+        return PhaseModel(
+            name: prediction.label,
+            image: "", // atau kosongkan jika tidak pakai nama aset
+            elbowAngle: prediction.elbowAngle.map { Double($0) },
+            legAngle: prediction.kneeAngle.map { Double($0) },
+            improvements: [],
+            image: prediction.imageForDisplay
+        )
+    }
+
 }
+
 
 
 //HStack(spacing: 8) {
