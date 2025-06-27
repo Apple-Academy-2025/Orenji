@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct CardHistory: View {
-
     @EnvironmentObject var router: Router
     var preparationElbow : String
     var preparationLeg : String

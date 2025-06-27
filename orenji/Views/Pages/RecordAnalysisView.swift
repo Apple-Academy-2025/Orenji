@@ -10,12 +10,12 @@ import SwiftUI
 
 
 struct RecordAnalysisView: View {
+    @EnvironmentObject var router: Router
     @Environment(\.modelContext) private var modelContext
     @State private var lastVideoURL: URL? = nil
     @State private var showCamera = true
     @StateObject private var vm = RecordFeatureViewModel()
     @State private var reportView: Bool = false
-    @EnvironmentObject var router: Router
     
     var body: some View {
         ZStack {
@@ -29,13 +29,16 @@ struct RecordAnalysisView: View {
             else if showCamera {
                 RecordPageCameraFrame(showCamera: $showCamera) { url in
                     DispatchQueue.main.async {
-                        vm.extractAllFramesProcess(from: url)
-                        reportView = true
+                        vm.extractAllFramesProcess(from: url, completion: {
+                            reportView = true
+                        })
                     }
                 }
             }
             else if reportView {
-                ReportView(vm: vm, reportView: $reportView, showCamera: $showCamera).onAppear {
+                ReportView(vm: vm, reportView: $reportView, showCamera: $showCamera)
+                    .environmentObject(router)
+                    .onAppear {
                     vm.konversiSemuaPredictionKeFrameData()
                     vm.simpanKeDataset(context: modelContext, frames: vm.bestFrameData, date: Date.now)
                 }

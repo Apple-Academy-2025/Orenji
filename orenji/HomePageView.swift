@@ -27,6 +27,7 @@ struct HomePageView: View {
             }
 
         }
+        .environmentObject(Router())
         .padding()
     }
 }
