@@ -42,8 +42,8 @@ struct SessionItemView: View {
                 .padding(.horizontal)
                 ForEach(session.phases) { item in
                     VStack {
-                        let (elbowTitle, elbowTarget) = targetAndTitle(for: "elbow", phaseName: item.name.lowercased())
-                        let (legTitle, legTarget) = targetAndTitle(for: "leg", phaseName: item.name.lowercased())
+                        let (_, elbowTarget) = targetAndTitle(for: "elbow", phaseName: item.name.lowercased())
+                        let (_, legTarget) = targetAndTitle(for: "leg", phaseName: item.name.lowercased())
                                                 
                             ResultItemView(
                                 title: "Elbow",
@@ -83,17 +83,17 @@ struct SessionItemView: View {
     private func targetAndTitle(for bodyPart: String, phaseName: String) -> (String, Int) {
             switch (bodyPart.lowercased(), phaseName.lowercased()) {
             case ("elbow", "preparation"):
-                return ("Elbow Position", 3)
+                return ("Elbow Position", 90)
             case ("elbow", "bending"):
-                return ("Elbow Depth", 5)
+                return ("Elbow Depth", 90)
             case ("elbow", "release"):
-                return ("Elbow Finish", 2)
+                return ("Elbow Finish", 160)
             case ("leg", "preparation"):
-                return ("Leg Stand", 2)
+                return ("Leg Stand", 160)
             case ("leg", "bending"):
-                return ("Leg Bend", 4)
+                return ("Leg Bend", 118)
             case ("leg", "release"):
-                return ("Leg Follow Through", 3)
+                return ("Leg Follow Through", 160)
             default:
                 return ("Unknown", 0)
             }

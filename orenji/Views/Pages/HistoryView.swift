@@ -12,6 +12,7 @@ struct HistoryView: View {
     @Environment(\.dismiss) private var dismiss
     @Query var PhaseDatas: [PhaseData]
     @State private var selectedTab: Int = 0
+    @StateObject var connectivity = WatchConnectivityManager.shared
     
     func colorFunction(angle: Int, whatAngle: String) -> UIColor {
         if whatAngle == "elbowPreparation" {
@@ -90,7 +91,9 @@ struct HistoryView: View {
                     VStack() {
                         VStack {
                             Button(action: {
-                                dismiss()}) {
+                                dismiss()
+                                connectivity.sendIdleState()}
+                            ) {
                                     HStack(spacing: 4) {
 
                                         Image(systemName: "chevron.left")
