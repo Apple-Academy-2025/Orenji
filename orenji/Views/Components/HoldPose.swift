@@ -39,7 +39,7 @@ struct HoldPose: View {
                                 .frame(height: 120) // tinggi minimal, seperti nav bar
                                 .overlay(
                                     Text(message)
-                                        .font(.system(size: 30, weight: .bold))
+                                        .font(.system(size: 20, weight: .bold))
                                         .foregroundColor(.white)
                                         .lineLimit(1)
                                         .minimumScaleFactor(0.8)
@@ -57,8 +57,6 @@ struct HoldPose: View {
                 }
                 
                
-                
-                
                 VStack(spacing: 8) {
                     // phaseTitle (selalu tampil, di bawah warning)
                     Text(phaseTitle)

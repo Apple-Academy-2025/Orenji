@@ -40,9 +40,6 @@ struct RecordAnalysisView: View {
                     vm.simpanKeDataset(context: modelContext, frames: vm.bestFrameData, date: Date.now)
                 }
             }
-            else{
-                Text("Test")
-            }
         }
         .environmentObject(Router())
         .background(Color.black.ignoresSafeArea())

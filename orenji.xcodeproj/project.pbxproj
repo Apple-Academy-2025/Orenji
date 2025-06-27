@@ -7,10 +7,32 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F854A3622E0C5E160079D7EC /* orenjiWatchOS Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = F854A33F2E0C5E150079D7EC /* orenjiWatchOS Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F862F5682DFBAA6C00D476A9 /* .gitignore in Sources */ = {isa = PBXBuildFile; fileRef = F862F5672DFBAA6C00D476A9 /* .gitignore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		F854A34F2E0C5E160079D7EC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F862F5302DFBA9EF00D476A9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F854A33E2E0C5E150079D7EC;
+			remoteInfo = "orenjiWatchOS Watch App";
+		};
+		F854A3592E0C5E160079D7EC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F862F5302DFBA9EF00D476A9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F854A33E2E0C5E150079D7EC;
+			remoteInfo = "orenjiWatchOS Watch App";
+		};
+		F854A3602E0C5E160079D7EC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F862F5302DFBA9EF00D476A9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F854A33E2E0C5E150079D7EC;
+			remoteInfo = "orenjiWatchOS Watch App";
+		};
 		F862F54B2DFBA9F000D476A9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F862F5302DFBA9EF00D476A9 /* Project object */;
@@ -27,16 +49,66 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		F854A3662E0C5E160079D7EC /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				F854A3622E0C5E160079D7EC /* orenjiWatchOS Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		F854A33F2E0C5E150079D7EC /* orenjiWatchOS Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "orenjiWatchOS Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F854A34E2E0C5E160079D7EC /* orenjiWatchOS Watch AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "orenjiWatchOS Watch AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F854A3582E0C5E160079D7EC /* orenjiWatchOS Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "orenjiWatchOS Watch AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F862F5382DFBA9EF00D476A9 /* orenji.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = orenji.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F862F54A2DFBA9F000D476A9 /* orenjiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = orenjiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F862F5542DFBA9F000D476A9 /* orenjiUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = orenjiUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F862F5672DFBAA6C00D476A9 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		ADA3BC122E0C626600D9E1BA /* Exceptions for "orenji" folder in "orenjiWatchOS Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Models/AppState.swift,
+				Models/PhaseModel.swift,
+				Models/PosePhase.swift,
+				Models/PostureModels.swift,
+				Models/RealtimePoseData.swift,
+				Models/RecordAnalysisModel.swift,
+			);
+			target = F854A33E2E0C5E150079D7EC /* orenjiWatchOS Watch App */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		F854A3402E0C5E150079D7EC /* orenjiWatchOS Watch App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "orenjiWatchOS Watch App";
+			sourceTree = "<group>";
+		};
+		F854A3512E0C5E160079D7EC /* orenjiWatchOS Watch AppTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "orenjiWatchOS Watch AppTests";
+			sourceTree = "<group>";
+		};
+		F854A35B2E0C5E160079D7EC /* orenjiWatchOS Watch AppUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "orenjiWatchOS Watch AppUITests";
+			sourceTree = "<group>";
+		};
 		F862F53A2DFBA9EF00D476A9 /* orenji */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				ADA3BC122E0C626600D9E1BA /* Exceptions for "orenji" folder in "orenjiWatchOS Watch App" target */,
+			);
 			path = orenji;
 			sourceTree = "<group>";
 		};
@@ -53,6 +125,27 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		F854A33C2E0C5E150079D7EC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F854A34B2E0C5E160079D7EC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F854A3552E0C5E160079D7EC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F862F5352DFBA9EF00D476A9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -84,6 +177,9 @@
 				F862F53A2DFBA9EF00D476A9 /* orenji */,
 				F862F54D2DFBA9F000D476A9 /* orenjiTests */,
 				F862F5572DFBA9F000D476A9 /* orenjiUITests */,
+				F854A3402E0C5E150079D7EC /* orenjiWatchOS Watch App */,
+				F854A3512E0C5E160079D7EC /* orenjiWatchOS Watch AppTests */,
+				F854A35B2E0C5E160079D7EC /* orenjiWatchOS Watch AppUITests */,
 				F862F5392DFBA9EF00D476A9 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -94,6 +190,9 @@
 				F862F5382DFBA9EF00D476A9 /* orenji.app */,
 				F862F54A2DFBA9F000D476A9 /* orenjiTests.xctest */,
 				F862F5542DFBA9F000D476A9 /* orenjiUITests.xctest */,
+				F854A33F2E0C5E150079D7EC /* orenjiWatchOS Watch App.app */,
+				F854A34E2E0C5E160079D7EC /* orenjiWatchOS Watch AppTests.xctest */,
+				F854A3582E0C5E160079D7EC /* orenjiWatchOS Watch AppUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -101,6 +200,74 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		F854A33E2E0C5E150079D7EC /* orenjiWatchOS Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F854A3632E0C5E160079D7EC /* Build configuration list for PBXNativeTarget "orenjiWatchOS Watch App" */;
+			buildPhases = (
+				F854A33B2E0C5E150079D7EC /* Sources */,
+				F854A33C2E0C5E150079D7EC /* Frameworks */,
+				F854A33D2E0C5E150079D7EC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F854A3402E0C5E150079D7EC /* orenjiWatchOS Watch App */,
+			);
+			name = "orenjiWatchOS Watch App";
+			packageProductDependencies = (
+			);
+			productName = "orenjiWatchOS Watch App";
+			productReference = F854A33F2E0C5E150079D7EC /* orenjiWatchOS Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F854A34D2E0C5E160079D7EC /* orenjiWatchOS Watch AppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F854A3672E0C5E160079D7EC /* Build configuration list for PBXNativeTarget "orenjiWatchOS Watch AppTests" */;
+			buildPhases = (
+				F854A34A2E0C5E160079D7EC /* Sources */,
+				F854A34B2E0C5E160079D7EC /* Frameworks */,
+				F854A34C2E0C5E160079D7EC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F854A3502E0C5E160079D7EC /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				F854A3512E0C5E160079D7EC /* orenjiWatchOS Watch AppTests */,
+			);
+			name = "orenjiWatchOS Watch AppTests";
+			packageProductDependencies = (
+			);
+			productName = "orenjiWatchOS Watch AppTests";
+			productReference = F854A34E2E0C5E160079D7EC /* orenjiWatchOS Watch AppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		F854A3572E0C5E160079D7EC /* orenjiWatchOS Watch AppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F854A36A2E0C5E160079D7EC /* Build configuration list for PBXNativeTarget "orenjiWatchOS Watch AppUITests" */;
+			buildPhases = (
+				F854A3542E0C5E160079D7EC /* Sources */,
+				F854A3552E0C5E160079D7EC /* Frameworks */,
+				F854A3562E0C5E160079D7EC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F854A35A2E0C5E160079D7EC /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				F854A35B2E0C5E160079D7EC /* orenjiWatchOS Watch AppUITests */,
+			);
+			name = "orenjiWatchOS Watch AppUITests";
+			packageProductDependencies = (
+			);
+			productName = "orenjiWatchOS Watch AppUITests";
+			productReference = F854A3582E0C5E160079D7EC /* orenjiWatchOS Watch AppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		F862F5372DFBA9EF00D476A9 /* orenji */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F862F55E2DFBA9F000D476A9 /* Build configuration list for PBXNativeTarget "orenji" */;
@@ -108,10 +275,12 @@
 				F862F5342DFBA9EF00D476A9 /* Sources */,
 				F862F5352DFBA9EF00D476A9 /* Frameworks */,
 				F862F5362DFBA9EF00D476A9 /* Resources */,
+				F854A3662E0C5E160079D7EC /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				F854A3612E0C5E160079D7EC /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				F862F53A2DFBA9EF00D476A9 /* orenji */,
@@ -179,6 +348,17 @@
 				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
+					F854A33E2E0C5E150079D7EC = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					F854A34D2E0C5E160079D7EC = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = F854A33E2E0C5E150079D7EC;
+					};
+					F854A3572E0C5E160079D7EC = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = F854A33E2E0C5E150079D7EC;
+					};
 					F862F5372DFBA9EF00D476A9 = {
 						CreatedOnToolsVersion = 16.2;
 					};
@@ -209,11 +389,35 @@
 				F862F5372DFBA9EF00D476A9 /* orenji */,
 				F862F5492DFBA9F000D476A9 /* orenjiTests */,
 				F862F5532DFBA9F000D476A9 /* orenjiUITests */,
+				F854A33E2E0C5E150079D7EC /* orenjiWatchOS Watch App */,
+				F854A34D2E0C5E160079D7EC /* orenjiWatchOS Watch AppTests */,
+				F854A3572E0C5E160079D7EC /* orenjiWatchOS Watch AppUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		F854A33D2E0C5E150079D7EC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F854A34C2E0C5E160079D7EC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F854A3562E0C5E160079D7EC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F862F5362DFBA9EF00D476A9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -238,6 +442,27 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		F854A33B2E0C5E150079D7EC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F854A34A2E0C5E160079D7EC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F854A3542E0C5E160079D7EC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F862F5342DFBA9EF00D476A9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -263,6 +488,21 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		F854A3502E0C5E160079D7EC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F854A33E2E0C5E150079D7EC /* orenjiWatchOS Watch App */;
+			targetProxy = F854A34F2E0C5E160079D7EC /* PBXContainerItemProxy */;
+		};
+		F854A35A2E0C5E160079D7EC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F854A33E2E0C5E150079D7EC /* orenjiWatchOS Watch App */;
+			targetProxy = F854A3592E0C5E160079D7EC /* PBXContainerItemProxy */;
+		};
+		F854A3612E0C5E160079D7EC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F854A33E2E0C5E150079D7EC /* orenjiWatchOS Watch App */;
+			targetProxy = F854A3602E0C5E160079D7EC /* PBXContainerItemProxy */;
+		};
 		F862F54C2DFBA9F000D476A9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F862F5372DFBA9EF00D476A9 /* orenji */;
@@ -276,6 +516,144 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		F854A3642E0C5E160079D7EC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"orenjiWatchOS Watch App/Preview Content\"";
+				DEVELOPMENT_TEAM = 8BSYY8W6GT;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = orenjiWatchOS;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = ios.challenge.orenji;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ios.challenge.orenji.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Debug;
+		};
+		F854A3652E0C5E160079D7EC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"orenjiWatchOS Watch App/Preview Content\"";
+				DEVELOPMENT_TEAM = 8BSYY8W6GT;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = orenjiWatchOS;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = ios.challenge.orenji;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ios.challenge.orenji.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Release;
+		};
+		F854A3682E0C5E160079D7EC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KMD5NUN6BL;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "ios.learn.orenjiWatchOS-Watch-AppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/orenjiWatchOS Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/orenjiWatchOS Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Debug;
+		};
+		F854A3692E0C5E160079D7EC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KMD5NUN6BL;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "ios.learn.orenjiWatchOS-Watch-AppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/orenjiWatchOS Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/orenjiWatchOS Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Release;
+		};
+		F854A36B2E0C5E160079D7EC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KMD5NUN6BL;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "ios.learn.orenjiWatchOS-Watch-AppUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = "orenjiWatchOS Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Debug;
+		};
+		F854A36C2E0C5E160079D7EC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KMD5NUN6BL;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "ios.learn.orenjiWatchOS-Watch-AppUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = "orenjiWatchOS Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Release;
+		};
 		F862F55C2DFBA9F000D476A9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -403,10 +781,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"orenji/Preview Content\"";
-				DEVELOPMENT_TEAM = Y495W87DS2;
+				DEVELOPMENT_TEAM = 8BSYY8W6GT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSCameraUsageDescription = "Need camera access for recording your posture.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -433,10 +810,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"orenji/Preview Content\"";
-				DEVELOPMENT_TEAM = Y495W87DS2;
+				DEVELOPMENT_TEAM = 8BSYY8W6GT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSCameraUsageDescription = "Need camera access for recording your posture.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -530,6 +906,33 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		F854A3632E0C5E160079D7EC /* Build configuration list for PBXNativeTarget "orenjiWatchOS Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F854A3642E0C5E160079D7EC /* Debug */,
+				F854A3652E0C5E160079D7EC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F854A3672E0C5E160079D7EC /* Build configuration list for PBXNativeTarget "orenjiWatchOS Watch AppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F854A3682E0C5E160079D7EC /* Debug */,
+				F854A3692E0C5E160079D7EC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F854A36A2E0C5E160079D7EC /* Build configuration list for PBXNativeTarget "orenjiWatchOS Watch AppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F854A36B2E0C5E160079D7EC /* Debug */,
+				F854A36C2E0C5E160079D7EC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		F862F5332DFBA9EF00D476A9 /* Build configuration list for PBXProject "orenji" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
