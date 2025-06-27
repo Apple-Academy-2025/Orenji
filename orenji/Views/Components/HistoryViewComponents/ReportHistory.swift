@@ -1,14 +1,14 @@
 //
-//  ReportView.swift
-//  RecordFeature
+//  ReportHistory.swift
+//  orenji
 //
-//  Created by Fariz Ajy Putra on 23/06/25.
+//  Created by Fariz Ajy Putra on 27/06/25.
 //
 
 import SwiftUI
 import Vision
 
-struct ReportComponent: View {
+struct ReportHistory: View {
     var myImage: UIImage?
     var joints: [VNHumanBodyPoseObservation.JointName: CGPoint]?
     var phase: String
@@ -79,7 +79,7 @@ struct ReportComponent: View {
                     }
                     .frame(
                       width: UIScreen.main.bounds.width,
-                      height: UIScreen.main.bounds.width - UIScreen.main.bounds.width/6
+                      height: UIScreen.main.bounds.width - UIScreen.main.bounds.width/12
                     )
                     .clipped()
                     .cornerRadius(10)
@@ -216,20 +216,3 @@ struct ReportComponent: View {
 
     }
 }
-
-#Preview {
-    ReportComponent(myImage: nil, joints: nil , phase: "Test", elbowAngle: 90, elbowImprovement: "Test", elbowfeedback1: "Test", elbowfeedback2: "Test", legAngle: 90, legImprovement: "Test", legFeedback1: "Test", legFeedback2: "Test")
-}
-
-
-//Text("\(phase)")
-//    .foregroundColor(.white)
-//    .frame(alignment: .center)
-//    .padding(.horizontal, 40)
-//    .padding(.vertical, 8)
-//    .font(.system(size: 22, weight: .bold))
-//    .background(
-//        RoundedRectangle(cornerRadius: 10)
-//            .fill(Color(uiColor: UIColor(hex: "#1B1F26")).opacity(0.5))
-//    )
-//    .padding(.horizontal, 16)

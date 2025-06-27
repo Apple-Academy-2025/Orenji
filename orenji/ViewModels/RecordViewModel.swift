@@ -11,7 +11,9 @@ import SwiftUI
 import UIKit
 import AVFoundation
 import Vision
+import SwiftData
 import CoreGraphics
+
 
 class RecordFeatureViewModel: ObservableObject {
     @Published var lastVideoURL: URL? = nil
@@ -21,12 +23,12 @@ class RecordFeatureViewModel: ObservableObject {
     @Published var isProcessingML = false
     @Published var isExtracting = false
     @Published var bestFrame : [FramePrediction] = []
+    @Published var bestFrameData : [FrameData] = []
     
     
-    
-    let mlModel: FreethrowModel
     let inputSize = CGSize(width: 360, height: 360)
-    
+    let mlModel: FreethrowModel
+
     init() {
         do {
             mlModel = try FreethrowModel()
@@ -34,8 +36,29 @@ class RecordFeatureViewModel: ObservableObject {
             fatalError("Gagal load FreethrowModel: \(error)")
         }
     }
-    
-////===================================================
+    ////===================================================
+    func simpanPhaseData(
+        context: ModelContext,
+        frames: [FrameData],
+        date: Date? = nil
+    ) {
+        let phase = PhaseData(frames: frames, date: date)
+        context.insert(phase)
+    }
+    func konversiPrediksiKeFrameData(_ predictions: [FramePrediction]) -> [FrameData] {
+        var result: [FrameData] = []
+        for prediction in predictions {
+            let frame = FrameData(
+                imageForDisplay: prediction.imageForDisplay,
+                label: prediction.label,
+                detectedDominant: prediction.detectedDominant,
+                elbowAngle: prediction.elbowAngle != nil ? Double(prediction.elbowAngle!) : nil,
+                kneeAngle: prediction.kneeAngle != nil ? Double(prediction.kneeAngle!) : nil
+            )
+            result.append(frame)
+        }
+        return result
+    }
     func processML(
         from url: URL
     ) {
@@ -91,7 +114,8 @@ class RecordFeatureViewModel: ObservableObject {
                     joints: filteredJoints,
                     detectedDominant: dominant,
                     elbowAngle: elbowAngle,
-                    kneeAngle: kneeAngle
+                    kneeAngle: kneeAngle,
+                    date: Date.now
                 )
             }
 
@@ -125,7 +149,7 @@ class RecordFeatureViewModel: ObservableObject {
 
             // Ambil frame terpilih saja
             let selectedFrames = ShotPhase.allCases.compactMap { bestFrames[$0] }
-
+            
             // --- PROSES AMBIL FRAME IMAGE DARI VIDEO (asinkron, grup dispatch) ---
             let group = DispatchGroup()
             var updatedPredictions: [FramePrediction] = selectedFrames
@@ -149,6 +173,7 @@ class RecordFeatureViewModel: ObservableObject {
             }
         }
     }
+    
 
     // -- Fungsi untuk ambil image di waktu tertentu pada video --
     func extractFrameForDisplay(
@@ -193,6 +218,7 @@ class RecordFeatureViewModel: ObservableObject {
                 self.frameTimes = times
                 self.isExtracting = false
                 self.processML(from: url)
+                
             }
 
         }
@@ -293,6 +319,8 @@ class RecordFeatureViewModel: ObservableObject {
             }
         }
         guard let cgImage = cgImage else { return (nil, nil) }
+        print("DEBUG: Ukuran gambar saat ekstrak joint: \(cgImage.width)x\(cgImage.height)")
+        print("DEBUG: Ukuran image.size: \(image.size.width)x\(image.size.height) (scale: \(image.scale))")
         var points: [VNHumanBodyPoseObservation.JointName: CGPoint] = [:]
         var leftConf: Float = 0
         var rightConf: Float = 0
@@ -398,6 +426,16 @@ class RecordFeatureViewModel: ObservableObject {
         return buffer
     }
     ////===================================================
+       func feedbackMethod(angle: Int, lowAngle: Int, highAngle: Int, whatAngle: String) -> String {
+        if angle < lowAngle {
+            return "Your \(whatAngle) was too low. Try to open more your elbow"
+        } else if angle > highAngle {
+            return "Your \(whatAngle) was too high. Try to close more your elbow"
+        } else {
+            return "Your \(whatAngle) fit perfectly on your posture"
+        }
+    }
+    ////===================================================
     func processFramesWithModel(
         frames: [UIImage],
         model: FreethrowModel,
@@ -424,6 +462,51 @@ class RecordFeatureViewModel: ObservableObject {
             }
         }
     }
+    func fetchAllPhaseData(context: ModelContext) -> [PhaseData] {
+        let fetchDescriptor = FetchDescriptor<PhaseData>()
+        do {
+            let phases = try context.fetch(fetchDescriptor)
+            return phases
+        } catch {
+            print("Error fetching PhaseData: \(error)")
+            return []
+        }
+    }
+    func printAllPhaseData(_ phases: [PhaseData]) {
+        print("Jalan")
+        for (i, phase) in phases.enumerated() {
+            print("----- Phase #\(i+1) -----")
+            print("UUID: \(phase.uuid)")
+            print("Tanggal: \(phase.date?.description ?? "-")")
+            print("Jumlah Frame: \(phase.frames.count)")
+            for (j, frame) in phase.frames.enumerated() {
+                print("  Frame #\(j+1):")
+                print("    Label: \(frame.label)")
+                print("    Dominant: \(frame.detectedDominant ?? "-")")
+                print("    Elbow Angle: \(frame.elbowAngle?.description ?? "-")")
+                print("    Knee Angle: \(frame.kneeAngle?.description ?? "-")")
+            }
+        }
+    }
+    func simpanKeDataset(
+        context: ModelContext,
+        frames: [FrameData],
+        date: Date? = nil
+    ) {
+        let phase = PhaseData(frames: frames, date: date)
+        context.insert(phase)
+    }
+    func konversiSemuaPredictionKeFrameData() {
+        bestFrameData = predictions.map { prediction in
+            FrameData(
+                imageForDisplay: prediction.imageForDisplay,
+                label: prediction.label,
+                detectedDominant: prediction.detectedDominant,
+                elbowAngle: prediction.elbowAngle != nil ? Double(prediction.elbowAngle!) : nil,
+                kneeAngle: prediction.kneeAngle != nil ? Double(prediction.kneeAngle!) : nil
+            )
+        }
+    }
+
     ////===================================================
-    
 }

@@ -14,6 +14,7 @@ struct PostureBasketApp: App {
     @StateObject var connectivity = WatchConnectivityManager.shared
     @StateObject private var router = Router()
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
+
     @Environment(\.scenePhase) private var scenePhase
 
     // ✅ Aktifkan audio session saat app dijalankan
@@ -53,12 +54,45 @@ struct PostureBasketApp: App {
                                     RecordAnalysisView()
                                 case .RealtimePose:
                                     EvaluateRealtimeView()
+                                case .HistoryDetailView(let PhaseData, let selectedTab):
+                                    HistoryDetailView(PhaseDatas: PhaseData, selectedTab:selectedTab)
                                 case .History:
                                     HistoryView()
                                 case .Prefereces:
                                     PreferencesView()
                                 }
+                            } 
+                    } else {
+                        if !hasSeenOnboarding {
+                            OnboardingView {
+                                hasSeenOnboarding = true
                             }
+                        } else {
+                            NavigationStack(path: $router.path) {
+                                HomePageView()
+                                    .navigationDestination(for: Route.self) { route in
+                                        switch route {
+                                        case .Home:
+                                            HomePageView()
+                                        case .Tutorial:
+                                            TutorialView()
+                                        case .Instruksi(let destination, let idPage):
+                                            InstruksiView(destination: destination, idPage: idPage)
+                                        case .RecordAnalysisView:
+                                            RecordAnalysisView()
+                                        case .RealtimePose(let titlePage):
+                                            EvaluateRealtimeView()
+                                        case .HistoryDetailView(let PhaseData, let selectedTab):
+                                            HistoryDetailView(PhaseDatas: PhaseData, selectedTab: selectedTab)
+                                        case .History:
+                                            HistoryView()
+                                        case .TutorialView:
+                                            TutorialView()
+                                        }
+                                    }
+                            }
+                        }
+                        
                     }
                     .onChange(of: scenePhase){ oldPhase, newPhase in
                                             switch newPhase{
@@ -73,6 +107,7 @@ struct PostureBasketApp: App {
                                                 break
                                             }
                                         }
+                  .modelContainer(for: [PhaseData.self])
                     .environmentObject(router)
                 }
             }

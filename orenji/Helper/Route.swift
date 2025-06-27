@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import SwiftData
 
 
 // Guys ini contoh buat sistem pages route biar scaleable
@@ -17,6 +18,9 @@ enum Route: Hashable {
     case Tutorial
     case Prefereces
     indirect case Instruksi(destination: Route, idPage: String)
+    case RecordAnalysisView
+    case HistoryDetailView(PhaseData: PhaseData, selectedTab: Int)
+    case TutorialView
     case RecordPose
     case RealtimePose
 }
