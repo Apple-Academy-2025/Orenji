@@ -16,7 +16,6 @@ struct OnboardingView: View {
     
     var body: some View {
         VStack() {
-            
             TabView(selection: $currentPage) {
                 
                 OnboardingContainer(
