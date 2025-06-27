@@ -72,14 +72,14 @@ struct PreferencesView: View {
             Spacer()
             Spacer()
 
-            Button("Next", action: {
-                router.goTo(.Home)
+            Button(action: {}, label: {
+                Text("Next")
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(Color.primer)
+                .foregroundStyle(.black)
+                .cornerRadius(14)
             })
-            .padding()
-            .frame(maxWidth: .infinity)
-            .background(Color.primer)
-            .foregroundStyle(.black)
-            .cornerRadius(14)
         }
         .padding()
         .frame(maxHeight: .infinity)

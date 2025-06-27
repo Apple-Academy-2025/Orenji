@@ -113,7 +113,7 @@ struct HistoryDetailView: View {
                     drawSkeleton(
                         image: convertDataToUIImage(PhaseDatas.frames[selectedTab].imageForDisplay) ?? UIImage(),
                         handLineColor:(elbowAngle < 75 || elbowAngle > 90) ? .red : .green,
-                        legLineColor:(legAngle < 160 || legAngle > 160) ? .red : .green,
+                        legLineColor:(legAngle < 160 || legAngle > 160) ? .red : .green
                     )
 
                 {

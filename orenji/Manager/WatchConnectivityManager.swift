@@ -112,11 +112,15 @@ class WatchConnectivityManager: NSObject, ObservableObject, WCSessionDelegate {
     func sendAnalysisResultsToWatch(sessions: [RecordAnalysisModel]) {
         do {
             let encodedData = try JSONEncoder().encode(sessions)
-            let userInfo = ["analysisResult": encodedData]
-            WCSession.default.transferUserInfo(userInfo)
-            print("Mengirim \(sessions.count) hasil sesi ke Watch.")
+            let temporaryDirectory = FileManager.default.temporaryDirectory
+            let fileName = "\(UUID().uuidString).json"
+            let fileURL = temporaryDirectory.appendingPathComponent(fileName)
+            try encodedData.write(to: fileURL)
+            let fileTransfer = WCSession.default.transferFile(fileURL, metadata: nil)
+            print("Berhasil memulai transfer file \(fileName) ke Watch.")
+            
         } catch {
-            print("Gagal meng-encode atau mengirim hasil analisis: \(error.localizedDescription)")
+            print("Gagal meng-encode atau menyimpan file untuk dikirim: \(error.localizedDescription)")
         }
     }
 

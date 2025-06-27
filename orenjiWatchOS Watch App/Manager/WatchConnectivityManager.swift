@@ -93,21 +93,20 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
         }
     }
 
-    func session(_ session: WCSession, didReceiveUserInfo userInfo: [String : Any] = [:]) {
-        guard let resultData = userInfo["analysisResult"] as? Data else {
-            print("Gagal menerima userInfo atau data tidak valid")
-            return
-        }
-        
+    func session(_ session: WCSession, didReceive file: WCSessionFile) {
+        let receivedURL = file.fileURL
+        print("Menerima file (didReceiveFile) di: \(receivedURL.path)")
         do {
+            let resultData = try Data(contentsOf: receivedURL)
             let decodedSessions = try JSONDecoder().decode([RecordAnalysisModel].self, from: resultData)
             DispatchQueue.main.async {
                 self.trainingSessions = decodedSessions
                 self.appState = .resultRecord
-                print("\(decodedSessions.count) sesi berhasil di-decode dan di-publish.")
+                print("\(decodedSessions.count) sesi dari file berhasil di-decode dan di-publish.")
             }
+            
         } catch {
-            print("Gagal men-decode [TrainingSession]: \(error.localizedDescription)")
+            print("Gagal membaca atau men-decode data dari file yang diterima: \(error.localizedDescription)")
         }
     }
 

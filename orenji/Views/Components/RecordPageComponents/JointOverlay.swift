@@ -11,7 +11,7 @@ import UIKit
 func drawSkeleton(
     image: UIImage,
     handLineColor: UIColor = .orange,
-    legLineColor: UIColor = .red,
+    legLineColor: UIColor = .red
 ) -> UIImage? {
     guard let cgImage = image.cgImage else { return nil }
 

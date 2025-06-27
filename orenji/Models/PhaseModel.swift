@@ -14,7 +14,7 @@ struct PhaseModel: Identifiable, Codable {
     var elbowAngle: Double?
     var legAngle: Double?
     var improvements: [String]
-    var imageModel: Data?
+    var imageModel: Data? = nil
     
     init(
         id: UUID = UUID(),

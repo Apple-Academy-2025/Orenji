@@ -42,17 +42,22 @@ struct SessionItemView: View {
                 .padding(.horizontal)
                 ForEach(session.phases) { item in
                     VStack {
+                        let (elbowTitle, elbowTarget) = targetAndTitle(for: "elbow", phaseName: item.name.lowercased())
+                        let (legTitle, legTarget) = targetAndTitle(for: "leg", phaseName: item.name.lowercased())
+                                                
                             ResultItemView(
                                 title: "Elbow",
                                 angle: Int(item.elbowAngle ?? 0),
-                                improvement: item.improvements[0]
+                                improvement: item.improvements[0],
+                                target: elbowTarget
                             )
                             .padding()
 
                             ResultItemView(
                                 title: "Leg",
                                 angle: Int(item.legAngle ?? 0),
-                                improvement: item.improvements[1]
+                                improvement: item.improvements[1],
+                                target: legTarget
                             )
                             .padding()
                         }
@@ -74,6 +79,25 @@ struct SessionItemView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
+    
+    private func targetAndTitle(for bodyPart: String, phaseName: String) -> (String, Int) {
+            switch (bodyPart.lowercased(), phaseName.lowercased()) {
+            case ("elbow", "preparation"):
+                return ("Elbow Position", 3)
+            case ("elbow", "bending"):
+                return ("Elbow Depth", 5)
+            case ("elbow", "release"):
+                return ("Elbow Finish", 2)
+            case ("leg", "preparation"):
+                return ("Leg Stand", 2)
+            case ("leg", "bending"):
+                return ("Leg Bend", 4)
+            case ("leg", "release"):
+                return ("Leg Follow Through", 3)
+            default:
+                return ("Unknown", 0)
+            }
+        }
 }
 
 #Preview {

@@ -17,14 +17,14 @@ struct ReportTabItem: View {
     var body: some View {
         let elbowAngle = Int(prediction.elbowAngle ?? 0)
         let legAngle = Int(prediction.kneeAngle ?? 0)
-
+        
         VStack {
             if vm.predictions[idx].label == "Preparation"{
                 ReportComponent(
                     myImage: drawSkeleton(
                         image: prediction.imageForDisplay ?? UIImage(),
                         handLineColor:(elbowAngle < 86 || elbowAngle > 93) ? .red : .green,
-                        legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green,
+                        legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green
                     ),
                     joints: prediction.joints,
                     phase: vm.predictions[idx].label,
@@ -44,13 +44,13 @@ struct ReportTabItem: View {
                         vm.feedbackMethod(angle: legAngle, lowAngle: 160, highAngle: 160, whatAngle: "leg")
                 )
                 Spacer()
-
+                
             } else if vm.predictions[idx].label == "Bending" {
                 ReportComponent(
                     myImage: drawSkeleton(
                         image: prediction.imageForDisplay ?? UIImage(),
                         handLineColor:(elbowAngle < 75 || elbowAngle > 90) ? .red : .green,
-                        legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green,
+                        legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green
                     ),
                     joints: prediction.joints,
                     phase: vm.predictions[idx].label,
@@ -75,7 +75,7 @@ struct ReportTabItem: View {
                     myImage: drawSkeleton(
                         image: prediction.imageForDisplay ?? UIImage(),
                         handLineColor:(elbowAngle < 160 || elbowAngle > 170) ? .red : .green,
-                        legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green,
+                        legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green
                     ),
                     joints: prediction.joints,
                     phase: vm.predictions[idx].label,
@@ -106,6 +106,7 @@ struct ReportTabItem: View {
 
 struct ReportView: View {
     @Environment(\.presentationMode) var presentationMode
+    @StateObject var connectivity = WatchConnectivityManager.shared
     @EnvironmentObject var router: Router
     @ObservedObject var vm: RecordFeatureViewModel
     @State private var showFullImage = false
@@ -166,7 +167,7 @@ struct ReportView: View {
         }
         return .gray // fallback jika label tidak cocok
     }
-
+    
     var body: some View {
         ZStack {
             TabView(selection: $selectedTab) {
@@ -269,7 +270,7 @@ struct ReportView: View {
             .padding(.top, 54)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-
+        
         .ignoresSafeArea()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .fullScreenCover(isPresented: $showFullImage) {
@@ -279,9 +280,9 @@ struct ReportView: View {
                 
                 if let uiImg =
                     drawSkeleton(
-                    image: vm.predictions[selectedTab].imageForDisplay ?? UIImage(),
-                    handLineColor:colorFunction(angle: Int(vm.predictions[selectedTab].elbowAngle ?? 0),whatAngle:"elbow\(vm.predictions[selectedTab].label)" ),
-                    legLineColor:colorFunction(angle: Int(vm.predictions[selectedTab].elbowAngle ?? 0),whatAngle:"knee\(vm.predictions[selectedTab].label)" )
+                        image: vm.predictions[selectedTab].imageForDisplay ?? UIImage(),
+                        handLineColor:colorFunction(angle: Int(vm.predictions[selectedTab].elbowAngle ?? 0),whatAngle:"elbow\(vm.predictions[selectedTab].label)" ),
+                        legLineColor:colorFunction(angle: Int(vm.predictions[selectedTab].elbowAngle ?? 0),whatAngle:"knee\(vm.predictions[selectedTab].label)" )
                     )
                 {
                     Image(uiImage: uiImg)
@@ -311,23 +312,5 @@ struct ReportView: View {
                 }
             }
         }
-    }
-    
-    private func phaseModel(for prediction: FramePrediction) -> RecordAnalysisModel {
-        let phases: [PhaseModel] = vm.predictions.map { prediction in
-            let imageData = prediction.imageForDisplay?.jpegData(compressionQuality: 0.8)
-            return PhaseModel(
-                name: prediction.label,
-                image: "",
-                elbowAngle: Double(prediction.elbowAngle ?? 0),
-                legAngle: Double(prediction.kneeAngle ?? 0),
-                improvements: [
-                    "Elbow feedback otomatis di sini",
-                    "Knee feedback otomatis di sini"
-                ],
-                imageModel: imageData
-            )
-        }
-        return RecordAnalysisModel(date: Date(), phases: phases)
     }
 }

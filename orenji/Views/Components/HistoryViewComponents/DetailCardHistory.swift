@@ -22,7 +22,7 @@ struct DetailCardHistory: View {
                     myImage: drawSkeleton(
                         image: convertDataToUIImage(prediction.imageForDisplay) ?? UIImage(),
                         handLineColor:(elbowAngle < 86 || elbowAngle > 93) ? .red : .green,
-                        legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green,
+                        legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green
                     ),
                     phase: prediction.label ?? "-",
                     elbowAngle: elbowAngle,
@@ -47,7 +47,7 @@ struct DetailCardHistory: View {
                     myImage: drawSkeleton(
                         image: convertDataToUIImage(prediction.imageForDisplay) ?? UIImage(),
                         handLineColor:(elbowAngle < 75 || elbowAngle > 90) ? .red : .green,
-                        legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green,
+                        legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green
                     ),
                     phase: prediction.label ?? "-",
                     elbowAngle: elbowAngle,
@@ -71,7 +71,7 @@ struct DetailCardHistory: View {
                     myImage: drawSkeleton(
                         image: convertDataToUIImage(prediction.imageForDisplay) ?? UIImage(),
                         handLineColor:(elbowAngle < 160 || elbowAngle > 170) ? .red : .green,
-                        legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green,
+                        legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green
                     ),
                     phase: prediction.label ?? "-",
                     elbowAngle: elbowAngle,
@@ -165,7 +165,7 @@ struct DetailCardView: View {
                     ForEach(Array(prediction.frames.enumerated()), id: \.offset) { idx, phaseData in
                         DetailCardHistory(
                             prediction: phaseData,
-                            idx: idx,
+                            idx: idx
                         )
                     }
                 }
