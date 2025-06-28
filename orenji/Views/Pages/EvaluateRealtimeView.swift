@@ -121,6 +121,13 @@
                 let countdown = Int(ceil(3.0 - (progress * 3.0)))
                 sendRealtimePoseToWatch(isCorrect: true, correctionMessage: nil, countdown: countdown)
             }
+            .onAppear {
+                WatchConnectivityManager.shared.endSessionChoiceHandler = { confirmed in
+                    if confirmed {
+                        showExitConfirmation = true
+                    }
+                }
+            }
             .navigationBarBackButtonHidden(true)
         }
         

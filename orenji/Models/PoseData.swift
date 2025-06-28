@@ -61,13 +61,15 @@ class FrameData {
     var detectedDominant: String?
     var elbowAngle: Double?
     var kneeAngle: Double?
+    var improvement: [String?]
     
     init(
         imageForDisplay: UIImage? = nil,
         label: String,
         detectedDominant: String? = nil,
         elbowAngle: Double? = nil,
-        kneeAngle: Double? = nil
+        kneeAngle: Double? = nil,
+        improvement: [String?] = [nil]
     ) {
         if let img = imageForDisplay {
             self.imageForDisplay = img.jpegData(compressionQuality: 1.0)
@@ -76,6 +78,7 @@ class FrameData {
         self.detectedDominant = detectedDominant
         self.elbowAngle = elbowAngle
         self.kneeAngle = kneeAngle
+        self.improvement = improvement
     }
 }
 

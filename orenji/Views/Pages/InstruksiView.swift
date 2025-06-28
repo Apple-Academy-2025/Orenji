@@ -11,6 +11,7 @@ struct InstruksiView: View {
     @EnvironmentObject var router: Router
     var destination: Route
     var idPage: String
+    @StateObject var connectivity = WatchConnectivityManager.shared
     
     
     @State private var currentPage = 0
@@ -47,7 +48,10 @@ struct InstruksiView: View {
                         subtitle: "The session will keep going until you press Stop.",
                         showStartButton: true,
                         currentPage: $currentPage,
-                        destination: destination
+                        destination: destination,
+                        onStart: {
+                                startSession()
+                            }
                     )
                     .tag(2)
                 }
@@ -93,7 +97,10 @@ struct InstruksiView: View {
                         subtitle: "Keep the background clear to avoid analysis errors.",
                         showStartButton: true,
                         currentPage: $currentPage,
-                        destination: destination
+                        destination: destination,
+                        onStart: {
+                                startSession()
+                            }
                     )
                     .tag(2)
                 }
@@ -114,6 +121,15 @@ struct InstruksiView: View {
         .frame(maxHeight: .infinity)
         .background(Color.black)
     }
+    
+    private func startSession() {
+        if idPage == "realtime" {
+            connectivity.sendStartSessionCommand(type: .realtime)
+        } else if idPage == "record" {
+            connectivity.sendStartSessionCommand(type: .recording)
+        }
+    }
+
 }
 
 struct InstructionContainer: View {
@@ -127,6 +143,7 @@ struct InstructionContainer: View {
     var showStartButton: Bool
     @Binding var currentPage: Int
     var destination: Route
+    var onStart: (() -> Void)? = nil
 
     var body: some View {
         VStack(spacing: 17) {
@@ -166,6 +183,7 @@ struct InstructionContainer: View {
 
                     if showStartButton {
                         Button(action: {
+                            onStart?()
                             router.goTo(destination)
                         }) {
                             Image(systemName: "chevron.right")

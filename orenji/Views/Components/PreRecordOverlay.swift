@@ -59,7 +59,7 @@ struct PreRecordOverlay: View {
                     HStack {
                         Button {
                             router.pop()
-                            connectivity.sendDisplayStateToWatch("detectingPose")
+                            connectivity.sendIdleState()
                         } label: {
                             Image(systemName: "chevron.left")
                                 .foregroundColor(.black)
