@@ -39,6 +39,7 @@ struct ResultRealtimeView: View {
                 
                 Button(action: {
                     connectivity.resetToIdle()
+                    connectivity.sendRealtimeAction(["endSessionChoice": true])
                 }) {
                     Text("Close")
                         .font(.headline)
