@@ -149,7 +149,7 @@
             .onAppear {
                 setupCamera()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    speechManager.speak("Voice system is ready")
+                    speechManager.speak("Hold in frame position")
                 }
             }
             .onReceive(NotificationCenter.default.publisher(for: .speakFromViewModel)) { notif in

@@ -156,9 +156,11 @@ class PoseDetectionViewModel: ObservableObject {
             case .checkPhase2:
                 self.isPoseCorrect = abs(legAngle - 75) < 5
             case .checkPhase3:
-                let elbowOK = abs(elbowAngle - 170) < 5
-                   let legOK = legAngle > 150
-                   self.isPoseCorrect = elbowOK && legOK
+//                let elbowOK = abs(elbowAngle - 160) < 5
+//                   let legOK = legAngle > 150
+//                   self.isPoseCorrect = elbowOK && legOK
+                self.isPoseCorrect = abs(elbowAngle - 180) < 5
+
             default:
                 self.isPoseCorrect = false
             }
@@ -212,7 +214,7 @@ class PoseDetectionViewModel: ObservableObject {
             return .preparation
         } else if (70...80).contains(legAngle) && (45...55).contains(elbowAngle) {
             return .bending
-        } else if (160...170).contains(legAngle) && (120...170).contains(elbowAngle) {
+        } else if (160...170).contains(legAngle) && (120...180).contains(elbowAngle) {
             return .release
         } else {
             return .unknown
