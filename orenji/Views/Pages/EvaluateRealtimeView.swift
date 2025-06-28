@@ -119,15 +119,15 @@
                 }
                 
                 switch phase {
-                case .checkPhase1, .checkPhase2, .checkPhase3 where poseDetector.isPoseCorrect && poseDetector.isUserInFrame:
+                case .checkPhase1 , .checkPhase2, .checkPhase3 :
                     HoldPose(
                         phaseTitle: phaseTitleText,
                         holdProgress: poseDetector.holdProgress,
                         warningMessage: currentWarningMessage,
-                        warningScale: warningScale
+                        warningScale: warningScale,
+                        correct: poseDetector.isPoseCorrect
                     ).environmentObject(router)
-
-                    
+                
                 case .finished:
                     EvaluationFinishedView(loopCount: loopCount)
                         .environmentObject(router)
@@ -190,12 +190,15 @@
                     case .checkPhase3: phase = .checkPhase1
                     default: break
                     }
+                    EvaluateRealtimeView.currentGlobalPhase = phase
                     poseDetector.startHoldPose()
                 }
             }
             .onChange(of: poseDetector.isUserInFrame, perform: handleFrameChange)
             .onChange(of: phase) { oldPhase, newPhase in
                 EvaluateRealtimeView.currentGlobalPhase = newPhase
+                print("📍 Phase berubah dari \(oldPhase) ke \(newPhase)")
+                    
                 if [.checkPhase1, .checkPhase2, .checkPhase3].contains(newPhase) {
                     startWarningLoop()
                     
