@@ -36,7 +36,7 @@ struct PreRecordOverlay: View {
                 GeometryReader { geo in
                     VStack {
                         if(statusText != nil) {
-                            Text(statusText!)
+                            Text(statusText)
                                 .font(.system(size: 45, weight: .bold))
                                 .foregroundColor(.white)
                                 .padding(.horizontal, 52)
