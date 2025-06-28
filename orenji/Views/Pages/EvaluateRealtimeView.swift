@@ -41,7 +41,7 @@ struct EvaluateRealtimeView: View {
             CameraPreview(service: cameraService).ignoresSafeArea()
             
             if !poseDetector.recognizedPoints.isEmpty {
-                PoseOverlayView(points: poseDetector.recognizedPoints, evaluationColor: .yellow)
+                PoseOverlayView(points: poseDetector.recognizedPoints, evaluationColor: .orange)
             }
             
             if phase == .preRecord {
@@ -82,12 +82,21 @@ struct EvaluateRealtimeView: View {
                 VStack {
                     Spacer()
                     HStack {
+                        Button(action: {}) {
+                            Text("HINT")
+                                .padding(24)
+                                .font(.headline.bold())
+                                .foregroundColor(.white)
+                                .background(Color.black.opacity(0.6))
+                                .clipShape(Circle())
+                        }
+                        .padding(24)
                         Spacer()
                         Button(action: { showExitConfirmation = true }) {
                             Text("STOP")
-                                .font(.headline)
+                                .padding(32)
+                                .font(.title.bold())
                                 .foregroundColor(.white)
-                                .padding()
                                 .background(Color.red)
                                 .clipShape(Circle())
                         }
@@ -163,7 +172,7 @@ struct EvaluateRealtimeView: View {
             } else if poseDetector.elbowAngleNow > 125 {
                 return "Elbow too wide, lower slightly"
             }
-            return "Hold Preparation Pose!"
+            return nil
             
         case .checkPhase2 where currentPhase != .bending:
             if poseDetector.legAngleNow < 70 {
@@ -171,7 +180,7 @@ struct EvaluateRealtimeView: View {
             } else if poseDetector.legAngleNow > 80 {
                 return "Leg too straight, bend more"
             }
-            return "Hold Bending Pose!"
+            return nil
             
         case .checkPhase3 where currentPhase != .release:
             if poseDetector.elbowAngleNow < 165 {
@@ -179,7 +188,7 @@ struct EvaluateRealtimeView: View {
             } else if poseDetector.elbowAngleNow > 175 {
                 return "Elbow too high, relax a bit"
             }
-            return "Hold Release Pose!"
+            return nil
             
         default:
             return nil
@@ -319,10 +328,11 @@ struct EvaluateRealtimeView: View {
         else { return Color.clear }
     }
     
-    private var statusText: String {
+    private var statusText: String? {
         if poseDetector.isUserInFrame { return "DETECTED" }
         else if everDetected { return "TOO CLOSE" }
-        else { return "Make sure to **keep your body**\naligned within this frame to start" }
+        
+        return nil
     }
     
     func sendRealtimePoseToWatch(isCorrect: Bool, correctionMessage: String?, countdown: Int?) {

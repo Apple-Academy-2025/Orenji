@@ -21,8 +21,6 @@ struct PoseOverlayView: View {
         //        (.rightKnee, .rightAnkle)
         
         //
-        
-        
         (.rightShoulder, .rightElbow),
         (.rightElbow, .rightWrist),
         (.rightShoulder, .rightHip),
@@ -58,13 +56,31 @@ struct PoseOverlayView: View {
                 }
                 
                 // Titik semua joint
-                ForEach(points.keys.sorted(by: { $0.rawValue.rawValue < $1.rawValue.rawValue }), id: \.self) { key in
-                    if let point = points[key], point.confidence > 0.1 {
-                        let rotatedX = 1 - point.location.y
-                        let rotatedY = point.location.x
+                ForEach(Array(jointPairs.enumerated()), id: \.offset) { _, pair in
+                    let jointA = pair.0
+                    let jointB = pair.1
+                    
+                    // Draw joint A if it has sufficient confidence
+                    if let pointA = points[jointA], pointA.confidence > 0.1 {
+                        let rotatedX = 1 - pointA.location.y
+                        let rotatedY = pointA.location.x
                         
                         Circle()
-                            .fill(Color.blue.opacity(0.7))
+                            .fill(evaluationColor)
+                            .frame(width: 10, height: 10)
+                            .position(
+                                x: rotatedX * geometry.size.width,
+                                y: rotatedY * geometry.size.height
+                            )
+                    }
+                    
+                    // Draw joint B if it has sufficient confidence
+                    if let pointB = points[jointB], pointB.confidence > 0.1 {
+                        let rotatedX = 1 - pointB.location.y
+                        let rotatedY = pointB.location.x
+                        
+                        Circle()
+                            .fill(evaluationColor)
                             .frame(width: 10, height: 10)
                             .position(
                                 x: rotatedX * geometry.size.width,

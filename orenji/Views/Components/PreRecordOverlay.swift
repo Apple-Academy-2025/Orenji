@@ -23,7 +23,7 @@ struct PreRecordOverlay: View {
     let showStartText: Bool
     let boxSize: CGSize
     let borderColor: Color
-    let statusText: String
+    let statusText: String?
 
     var body: some View {
         Group {
@@ -32,19 +32,27 @@ struct PreRecordOverlay: View {
 
                 GeometryReader { geo in
                     VStack {
-                        Text(statusText)
-                            .font(.system(size: 20, weight: .bold))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(borderColor)
-                            .cornerRadius(20)
-                            .padding(.top, 12)
+                        if(statusText != nil) {
+                            Text(statusText!)
+                                .font(.system(size: 45, weight: .bold))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 52)
+                                .padding(.vertical, 20)
+                                .background(borderColor.opacity(0.6))
+                                .cornerRadius(20)
+                                .padding(.top, 12)
+                        } else {
+                            Text("Make sure to keep your ball and feet visible within the frame")
+                                .multilineTextAlignment(.center)
+                                .font(.system(size: 20, weight: .bold))
+                                .foregroundColor(.white)
+                                .padding(.top, 12)
+                        }
                     }
                     .position(x: geo.size.width / 2,
                               y: (geo.size.height - boxSize.height) / 2 - 40)
                 }
-                .offset(y: -10)
+                .offset(y: -8)
 
                 VStack {
                     HStack {
@@ -64,19 +72,7 @@ struct PreRecordOverlay: View {
                     Spacer()
                 }
             }
-
-            if !isRecordingStarted && isOverlayVisible && isUserInFrame {
-                VStack(spacing: 8) {
-                    Text("✅ Hold still...")
-                        .foregroundColor(.green)
-                        .bold()
-                    Text("\(holdSeconds)")
-                        .font(.title)
-                        .foregroundColor(.green)
-                }
-                .offset(y: 180)
-            }
-
+            
             if showWarningText {
                 VStack {
                     Text(warningText)

@@ -27,7 +27,7 @@ struct FrameOverlay: View {
                     .position(x: screen.width / 2, y: boxY + boxHeight / 2)
 
                 RoundedRectangle(cornerRadius: 24)
-                    .stroke(borderColor, style: StrokeStyle(lineWidth: 4, dash: [8, 6]))
+                    .stroke(borderColor, style: StrokeStyle(lineWidth: 8))
                     .frame(width: boxWidth, height: boxHeight)
                     .position(x: screen.width / 2, y: boxY + boxHeight / 2)
             }

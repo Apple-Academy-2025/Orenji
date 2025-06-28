@@ -35,7 +35,7 @@ struct HoldPose: View {
                     // Warning banner di ujung atas layar
                     if let message = warningMessage {
                         VStack(spacing: 0) {
-                            Color.red
+                            Color.red.opacity(0.6)
                                 .frame(height: 120) // tinggi minimal, seperti nav bar
                                 .overlay(
                                     Text(message)
@@ -69,15 +69,16 @@ struct HoldPose: View {
                         .offset(y:-90)
                     
 
-                      
-                    Text("HOLD POSITION IN")
-                        .font(.system(size: 28, weight: .bold))
-                        .foregroundColor(.white)
-                        .multilineTextAlignment(.center)
+                    if(warningMessage == nil) {
+                        Text("HOLD POSITION IN")
+                            .font(.system(size: 28, weight: .bold))
+                            .foregroundColor(.white)
+                            .multilineTextAlignment(.center)
 
-                    Text("\(Int((1 - holdProgress) * 3))") // hitung mundur dari 3 ke 0
-                        .font(.system(size: 72, weight: .heavy))
-                        .foregroundColor(.white)
+                        Text("\(Int((1 - holdProgress) * 3))") // hitung mundur dari 3 ke 0
+                            .font(.system(size: 72, weight: .heavy))
+                            .foregroundColor(.white)
+                    }
                 }
                 .frame(maxWidth: .infinity)
                 .position(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height * 0.45)

@@ -524,7 +524,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"orenjiWatchOS Watch App/Preview Content\"";
-				DEVELOPMENT_TEAM = 8BSYY8W6GT;
+				DEVELOPMENT_TEAM = 32T8HNVYGX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = orenjiWatchOS;
@@ -554,7 +554,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"orenjiWatchOS Watch App/Preview Content\"";
-				DEVELOPMENT_TEAM = 8BSYY8W6GT;
+				DEVELOPMENT_TEAM = 32T8HNVYGX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = orenjiWatchOS;
@@ -781,7 +781,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"orenji/Preview Content\"";
-				DEVELOPMENT_TEAM = 8BSYY8W6GT;
+				DEVELOPMENT_TEAM = 32T8HNVYGX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need camera access to detect your body pose in real-time";
@@ -811,7 +811,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"orenji/Preview Content\"";
-				DEVELOPMENT_TEAM = 8BSYY8W6GT;
+				DEVELOPMENT_TEAM = 32T8HNVYGX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need camera access to detect your body pose in real-time";
