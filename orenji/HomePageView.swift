@@ -37,14 +37,13 @@ struct HomePageView: View {
                 FeatureCardView(
                     title: "Record Analysis", subtitle: "Record and review your free-throw posture", imageName: "imageRecordAnalysis", action: {
                         router.goTo(.Instruksi(destination: .RecordPose, idPage: "record"))
-                        startSession(type: .recording)
                     }
                 )
                 
                 FeatureCardView(
                     title: "Evaluate Realtime", subtitle: "Learn to free-throw shooting in realtime", imageName: "evaluateRealtimeImage", action: {
                         router.goTo(.Instruksi(destination: .RealtimePose, idPage: "realtime"))
-                        startSession(type: .realtime)
+                        
                     }
                 )
                 
@@ -96,9 +95,8 @@ struct HomePageView: View {
             .offset(y: 50)
             
         }
-        .environmentObject(Router())
-        .padding()
         .ignoresSafeArea()
+        .environmentObject(Router())
         .navigationBarBackButtonHidden(true)
     }
     
@@ -106,8 +104,6 @@ struct HomePageView: View {
         activeSession = type
         connectivity.sendStartSessionCommand(type: type)
     }
-    
-    
 }
 
 #Preview {

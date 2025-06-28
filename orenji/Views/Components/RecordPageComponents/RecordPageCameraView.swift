@@ -27,6 +27,7 @@ struct RecordPageCameraFrame: View {
             .edgesIgnoringSafeArea(.all)
             Button(action: {
                 presentationMode.wrappedValue.dismiss()
+                connectivity.sendIdleState()
             }) {
                 Image("XIcon")
                     .foregroundColor(.black)

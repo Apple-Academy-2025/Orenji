@@ -86,13 +86,13 @@ struct SessionItemView: View {
                 return ("Elbow Position", 90)
             case ("elbow", "bending"):
                 return ("Elbow Depth", 90)
-            case ("elbow", "release"):
+            case ("elbow", "followthrough"):
                 return ("Elbow Finish", 160)
             case ("leg", "preparation"):
                 return ("Leg Stand", 160)
             case ("leg", "bending"):
                 return ("Leg Bend", 118)
-            case ("leg", "release"):
+            case ("leg", "followthrough"):
                 return ("Leg Follow Through", 160)
             default:
                 return ("Unknown", 0)

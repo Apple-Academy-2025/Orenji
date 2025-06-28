@@ -57,7 +57,7 @@ struct RecordingView: View {
                         Circle()
                             .foregroundColor(.red)
                             .frame(width: 12, height: 12)
-                        Text(connectivityManager.activeSessionType == .recording ? "MEREKAM" : "REAL-TIME")
+                        Text("MEREKAM")
                             .font(.caption)
                             .fontWeight(.bold)
                             .foregroundColor(.white)

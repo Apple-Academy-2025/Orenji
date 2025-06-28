@@ -15,6 +15,7 @@ struct ReportTabItem: View {
     let idx: Int
     let selectedTab: Int
     let vm: RecordFeatureViewModel
+    @StateObject var connectivity = WatchConnectivityManager.shared
     var body: some View {
         let elbowAngle = Int(prediction.elbowAngle ?? 0)
         let legAngle = Int(prediction.kneeAngle ?? 0)
@@ -249,6 +250,7 @@ struct ReportView: View {
                         vm.predictions = []
                         vm.bestFrame = []
                         vm.bestFrameData = []
+                        connectivity.sendIdleState()
                     }
                     .font(.system(size: 18, weight: .bold))
                     .foregroundColor(.black)
