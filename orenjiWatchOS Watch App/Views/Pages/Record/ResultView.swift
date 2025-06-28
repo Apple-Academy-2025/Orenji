@@ -1,9 +1,6 @@
 
 
 
-
-
-
 import SwiftUI
 
 struct ResultRecordView: View {
@@ -18,7 +15,18 @@ struct ResultRecordView: View {
             } else if !connectivity.trainingSessions.isEmpty {
                 TabView {
                     ForEach(connectivity.trainingSessions) { session in
-                        SessionItemView(session: session)
+                        if session.phases.isEmpty {
+                            VStack {
+                                Spacer()
+                                Text("Start a session from your iPhone.")
+                                    .foregroundStyle(.secondary)
+                                    .multilineTextAlignment(.center)
+                                    .padding()
+                                Spacer()
+                            }
+                        } else {
+                            SessionItemView(session: session)
+                        }
                     }
                 }
                 .tabViewStyle(.page)
@@ -42,6 +50,7 @@ struct ResultRecordView: View {
         .animation(.easeInOut, value: isLoading)
     }
 }
+
 
 #Preview {
     ResultRecordView()
