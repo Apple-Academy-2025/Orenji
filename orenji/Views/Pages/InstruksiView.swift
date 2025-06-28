@@ -199,7 +199,8 @@ struct InstructionContainer: View {
     }
 }
 
-//#Preview {
-//    InstruksiView(destination: .RecordPose(titlePage: "tes"), idPage: "record")
-//        .environmentObject(Router())
-//}
+
+#Preview {
+    InstruksiView(destination: .RecordPose, idPage: "record")
+        .environmentObject(Router())
+}

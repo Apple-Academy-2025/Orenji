@@ -8,36 +8,44 @@
 import SwiftUI
 
 struct SplashScreenView: View {
+    @StateObject var connectivity = WatchConnectivityManager.shared
     @State private var isActive = false
-
-        var body: some View {
-            VStack {
-                Spacer()
-                Image("AppLogo") // LOGO
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 200, height: 200)
-                    .padding(.top,200)
-               
-                Spacer()
-                Image("WaveSplash") // wave
-//                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 300, height:200)
-
-            }
+    
+    var body: some View {
+        VStack {
+            Spacer()
+            Image("AppLogo") // LOGO
+                .resizable()
+                .scaledToFit()
+                .frame(width: 200, height: 200)
+                .padding(.top,200)
             
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.black)
-            .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                    withAnimation {
-                        isActive = true
-                    }
+            Spacer()
+            Image("WaveSplash") // wave
+            //                    .resizable()
+                .scaledToFit()
+                .frame(width: 300, height:200)
+            
+        }
+        
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.black)
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                withAnimation {
+                    isActive = true
                 }
+            }
+        }
+        .onChange(of: connectivity.isSessionActive) { oldSession, sessionIsActive in
+            if sessionIsActive {
+                print("Sesi aktif terdeteksi dari SplashScreen. Mengirim idle state.")
+                connectivity.sendIdleState()
             }
             
         }
+        
+    }
 }
 
 #Preview {

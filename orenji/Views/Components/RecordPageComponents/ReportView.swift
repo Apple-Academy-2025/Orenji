@@ -18,7 +18,7 @@ struct ReportTabItem: View {
     var body: some View {
         let elbowAngle = Int(prediction.elbowAngle ?? 0)
         let legAngle = Int(prediction.kneeAngle ?? 0)
-
+        
         VStack {
             if vm.predictions[idx].label.lowercased() == "preparation"{
                 if vm.predictions[idx].detectedDominant == nil {
@@ -115,7 +115,6 @@ struct ReportTabItem: View {
                     )
                     Spacer()
                 }
-
             }
         }
         .tag(idx)
@@ -126,6 +125,8 @@ struct ReportTabItem: View {
 
 
 struct ReportView: View {
+    @Environment(\.presentationMode) var presentationMode
+    @StateObject var connectivity = WatchConnectivityManager.shared
     @EnvironmentObject var router: Router
     @ObservedObject var vm: RecordFeatureViewModel
     @State private var showFullImage = false
@@ -186,7 +187,7 @@ struct ReportView: View {
         }
         return .gray // fallback jika label tidak cocok
     }
-
+    
     var body: some View {
         ZStack {
             if !vm.predictions.isEmpty && vm.predictions.allSatisfy({ $0.detectedDominant == nil }) {
@@ -305,7 +306,7 @@ struct ReportView: View {
             .padding(.top, 54)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-
+        
         .ignoresSafeArea()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .fullScreenCover(isPresented: $showFullImage) {
@@ -315,9 +316,9 @@ struct ReportView: View {
                 
                 if let uiImg =
                     drawSkeleton(
-                    image: vm.predictions[selectedTab].imageForDisplay ?? UIImage(),
-                    handLineColor:colorFunction(angle: Int(vm.predictions[selectedTab].elbowAngle ?? 0),whatAngle:"elbow\(vm.predictions[selectedTab].label)" ),
-                    legLineColor:colorFunction(angle: Int(vm.predictions[selectedTab].elbowAngle ?? 0),whatAngle:"knee\(vm.predictions[selectedTab].label)" )
+                        image: vm.predictions[selectedTab].imageForDisplay ?? UIImage(),
+                        handLineColor:colorFunction(angle: Int(vm.predictions[selectedTab].elbowAngle ?? 0),whatAngle:"elbow\(vm.predictions[selectedTab].label)" ),
+                        legLineColor:colorFunction(angle: Int(vm.predictions[selectedTab].elbowAngle ?? 0),whatAngle:"knee\(vm.predictions[selectedTab].label)" )
                     )
                 {
                     Image(uiImage: uiImg)

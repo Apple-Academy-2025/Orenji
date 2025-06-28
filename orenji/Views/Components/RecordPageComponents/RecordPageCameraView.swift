@@ -12,6 +12,7 @@ struct RecordPageCameraFrame: View {
     @Environment(\.presentationMode) var presentationMode
     @Binding var showCamera: Bool
     var onVideoRecorded: ((URL) -> Void)? = nil
+    @StateObject var connectivity = WatchConnectivityManager.shared
 
     @State private var isRecording = false
     @State private var lastVideoURL: URL? = nil
@@ -43,6 +44,7 @@ struct RecordPageCameraFrame: View {
                 Spacer()
                 Button(action: {
                     isRecording.toggle()
+                    isRecording ? connectivity.sendDisplayStateToWatch("activelyRecording") : print("")
                 }) {
                     Text(isRecording ? "Stop" : "Rekam")
                         .font(.title3)
