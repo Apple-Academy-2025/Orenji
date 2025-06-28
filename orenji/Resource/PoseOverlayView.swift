@@ -1,11 +1,11 @@
+// PoseOverlayView.swift
 import SwiftUI
 import Vision
 
 struct PoseOverlayView: View {
     let points: [VNHumanBodyPoseObservation.JointName: VNRecognizedPoint]
-    let evaluationColor: Color
-
-    let isRightHand: Bool  // ✅ Tambahkan ini
+    let evaluationColors: [VNHumanBodyPoseObservation.JointName: Color]
+    let isRightHand: Bool
 
     var jointPairs: [(VNHumanBodyPoseObservation.JointName, VNHumanBodyPoseObservation.JointName)] {
         if isRightHand {
@@ -26,33 +26,31 @@ struct PoseOverlayView: View {
             ]
         }
     }
-    
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                // Garis antar joint
+                // Garis antar joint dengan warna evaluasi
                 ForEach(Array(jointPairs.enumerated()), id: \.offset) { _, pair in
                     let jointA = pair.0
                     let jointB = pair.1
-                    
-                    if let pointA = points[jointA],
-                       let pointB = points[jointB],
-                       pointA.confidence > 0.1,
-                       pointB.confidence > 0.1 {
-                        
+                    if let pointA = points[jointA], let pointB = points[jointB],
+                       pointA.confidence > 0.1, pointB.confidence > 0.1 {
+
+                        let color = evaluationColors[jointA] ?? .yellow
+
                         Path { path in
-                            let rotatedX1 = 1 - pointA.location.y
-                            let rotatedY1 = pointA.location.x
-                            let rotatedX2 = 1 - pointB.location.y
-                            let rotatedY2 = pointB.location.x
-                            
-                            path.move(to: CGPoint(x: rotatedX1 * geometry.size.width, y: rotatedY1 * geometry.size.height))
-                            path.addLine(to: CGPoint(x: rotatedX2 * geometry.size.width, y: rotatedY2 * geometry.size.height))
+                            let x1 = (1 - pointA.location.y) * geometry.size.width
+                            let y1 = pointA.location.x * geometry.size.height
+                            let x2 = (1 - pointB.location.y) * geometry.size.width
+                            let y2 = pointB.location.x * geometry.size.height
+                            path.move(to: CGPoint(x: x1, y: y1))
+                            path.addLine(to: CGPoint(x: x2, y: y2))
                         }
-                        .stroke(evaluationColor, lineWidth: 2)
+                        .stroke(color, lineWidth: 3)
                     }
                 }
-                
+
                 // Titik semua joint
                 ForEach(Array(jointPairs.enumerated()), id: \.offset) { _, pair in
                     let jointA = pair.0
@@ -80,14 +78,9 @@ struct PoseOverlayView: View {
                         Circle()
                             .fill(evaluationColor)
                             .frame(width: 10, height: 10)
-                            .position(
-                                x: rotatedX * geometry.size.width,
-                                y: rotatedY * geometry.size.height
-                            )
+                            .position(x: x, y: y)
                     }
                 }
-                
-                
             }
         }
     }
