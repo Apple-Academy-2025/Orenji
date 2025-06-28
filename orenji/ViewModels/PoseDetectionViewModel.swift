@@ -8,12 +8,10 @@ class PoseDetectionViewModel: ObservableObject {
     @Published var isUserInFrame: Bool = false
     @Published var jointPoints: [PoseJoint] = []
     @Published var recognizedPoints: [VNHumanBodyPoseObservation.JointName: VNRecognizedPoint] = [:]
-
     @Published var holdProgress: CGFloat = 0
     @Published var isHoldingPose: Bool = false
     @Published var holdCompleted: Bool = false
     @Published var isEvaluatingPose: Bool = false
-
     @Published var elbowAngleNow: Int = 0
     @Published var legAngleNow: Int = 0
     @Published var isPoseCorrect: Bool = false
@@ -23,18 +21,17 @@ class PoseDetectionViewModel: ObservableObject {
     private var holdTime: CGFloat = 0
     var overlayFrame: CGRect = .zero
     private var audioPlayer: AVAudioPlayer?
-
     struct PoseJoint: Identifiable {
         let id = UUID()
         let position: CGPoint
         let inFrame: Bool
     }
-
+    
     // MARK: - Main Detection
     func processBuffer(_ buffer: CVPixelBuffer) {
         let request = VNDetectHumanBodyPoseRequest { [weak self] req, err in
             guard let self else { return }
-
+            
             guard let observations = req.results as? [VNHumanBodyPoseObservation],
                   let person = observations.first,
                   let recognizedPoints = try? person.recognizedPoints(.all) else {
@@ -45,14 +42,14 @@ class PoseDetectionViewModel: ObservableObject {
                 }
                 return
             }
-
+            
             let importantJoints: [VNHumanBodyPoseObservation.JointName] = [
                 .rightWrist, .rightShoulder
             ]
-
+            
             let screen = UIScreen.main.bounds
             var detected: [PoseJoint] = []
-
+            
             let allInside = importantJoints.allSatisfy { joint in
                 guard let point = recognizedPoints[joint], point.confidence > 0.3 else { return false }
                 let mirroredX = 1 - point.x
@@ -64,17 +61,17 @@ class PoseDetectionViewModel: ObservableObject {
                 detected.append(PoseJoint(position: converted, inFrame: inside))
                 return inside
             }
-
+            
             DispatchQueue.main.async {
                 self.isUserInFrame = allInside
                 self.jointPoints = detected
                 self.recognizedPoints = recognizedPoints
             }
         }
-
+        
         try? sequenceHandler.perform([request], on: buffer)
     }
-
+    
     // MARK: - Holding Logic
     func startHoldPose() {
         guard !isEvaluatingPose else { return }
@@ -89,11 +86,10 @@ class PoseDetectionViewModel: ObservableObject {
             guard let self = self else { return }
 
             self.updatePoseCorrectness(for: EvaluateRealtimeView.currentGlobalPhase)
-
             if self.isPoseCorrect {
                 self.holdTime += 0.1
                 self.holdProgress = min(self.holdTime / 3.0, 1.0)
-
+                
                 if self.holdTime >= 3.0 {
                     timer.invalidate()
                     self.holdCompleted = true
@@ -164,11 +160,34 @@ class PoseDetectionViewModel: ObservableObject {
             default:
                 self.isPoseCorrect = false
             }
-
             print("📌 [\(phase)] elbow: \(Int(elbowAngle)), leg: \(Int(legAngle)), correct: \(self.isPoseCorrect)")
         }
     }
-
+    
+    
+    
+    //    func updatePoseCorrectness(for phase: EvaluateRealtimeView.Phase) {
+    //        switch phase {
+    //        case .checkPhase1:
+    //            let elbowOK = abs(elbowAngleNow - 120) < 5
+    //            let legOK = (150...165).contains(CGFloat(legAngleNow))
+    //            isPoseCorrect = elbowOK && legOK
+    //
+    //        case .checkPhase2:
+    //            let legOK = abs(legAngleNow - 75) < 5
+    //            let elbowOK = abs(elbowAngleNow - 85) < 5
+    ////            let elbowOK = (45...90).contains(CGFloat(elbowAngleNow))
+    //            isPoseCorrect = legOK && elbowOK
+    //
+    //        case .checkPhase3:
+    //            let elbowOK = abs(elbowAngleNow - 170) < 5
+    //            let legOK = (160...170).contains(CGFloat(legAngleNow))
+    //            isPoseCorrect = elbowOK && legOK
+    //
+    //        default:
+    //            isPoseCorrect = false
+    //        }
+    //    }
     
 
     func cancelHold() {
@@ -178,12 +197,12 @@ class PoseDetectionViewModel: ObservableObject {
         isHoldingPose = false
         holdCompleted = false
     }
-
+    
     // MARK: - Pose Phase Detection
     enum ShootingPhase {
         case preparation, bending, release, unknown
     }
-
+    
     func currentPhaseType() -> ShootingPhase {
         guard let rightHip = recognizedPoints[.rightHip],
               let rightKnee = recognizedPoints[.rightKnee],
@@ -199,17 +218,16 @@ class PoseDetectionViewModel: ObservableObject {
               rightWrist.confidence > 0.3 else {
             return .unknown
         }
-
+        
         let legAngle = calculateAngle(a: rightHip.location, b: rightKnee.location, c: rightAnkle.location)
         let elbowAngle = calculateAngle(a: rightShoulder.location, b: rightElbow.location, c: rightWrist.location)
-
+        
         DispatchQueue.main.async {
             self.legAngleNow = Int(legAngle)
             self.elbowAngleNow = Int(elbowAngle)
         }
-
+        
         print("🔍 Leg Angle: \(Int(legAngle))°, Elbow Angle: \(Int(elbowAngle))°")
-
         if (150...165).contains(legAngle) && (115...125).contains(elbowAngle) {
             return .preparation
         } else if (70...80).contains(legAngle) && (45...55).contains(elbowAngle) {
@@ -220,7 +238,7 @@ class PoseDetectionViewModel: ObservableObject {
             return .unknown
         }
     }
-
+    
     // MARK: - Angle Calculation
     func calculateAngle(a: CGPoint, b: CGPoint, c: CGPoint) -> CGFloat {
         let ab = CGVector(dx: a.x - b.x, dy: a.y - b.y)

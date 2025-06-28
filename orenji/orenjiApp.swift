@@ -14,6 +14,7 @@ struct PostureBasketApp: App {
     @StateObject var connectivity = WatchConnectivityManager.shared
     @StateObject private var router = Router()
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
+
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
@@ -52,13 +53,20 @@ struct PostureBasketApp: App {
                                     RecordAnalysisView()
                                 case .RealtimePose:
                                     EvaluateRealtimeView()
+                                case .HistoryDetailView(let PhaseData, let selectedTab):
+                                    HistoryDetailView(PhaseDatas: PhaseData, selectedTab:selectedTab)
                                 case .History:
                                     HistoryView()
                                 case .Prefereces:
                                     PreferencesView()
+                                case .RecordAnalysisView:
+                                    EmptyView()
+                                case .TutorialView:
+                                    EmptyView()
                                 }
-                            }
+                            } 
                     }
+
                     .onChange(of: scenePhase) { oldPhase, newPhase in
                         switch newPhase {
                         case .active:

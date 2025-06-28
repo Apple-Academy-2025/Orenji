@@ -37,7 +37,7 @@ struct PoseOverlayView: View {
                     if let pointA = points[jointA], let pointB = points[jointB],
                        pointA.confidence > 0.1, pointB.confidence > 0.1 {
 
-                        let color = evaluationColors[jointA] ?? .yellow
+                        let color = evaluationColors[jointA] ?? .primer
 
                         Path { path in
                             let x1 = (1 - pointA.location.y) * geometry.size.width
@@ -52,14 +52,40 @@ struct PoseOverlayView: View {
                 }
 
                 // Titik semua joint
-                ForEach(points.keys.sorted(by: { $0.rawValue.rawValue < $1.rawValue.rawValue }), id: \.self) { key in
-                    if let point = points[key], point.confidence > 0.1 {
-                        let x = (1 - point.location.y) * geometry.size.width
-                        let y = point.location.x * geometry.size.height
+                ForEach(Array(jointPairs.enumerated()), id: \.offset) { _, pair in
+                    let jointA = pair.0
+                    let jointB = pair.1
+                    
+                    // Draw joint A if it has sufficient confidence
+                    if let pointA = points[jointA], pointA.confidence > 0.1 {
+                        let rotatedX = 1 - pointA.location.y
+                        let rotatedY = pointA.location.x
+                        
+                        let color = evaluationColors[jointA] ?? .primer
+                        
                         Circle()
-                            .fill(Color.white.opacity(0.7))
+                            .fill(color)
                             .frame(width: 10, height: 10)
-                            .position(x: x, y: y)
+                            .position(
+                                x: rotatedX * geometry.size.width,
+                                y: rotatedY * geometry.size.height
+                            )
+                    }
+                    
+                    // Draw joint B if it has sufficient confidence
+                    if let pointB = points[jointB], pointB.confidence > 0.1 {
+                        let rotatedX = 1 - pointB.location.y
+                        let rotatedY = pointB.location.x
+                        
+                        let color = evaluationColors[jointB] ?? .primer
+                        
+                        Circle()
+                            .fill(color)
+                            .frame(width: 10, height: 10)
+                            .position(
+                                x: rotatedX * geometry.size.width,
+                                y: rotatedY * geometry.size.height
+                            )
                     }
                 }
             }

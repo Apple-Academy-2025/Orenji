@@ -36,15 +36,14 @@ struct HomePageView: View {
                 
                 FeatureCardView(
                     title: "Record Analysis", subtitle: "Record and review your free-throw posture", imageName: "imageRecordAnalysis", action: {
-                        router.goTo(.RecordPose)
-                        startSession(type: .recording)
+                        router.goTo(.Instruksi(destination: .RecordPose, idPage: "record"))
                     }
                 )
                 
                 FeatureCardView(
                     title: "Evaluate Realtime", subtitle: "Learn to free-throw shooting in realtime", imageName: "evaluateRealtimeImage", action: {
                         router.goTo(.Instruksi(destination: .RealtimePose, idPage: "realtime"))
-                        startSession(type: .realtime)
+                        
                     }
                 )
                 
@@ -97,6 +96,7 @@ struct HomePageView: View {
             
         }
         .ignoresSafeArea()
+        .environmentObject(Router())
         .navigationBarBackButtonHidden(true)
     }
     
@@ -117,9 +117,9 @@ struct FeatureCardView: View {
     let subtitle: String
     let imageName: String
     let action: () -> Void
-    
+
     var body: some View {
-        Button(action: action, label: {
+        Button(action: action) {
             HStack {
                 ZStack(alignment: .leading) {
                     Image(imageName)
@@ -134,19 +134,16 @@ struct FeatureCardView: View {
                     )
                     .frame(width: 150)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    
                     VStack(alignment: .leading, spacing: 8) {
                         Text(title)
                             .font(.title2)
                             .fontWeight(.bold)
                             .foregroundColor(.white)
-                        
                         Text(subtitle)
                             .font(.caption)
                             .foregroundColor(.white.opacity(0.8))
                             .padding(.bottom,20)
                             .multilineTextAlignment(.leading)
-                        
                         Text("Start")
                             .font(.headline)
                             .foregroundColor(.black)
@@ -160,17 +157,25 @@ struct FeatureCardView: View {
                     .frame(maxWidth: .infinity, alignment: .trailing)
                 }
             }
-            .frame(maxWidth: .infinity)
-            .frame(height: 175)
-            .background(.backgroundGray)
-            .cornerRadius(18)
-            .overlay(
-                RoundedRectangle(cornerRadius: 18)
-                    .stroke(Color.primer, lineWidth: 2)
-            )
-            .padding(.bottom,20)}
+        }
+        .buttonStyle(ShrinkOnPressButtonStyle())
+        .frame(maxWidth: .infinity)
+        .frame(height: 175)
+        .background(Color.backgroundGray)
+        .cornerRadius(18)
+        .overlay(
+            RoundedRectangle(cornerRadius: 18)
+                .stroke(Color.primer, lineWidth: 2)
         )
-        
+        .padding(.bottom,20)
     }
 }
 
+struct ShrinkOnPressButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
+            .opacity(configuration.isPressed ? 0.95 : 1.0)
+            .animation(.easeOut(duration: 0.2), value: configuration.isPressed)
+    }
+}

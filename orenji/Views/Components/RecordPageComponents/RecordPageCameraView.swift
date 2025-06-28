@@ -12,6 +12,7 @@ struct RecordPageCameraFrame: View {
     @Environment(\.presentationMode) var presentationMode
     @Binding var showCamera: Bool
     var onVideoRecorded: ((URL) -> Void)? = nil
+    @StateObject var connectivity = WatchConnectivityManager.shared
 
     @State private var isRecording = false
     @State private var lastVideoURL: URL? = nil
@@ -26,6 +27,7 @@ struct RecordPageCameraFrame: View {
             .edgesIgnoringSafeArea(.all)
             Button(action: {
                 presentationMode.wrappedValue.dismiss()
+                connectivity.sendIdleState()
             }) {
                 Image("XIcon")
                     .foregroundColor(.black)
@@ -36,13 +38,14 @@ struct RecordPageCameraFrame: View {
                     .clipShape(Circle())
                     .shadow(radius: 5)
             }
-            .padding(.top, 8)
+            .padding(.top, 50)
             .padding(.trailing, 24)
             
             VStack {
                 Spacer()
                 Button(action: {
                     isRecording.toggle()
+                    isRecording ? connectivity.sendDisplayStateToWatch("activelyRecording") : print("")
                 }) {
                     Text(isRecording ? "Stop" : "Rekam")
                         .font(.title3)

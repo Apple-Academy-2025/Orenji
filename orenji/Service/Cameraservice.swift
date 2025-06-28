@@ -103,10 +103,10 @@ extension CameraService: AVCaptureVideoDataOutputSampleBufferDelegate {
                 let context = CIContext()
                 if let cgImage = context.createCGImage(ciImage, from: ciImage.extent) {
                     let originalUIImage = UIImage(cgImage: cgImage)
-                    if let resizedImage = resizeImage(image: originalUIImage, targetWidth: 250) {
-                        if let imageData = resizedImage.jpegData(compressionQuality: 0.2) {
-                            WatchConnectivityManager.shared.sendFrameToWatch(imageData)
-                        }
+                    if let resizedImage = resizeImage(image: originalUIImage, targetWidth: 250),
+                       let rotatedImage = rotateUIImage(resizedImage, byDegrees: 90),
+                       let imageData = rotatedImage.jpegData(compressionQuality: 0.2) {
+                        WatchConnectivityManager.shared.sendFrameToWatch(imageData)
                     }
                 }
                 onFrameCaptured?(pixelBuffer)
@@ -127,4 +127,26 @@ extension CameraService: AVCaptureVideoDataOutputSampleBufferDelegate {
         
         return newImage
     }
+    
+    private func rotateUIImage(_ image: UIImage, byDegrees degrees: CGFloat) -> UIImage? {
+        let radians = degrees * .pi / 180
+        var newSize = CGRect(origin: .zero, size: image.size)
+            .applying(CGAffineTransform(rotationAngle: radians))
+            .integral.size
+        UIGraphicsBeginImageContextWithOptions(newSize, false, image.scale)
+        if let context = UIGraphicsGetCurrentContext() {
+            context.translateBy(x: newSize.width / 2, y: newSize.height / 2)
+            context.rotate(by: radians)
+            image.draw(in: CGRect(x: -image.size.width / 2,
+                                  y: -image.size.height / 2,
+                                  width: image.size.width,
+                                  height: image.size.height))
+            let rotatedImage = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            return rotatedImage
+        }
+
+        return nil
+    }
+
 }

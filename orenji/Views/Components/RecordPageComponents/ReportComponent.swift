@@ -22,31 +22,64 @@ struct ReportComponent: View {
     var legFeedback2: String
     
     var body: some View {
-        ZStack{
-            Color.black
-                .ignoresSafeArea(edges: .top)
                 VStack(spacing: 16) {
                     // MARK: – Foto Utama
                     Group {
                       if let uiImg = myImage {
-                        // Jika ada foto dari myImage
-                        Image(uiImage: uiImg)
-                              .resizable()
-                              .scaledToFill()
-                              .clipped()
-                      } else {
-                        // Placeholder kalau nil
-                        Color.gray.opacity(0.3)
-                          .overlay(
-                            Image(systemName: "photo")
-                              .font(.largeTitle)
-                              .foregroundColor(.white.opacity(0.7))
-                          )
+                          ZStack() {
+                              
+                          // Placeholder kalau nil
+                          Color.gray
+                              .overlay(
+                                Image(uiImage: uiImg)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .clipped()
+                              )
+                              Text("\(phase)")
+                                  .foregroundColor(.white)
+                                  .frame(alignment: .center)
+                                  .padding(.horizontal, 40)
+                                  .padding(.vertical, 8)
+                                  .font(.system(size: 22, weight: .bold))
+                                  .background(
+                                      RoundedRectangle(cornerRadius: 10)
+                                          .fill(Color(uiColor: UIColor(hex: "#1B1F26")).opacity(0.5))
+                                  )
+                                  .padding(.bottom, 42)
+                                  .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                        
                       }
+                      } else {
+                          ZStack() {
+                              
+                          // Placeholder kalau nil
+                          Color.gray.opacity(0.3)
+                              .overlay(
+                                Image(systemName: "photo")
+                                    .font(.largeTitle)
+                                    .foregroundColor(.white.opacity(0.7))
+                              )
+                              Text("\(phase)")
+                                  .foregroundColor(.white)
+                                  .frame(alignment: .center)
+                                  .padding(.horizontal, 40)
+                                  .padding(.vertical, 8)
+                                  .font(.system(size: 22, weight: .bold))
+                                  .background(
+                                      RoundedRectangle(cornerRadius: 10)
+                                          .fill(Color(uiColor: UIColor(hex: "#1B1F26")).opacity(0.5))
+                                  )
+                                  .padding(.bottom, 42)
+                                  .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                        
+                      }
+                      }
+                        
                     }
                     .frame(
                       width: UIScreen.main.bounds.width,
-                      height: UIScreen.main.bounds.width - UIScreen.main.bounds.width/10
+                      height: UIScreen.main.bounds.width - UIScreen.main.bounds.width/6
                     )
                     .clipped()
                     .cornerRadius(10)
@@ -76,6 +109,7 @@ struct ReportComponent: View {
                                     .frame(width: 115, height: 115)
                                 VStack(spacing: 4) {
                                     Text("\(elbowImprovement)")
+                                        .multilineTextAlignment(.center)
                                         .font(.system(size: 10, weight: .bold))
                                         .foregroundColor(Color(uiColor: UIColor(hex: "#FF3B30")))
                                         .foregroundColor(.white)
@@ -138,6 +172,7 @@ struct ReportComponent: View {
                                     .frame(width: 115, height: 115)
                                 VStack(spacing: 4) {
                                     Text("\(legImprovement)")
+                                        .multilineTextAlignment(.center)
                                         .font(.system(size: 10, weight: .bold))
                                         .foregroundColor(Color(uiColor: UIColor(hex: "#11FF00")))
                                         .foregroundColor(.white)
@@ -175,32 +210,26 @@ struct ReportComponent: View {
                         
                     )
                     .padding(.horizontal, 16)
-                    Spacer()
                     
-                }
-                .ignoresSafeArea()
-            HStack{
-                Spacer()
-                Text("\(phase)")
-                    .foregroundColor(.white)
-                    .frame(alignment: .center)
-                    .padding(.horizontal, 40)
-                    .padding(.vertical, 8)
-                    .font(.system(size: 22, weight: .bold))
-                    .background(
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(Color(uiColor: UIColor(hex: "#1B1F26")).opacity(0.5))
-                    )
-                    .position(x:UIScreen.main.bounds.width/2,y:UIScreen.main.bounds.width-100)
-                Spacer()
-            }
- 
-            }
-            .background(Color.black)
-            .ignoresSafeArea()
+                }            .background(Color.black)
+
+
     }
 }
 
 #Preview {
     ReportComponent(myImage: nil, joints: nil , phase: "Test", elbowAngle: 90, elbowImprovement: "Test", elbowfeedback1: "Test", elbowfeedback2: "Test", legAngle: 90, legImprovement: "Test", legFeedback1: "Test", legFeedback2: "Test")
 }
+
+
+//Text("\(phase)")
+//    .foregroundColor(.white)
+//    .frame(alignment: .center)
+//    .padding(.horizontal, 40)
+//    .padding(.vertical, 8)
+//    .font(.system(size: 22, weight: .bold))
+//    .background(
+//        RoundedRectangle(cornerRadius: 10)
+//            .fill(Color(uiColor: UIColor(hex: "#1B1F26")).opacity(0.5))
+//    )
+//    .padding(.horizontal, 16)

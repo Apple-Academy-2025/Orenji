@@ -10,7 +10,9 @@ import UIKit
 import AVFoundation
 import SwiftUI
 
-class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelegate {
+
+class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelegate, AVCaptureVideoDataOutputSampleBufferDelegate {
+    var lastFrameTimestamp: TimeInterval = 0
     var captureSession: AVCaptureSession!
     var videoPreviewLayer: AVCaptureVideoPreviewLayer!
     var movieOutput = AVCaptureMovieFileOutput()
@@ -35,39 +37,111 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     func setupCamera() {
         captureSession = AVCaptureSession()
         captureSession.beginConfiguration()
+
+        captureSession.sessionPreset = .high
         
-        // Video Input
-        guard let videoCaptureDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back),
+        // Input kamera belakang
+        guard let videoCaptureDevice = AVCaptureDevice.default(.builtInWideAngleCamera,
+                                                               for: .video,
+                                                               position: .back),
               let videoInput = try? AVCaptureDeviceInput(device: videoCaptureDevice),
               captureSession.canAddInput(videoInput) else {
-            print("Gagal inisialisasi kamera depan")
+            print("Gagal inisialisasi kamera belakang")
             return
         }
         captureSession.addInput(videoInput)
-
-//        if let audioCaptureDevice = AVCaptureDevice.default(for: .audio),
-//           let audioInput = try? AVCaptureDeviceInput(device: audioCaptureDevice),
-//           captureSession.canAddInput(audioInput) {
-//            captureSession.addInput(audioInput)
-//        }
         
-        // Output
+        // Tambah output movie file (rekaman)
         if captureSession.canAddOutput(movieOutput) {
             captureSession.addOutput(movieOutput)
         }
         
+        // Tambah output video data (frame realtime)
+        let videoDataOutput = AVCaptureVideoDataOutput()
+        videoDataOutput.alwaysDiscardsLateVideoFrames = false
+        let videoDataOutputQueue = DispatchQueue(label: "video_data_output_queue")
+        videoDataOutput.setSampleBufferDelegate(self, queue: videoDataOutputQueue)
+        
+        if captureSession.canAddOutput(videoDataOutput) {
+            captureSession.addOutput(videoDataOutput)
+        }
+        
         captureSession.commitConfiguration()
         
-        // Preview
+        // Setup preview layer
         videoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         videoPreviewLayer.frame = view.layer.bounds
         videoPreviewLayer.videoGravity = .resizeAspectFill
         view.layer.addSublayer(videoPreviewLayer)
         
-        // Start session di background thread
+
+        // Mulai sesi
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             self?.captureSession.startRunning()
         }
+    }
+    
+    
+    func captureOutput(_ output: AVCaptureOutput,
+                           didOutput sampleBuffer: CMSampleBuffer,
+                           from connection: AVCaptureConnection) {
+            guard !isRecording else {
+                // Sedang rekam, skip kirim frame
+                return
+            }
+            
+            let currentTime = CFAbsoluteTimeGetCurrent()
+            if currentTime - lastFrameTimestamp > 0.1 {
+                lastFrameTimestamp = currentTime
+                
+                if let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
+                    let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+                    let context = CIContext()
+                    if let cgImage = context.createCGImage(ciImage, from: ciImage.extent) {
+                        let originalUIImage = UIImage(cgImage: cgImage)
+                        if let resizedImage = resizeImage(image: originalUIImage, targetWidth: 250),
+                           let rotatedImage = rotateUIImage(resizedImage, byDegrees: 90),
+                           let imageData = rotatedImage.jpegData(compressionQuality: 0.2) {
+                            WatchConnectivityManager.shared.sendFrameToWatch(imageData)
+                        }
+                    }
+                }
+            }
+        }
+    
+    private func resizeImage(image: UIImage, targetWidth: CGFloat) -> UIImage? {
+        let size = image.size
+        let widthRatio  = targetWidth / size.width
+        let newSize = CGSize(width: size.width * widthRatio, height: size.height * widthRatio)
+        let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
+        
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+        image.draw(in: rect)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return newImage
+    }
+    
+    private func rotateUIImage(_ image: UIImage, byDegrees degrees: CGFloat) -> UIImage? {
+        let radians = degrees * .pi / 180
+        var newSize = CGRect(origin: .zero, size: image.size)
+            .applying(CGAffineTransform(rotationAngle: radians))
+            .integral.size
+        UIGraphicsBeginImageContextWithOptions(newSize, false, image.scale)
+        if let context = UIGraphicsGetCurrentContext() {
+            context.translateBy(x: newSize.width / 2, y: newSize.height / 2)
+            context.rotate(by: radians)
+            image.draw(in: CGRect(x: -image.size.width / 2,
+                                  y: -image.size.height / 2,
+                                  width: image.size.width,
+                                  height: image.size.height))
+            let rotatedImage = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            return rotatedImage
+        }
+
+        return nil
     }
     
     func startRecording() {
@@ -95,14 +169,12 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
 struct CameraView: UIViewControllerRepresentable {
     @Binding var isRecording: Bool
     var onFinish: (URL) -> Void
-
     func makeUIViewController(context: Context) -> CameraViewController {
         let controller = CameraViewController()
         controller.onFinishRecording = onFinish
         controller.isRecordingBinding = $isRecording
         return controller
     }
-
     func updateUIViewController(_ uiViewController: CameraViewController, context: Context) {
         uiViewController.isRecording = isRecording
         uiViewController.isRecordingBinding = $isRecording

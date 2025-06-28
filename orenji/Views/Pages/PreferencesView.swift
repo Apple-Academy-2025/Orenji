@@ -72,9 +72,14 @@ struct PreferencesView: View {
             Spacer()
             Spacer()
 
-            Button("Next", action: {
+            Button(action: {
                 router.goTo(.Home)
-            })
+            }) {
+                Text("Save")
+                    .font(.headline)
+                    .foregroundStyle(.black)
+                    .frame(maxWidth: .infinity)
+            }
             .padding()
             .frame(maxWidth: .infinity)
             .background(Color.primer)
@@ -84,7 +89,6 @@ struct PreferencesView: View {
         .padding()
         .frame(maxHeight: .infinity)
         .background(.black)
-        .navigationBarBackButtonHidden(true)
     }
 }
 

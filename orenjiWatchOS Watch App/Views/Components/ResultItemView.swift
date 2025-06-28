@@ -13,6 +13,7 @@ struct ResultItemView: View {
     let title: String
     let angle: Int
     let improvement: String
+    let target: Int
 
     var body: some View {
         VStack {
@@ -28,7 +29,7 @@ struct ResultItemView: View {
                     .bold()
                     .font(.largeTitle)
                     .foregroundStyle(.orange)
-                Text("/90°")
+                Text("\(target)")
                     .bold()
                     .font(.title2)
                     .foregroundStyle(.green)
@@ -54,5 +55,5 @@ struct ResultItemView: View {
 
 
 #Preview {
-    ResultItemView(title: "sa", angle: 50, improvement: "ss")
+    ResultItemView(title: "sa", angle: 50, improvement: "ss", target: 90)
 }

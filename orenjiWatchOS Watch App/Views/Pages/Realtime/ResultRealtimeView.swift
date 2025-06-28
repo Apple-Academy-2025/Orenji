@@ -10,9 +10,8 @@ import SwiftUI
 struct ResultRealtimeView: View {
     @StateObject var connectivity = WatchConnectivityManager.shared
     var body: some View {
-        ZStack {
-            Color.black.ignoresSafeArea()
-            VStack(spacing: 20) {
+        ScrollView{
+            VStack(spacing: 8) {
                 Spacer()
                 VStack(spacing: 12) {
                     Text("Congratulations!")
@@ -38,23 +37,28 @@ struct ResultRealtimeView: View {
                 
                 Spacer()
                 
-                Button(action: {}) {
+                Button(action: {
+                    connectivity.resetToIdle()
+                }) {
                     Text("Close")
-                        .fontWeight(.semibold)
+                        .font(.headline)
                         .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .background(
-                            Capsule().fill(Color(.darkGray))
-                        )
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
+                .frame(width: .infinity, height: 70)
+                .background(.grayButton)
+                .cornerRadius(.infinity)
                 .buttonStyle(PlainButtonStyle())
-                .padding(.bottom, 8)
+                .padding(.horizontal)
             }
-            .padding(.horizontal)
+            .padding()
+            .navigationTitle("Evaluate Realtime")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
         }
-        .navigationTitle("Evaluate Realtime")
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
     }
+}
+
+#Preview {
+    ResultRealtimeView()
 }

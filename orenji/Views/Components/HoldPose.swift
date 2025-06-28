@@ -36,7 +36,7 @@ struct HoldPose: View {
                     // Warning banner di ujung atas layar
                     if let message = warningMessage {
                         VStack(spacing: 0) {
-                            Color.red
+                            Color.red.opacity(0.6)
                                 .frame(height: 120) // tinggi minimal, seperti nav bar
                                 .overlay(
                                     Text(message)

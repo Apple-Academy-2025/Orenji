@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PreRecordOverlay: View {
     @EnvironmentObject var router: Router
+    @StateObject var connectivity = WatchConnectivityManager.shared
 
     let isRecordingStarted: Bool
     let isOverlayVisible: Bool
@@ -29,13 +30,40 @@ struct PreRecordOverlay: View {
         Group {
             if !isRecordingStarted && isOverlayVisible {
                 FrameOverlay(boxSize: boxSize, borderColor: borderColor)
-
                 
+
+
+                GeometryReader { geo in
+                    VStack {
+                        if(statusText != nil) {
+                            Text(statusText!)
+                                .font(.system(size: 45, weight: .bold))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 52)
+                                .padding(.vertical, 20)
+                                .background(borderColor.opacity(0.6))
+                                .cornerRadius(20)
+                                .padding(.top, 12)
+                        } else {
+                            Text("Make sure to keep your ball and feet visible within the frame")
+                                .multilineTextAlignment(.center)
+                                .font(.system(size: 20, weight: .bold))
+                                .foregroundColor(.white)
+                                .padding(.top, 12)
+                        }
+                    }
+                    .position(x: geo.size.width / 2,
+                              y: (geo.size.height - boxSize.height) / 2 - 40)
+                }
+                .offset(y: -8)
 
 
                 VStack {
                     HStack {
-                        Button { router.pop() } label: {
+                        Button {
+                            router.pop()
+                            connectivity.sendIdleState()
+                        } label: {
                             Image(systemName: "chevron.left")
                                 .foregroundColor(.black)
                                 .padding()
@@ -52,6 +80,7 @@ struct PreRecordOverlay: View {
                                 .font(.system(size: 20, weight: .bold))
                                 .foregroundColor(.white)
 
+
                             Text(statusText)
                                 .font(.system(size: 16, weight: .medium))
                                 .foregroundColor(.white)
@@ -67,19 +96,7 @@ struct PreRecordOverlay: View {
                 }
                 
             }
-
-            if !isRecordingStarted && isOverlayVisible && isUserInFrame {
-                VStack(spacing: 8) {
-                    Text("✅ Hold still...")
-                        .foregroundColor(.green)
-                        .bold()
-                    Text("\(holdSeconds)")
-                        .font(.title)
-                        .foregroundColor(.green)
-                }
-                .offset(y: 180)
-            }
-
+            
             if showWarningText {
                 VStack {
                     Text(warningText)
