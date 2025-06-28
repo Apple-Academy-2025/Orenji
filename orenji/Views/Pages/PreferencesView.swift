@@ -72,19 +72,23 @@ struct PreferencesView: View {
             Spacer()
             Spacer()
 
-            Button(action: {}, label: {
-                Text("Next")
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(Color.primer)
-                .foregroundStyle(.black)
-                .cornerRadius(14)
-            })
+            Button(action: {
+                router.goTo(.Home)
+            }) {
+                Text("Save")
+                    .font(.headline)
+                    .foregroundStyle(.black)
+                    .frame(maxWidth: .infinity)
+            }
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(Color.primer)
+            .foregroundStyle(.black)
+            .cornerRadius(14)
         }
         .padding()
         .frame(maxHeight: .infinity)
         .background(.black)
-        .navigationBarBackButtonHidden(true)
     }
 }
 

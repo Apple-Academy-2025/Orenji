@@ -62,7 +62,7 @@ final class CameraService: NSObject, ObservableObject {
 
             // ⬇️ iOS 17 compatible
             if let connection = videoOutput.connection(with: .video) {
-                connection.videoRotationAngle = 90
+                connection.videoRotationAngle = 0
             }
         }
 
