@@ -474,73 +474,46 @@
     }
 
 
-        
-        func colorForElbowAngle(_ angle: Double, target: Double) -> Color {
-            let delta = abs(angle - target)
-            if delta < 5 {
-                return .green
-            } else if delta < 15 {
-                return .yellow
-            } else {
-                return .red
-            }
-        }
-        
-        func colorForLegAngle(_ angle: Double, target: Double) -> Color {
-            let delta = abs(angle - target)
-            if delta < 5 {
-                return .green
-            } else if delta < 15 {
-                return .yellow
-            } else {
-                return .red
-            }
-        }
-        
-        private func startCountdown() {
-            isCountingDown = true
-            countdown = 3
-            Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-                if countdown > 1 {
-                    connectivity.sendDisplayStateToWatch("showNumber", value: countdown)
-                    countdown -= 1
-                } else {
-                    timer.invalidate()
-                    isCountingDown = false
-                    connectivity.sendDisplayStateToWatch("showStart")
-                    withAnimation(.easeIn(duration: 0.2)) { showStartText = true }
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                        withAnimation(.easeOut(duration: 0.2)) { showStartText = false }
-                        beginRecording()
-                    }
+struct EvaluationFinishedView: View {
+    @EnvironmentObject var router: Router
+    var loopCount: Int
+    
+    var body: some View {
+        ZStack {
+            Color.black.opacity(0.6)
+                .ignoresSafeArea()
+            
+            VStack(spacing: 20) {
+                Text("✅ You have completed")
+                    .font(.title2)
+                    .foregroundColor(.white)
+                
+                Text("\(loopCount) phase\(loopCount > 1 ? "s" : "")!")
+                    .font(.system(size: 48, weight: .bold))
+                    .foregroundColor(.green)
+                
+                Button(action: {
+                    router.pop()
+                }) {
+                    Text("Done")
+                        .font(.headline)
+                        .padding()
+                        .frame(width: 120)
+                        .background(Color.green)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
                 }
+                .padding(.top, 20)
             }
-        }
-        
-        private func beginRecording() {
-            connectivity.sendDisplayStateToWatch("activelyRealtime")
-            isRecordingStarted = true
-            phase = .checkPhase1
-            poseDetector.startHoldPose()
-        }
-        
-        private func configureAudioSessionOnce() {
-            do {
-                let session = AVAudioSession.sharedInstance()
-                try session.setCategory(.playback, mode: .default, options: [.duckOthers, .mixWithOthers, .defaultToSpeaker])
-                try session.setActive(true)
-                print("🔊 Audio session ready")
-            } catch {
-                print("❌ Audio session error: \(error)")
-            }
+            .padding()
+            .background(Color.black.opacity(0.75))
+            .cornerRadius(20)
+            .padding(.horizontal, 40)
         }
     }
-
-
-
+    
+}
     #Preview {
         EvaluateRealtimeView()
             .environmentObject(Router())
-    }
-
+    }   
