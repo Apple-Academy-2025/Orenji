@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PreRecordOverlay: View {
     @EnvironmentObject var router: Router
+    @StateObject var connectivity = WatchConnectivityManager.shared
 
     let isRecordingStarted: Bool
     let isOverlayVisible: Bool
@@ -47,7 +48,10 @@ struct PreRecordOverlay: View {
 
                 VStack {
                     HStack {
-                        Button { router.pop() } label: {
+                        Button {
+                            router.pop()
+                            connectivity.sendDisplayStateToWatch("detectingPose")
+                        } label: {
                             Image(systemName: "chevron.left")
                                 .foregroundColor(.black)
                                 .padding()

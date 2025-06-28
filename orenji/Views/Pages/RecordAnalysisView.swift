@@ -16,6 +16,7 @@ struct RecordAnalysisView: View {
     @StateObject private var vm = RecordFeatureViewModel()
     @State private var reportView: Bool = false
     @EnvironmentObject var router: Router
+    @StateObject var connectivity = WatchConnectivityManager.shared
     
     var body: some View {
         ZStack {
@@ -37,6 +38,8 @@ struct RecordAnalysisView: View {
             else if reportView {
                 ReportView(vm: vm, reportView: $reportView, showCamera: $showCamera).onAppear {
                     vm.konversiSemuaPredictionKeFrameData()
+                    let allAnalysisResults = vm.bestFrameData.map { phaseModel(for: $0) }
+                    connectivity.sendAnalysisResultsToWatch(sessions: allAnalysisResults)
                     vm.simpanKeDataset(context: modelContext, frames: vm.bestFrameData, date: Date.now)
                 }
             }
@@ -45,6 +48,21 @@ struct RecordAnalysisView: View {
         .background(Color.black.ignoresSafeArea())
         .navigationBarBackButtonHidden(true)
         .ignoresSafeArea()
+    }
+    
+    private func phaseModel(for frameData: FrameData) -> RecordAnalysisModel {
+        let phase = PhaseModel(
+            name: frameData.label ?? "",
+            image: "",
+            elbowAngle: frameData.elbowAngle ?? 0,
+            legAngle: frameData.kneeAngle ?? 0,
+            improvements: [
+                "Elbow feedback otomatis di sini",
+                "Knee feedback otomatis di sini"
+            ],
+            imageModel: frameData.imageForDisplay
+        )
+        return RecordAnalysisModel(date: Date(), phases: [phase])
     }
 }
 

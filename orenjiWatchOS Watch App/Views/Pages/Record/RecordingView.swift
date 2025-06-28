@@ -10,16 +10,17 @@ struct RecordingView: View {
     
     var body: some View {
         ZStack {
-            if let image = connectivityManager.receivedImage,
-               connectivityManager.recordingDisplay != .activelyRealtime {
-                Image(uiImage: image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-            } else if connectivityManager.recordingDisplay != .activelyRealtime {
-                Rectangle().foregroundColor(.gray.opacity(0.5))
-                Image(systemName: "photo.on.rectangle.angled")
-                    .font(.largeTitle).foregroundColor(.white)
-                Text("Menunggu iPhone...").font(.caption).foregroundColor(.white).offset(y: 30)
+            if connectivityManager.recordingDisplay != .activelyRealtime {
+                if let image = connectivityManager.receivedImage {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                } else {
+                    Rectangle().foregroundColor(.gray.opacity(0.5))
+                    Image(systemName: "photo.on.rectangle.angled")
+                        .font(.largeTitle).foregroundColor(.white)
+                    Text("Menunggu iPhone...").font(.caption).foregroundColor(.white).offset(y: 30)
+                }
             }
             
             switch connectivityManager.recordingDisplay {

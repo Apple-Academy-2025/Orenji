@@ -107,20 +107,20 @@ class WatchConnectivityManager: NSObject, ObservableObject, WCSessionDelegate {
         WCSession.default.sendMessage(message, replyHandler: nil) { error in
             print("Gagal mengirim stop session command: \(error.localizedDescription)")
         }
-        
-        if sessionType == .recording {
-            sendAnalysisResultsToWatch(sessions: MockData.sessions)
-        }
     }
 
-    private func sendAnalysisResultsToWatch(sessions: [RecordAnalysisModel]) {
+    func sendAnalysisResultsToWatch(sessions: [RecordAnalysisModel]) {
         do {
             let encodedData = try JSONEncoder().encode(sessions)
-            let userInfo = ["analysisResult": encodedData]
-            WCSession.default.transferUserInfo(userInfo)
-            print("Mengirim \(sessions.count) hasil sesi ke Watch.")
+            let temporaryDirectory = FileManager.default.temporaryDirectory
+            let fileName = "\(UUID().uuidString).json"
+            let fileURL = temporaryDirectory.appendingPathComponent(fileName)
+            try encodedData.write(to: fileURL)
+            let fileTransfer = WCSession.default.transferFile(fileURL, metadata: nil)
+            print("Berhasil memulai transfer file \(fileName) ke Watch.")
+            
         } catch {
-            print("Gagal meng-encode atau mengirim hasil analisis: \(error.localizedDescription)")
+            print("Gagal meng-encode atau menyimpan file untuk dikirim: \(error.localizedDescription)")
         }
     }
 

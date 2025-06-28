@@ -60,39 +60,12 @@ struct PostureBasketApp: App {
                                     HistoryView()
                                 case .Prefereces:
                                     PreferencesView()
+                                case .RecordAnalysisView:
+                                    EmptyView()
+                                case .TutorialView:
+                                    EmptyView()
                                 }
                             } 
-                    } else {
-                        if !hasSeenOnboarding {
-                            OnboardingView {
-                                hasSeenOnboarding = true
-                            }
-                        } else {
-                            NavigationStack(path: $router.path) {
-                                HomePageView()
-                                    .navigationDestination(for: Route.self) { route in
-                                        switch route {
-                                        case .Home:
-                                            HomePageView()
-                                        case .Tutorial:
-                                            TutorialView()
-                                        case .Instruksi(let destination, let idPage):
-                                            InstruksiView(destination: destination, idPage: idPage)
-                                        case .RecordAnalysisView:
-                                            RecordAnalysisView()
-                                        case .RealtimePose(let titlePage):
-                                            EvaluateRealtimeView()
-                                        case .HistoryDetailView(let PhaseData, let selectedTab):
-                                            HistoryDetailView(PhaseDatas: PhaseData, selectedTab: selectedTab)
-                                        case .History:
-                                            HistoryView()
-                                        case .TutorialView:
-                                            TutorialView()
-                                        }
-                                    }
-                            }
-                        }
-                        
                     }
                     .onChange(of: scenePhase){ oldPhase, newPhase in
                                             switch newPhase{
@@ -114,7 +87,6 @@ struct PostureBasketApp: App {
         }
     }
 
-    /// 🔊 Fungsi untuk setup audio session
     private func configureAudioSession() {
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)

@@ -14,6 +14,7 @@ struct PhaseModel: Identifiable, Codable {
     var elbowAngle: Double?
     var legAngle: Double?
     var improvements: [String]
+    var imageModel: Data? = nil
     
     init(
         id: UUID = UUID(),
@@ -21,7 +22,8 @@ struct PhaseModel: Identifiable, Codable {
         image: String,
         elbowAngle: Double? = nil,
         legAngle: Double? = nil,
-        improvements: [String] = []
+        improvements: [String] = [],
+        imageModel: Data? = nil
     ) {
         self.id = id
         self.name = name
@@ -29,6 +31,7 @@ struct PhaseModel: Identifiable, Codable {
         self.elbowAngle = elbowAngle
         self.legAngle = legAngle
         self.improvements = improvements
+        self.imageModel = imageModel
     }
 }
 

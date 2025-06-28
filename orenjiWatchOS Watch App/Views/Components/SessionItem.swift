@@ -15,42 +15,49 @@ struct SessionItemView: View {
         VStack {
             ScrollView {
                 ZStack(alignment: .top) {
-                    Image("image1")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 180)
-                        .frame(maxWidth: .infinity)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.orange, lineWidth: 2)
-                        )
-                        .overlay(
-                            Text("Preparation")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .padding(.vertical, 10)
-                                .frame(maxWidth: .infinity)
-                                .background(.black.opacity(0.6))
-                                .clipShape(RoundedRectangle(cornerRadius: 10)),
-                            alignment: .bottom
-                        )
+                    if let data = session.phases.first?.imageModel, let uiImage = UIImage(data: data) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 180)
+                            .frame(maxWidth: .infinity)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color.orange, lineWidth: 2)
+                            )
+                            .overlay(
+                                Text(session.phases.first?.name ?? "")
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                    .padding(.vertical, 10)
+                                    .frame(maxWidth: .infinity)
+                                    .background(.black.opacity(0.6))
+                                    .clipShape(RoundedRectangle(cornerRadius: 10)),
+                                alignment: .bottom
+                            )
+                    }
                 }
                 .padding(.vertical,20)
                 .padding(.horizontal)
                 ForEach(session.phases) { item in
                     VStack {
+                        let (_, elbowTarget) = targetAndTitle(for: "elbow", phaseName: item.name.lowercased())
+                        let (_, legTarget) = targetAndTitle(for: "leg", phaseName: item.name.lowercased())
+                                                
                             ResultItemView(
                                 title: "Elbow",
                                 angle: Int(item.elbowAngle ?? 0),
-                                improvement: item.improvements[0]
+                                improvement: item.improvements[0],
+                                target: elbowTarget
                             )
                             .padding()
 
                             ResultItemView(
                                 title: "Leg",
                                 angle: Int(item.legAngle ?? 0),
-                                improvement: item.improvements[1]
+                                improvement: item.improvements[1],
+                                target: legTarget
                             )
                             .padding()
                         }
@@ -72,6 +79,25 @@ struct SessionItemView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
+    
+    private func targetAndTitle(for bodyPart: String, phaseName: String) -> (String, Int) {
+            switch (bodyPart.lowercased(), phaseName.lowercased()) {
+            case ("elbow", "preparation"):
+                return ("Elbow Position", 90)
+            case ("elbow", "bending"):
+                return ("Elbow Depth", 90)
+            case ("elbow", "release"):
+                return ("Elbow Finish", 160)
+            case ("leg", "preparation"):
+                return ("Leg Stand", 160)
+            case ("leg", "bending"):
+                return ("Leg Bend", 118)
+            case ("leg", "release"):
+                return ("Leg Follow Through", 160)
+            default:
+                return ("Unknown", 0)
+            }
+        }
 }
 
 #Preview {
