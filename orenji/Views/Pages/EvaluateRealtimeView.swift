@@ -510,7 +510,7 @@
                 .padding(.horizontal, 40)
             }
         }
-    }
+
 
     #Preview {
         EvaluateRealtimeView()
