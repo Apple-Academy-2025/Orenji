@@ -15,6 +15,7 @@ struct HoldPose: View {
     var holdProgress: Double
     var warningMessage: String? // nil = tidak tampil
     var warningScale: CGFloat
+    var correct: Bool
 
     
     var body: some View {
@@ -69,7 +70,8 @@ struct HoldPose: View {
                         .offset(y:-90)
                     
 
-                    if(warningMessage == nil) {
+                      
+                    if correct {
                         Text("HOLD POSITION IN")
                             .font(.system(size: 28, weight: .bold))
                             .foregroundColor(.white)
