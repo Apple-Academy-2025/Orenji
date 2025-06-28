@@ -10,6 +10,7 @@ import UIKit
 import AVFoundation
 import SwiftUI
 
+
 class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelegate, AVCaptureVideoDataOutputSampleBufferDelegate {
     var lastFrameTimestamp: TimeInterval = 0
     var captureSession: AVCaptureSession!
@@ -36,7 +37,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
     func setupCamera() {
         captureSession = AVCaptureSession()
         captureSession.beginConfiguration()
-        
+
         captureSession.sessionPreset = .high
         
         // Input kamera belakang
@@ -73,6 +74,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         videoPreviewLayer.videoGravity = .resizeAspectFill
         view.layer.addSublayer(videoPreviewLayer)
         
+
         // Mulai sesi
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             self?.captureSession.startRunning()
@@ -167,14 +169,12 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
 struct CameraView: UIViewControllerRepresentable {
     @Binding var isRecording: Bool
     var onFinish: (URL) -> Void
-    
     func makeUIViewController(context: Context) -> CameraViewController {
         let controller = CameraViewController()
         controller.onFinishRecording = onFinish
         controller.isRecordingBinding = $isRecording
         return controller
     }
-    
     func updateUIViewController(_ uiViewController: CameraViewController, context: Context) {
         uiViewController.isRecording = isRecording
         uiViewController.isRecordingBinding = $isRecording

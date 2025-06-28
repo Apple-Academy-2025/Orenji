@@ -23,13 +23,15 @@ struct PreRecordOverlay: View {
     let showStartText: Bool
     let boxSize: CGSize
     let borderColor: Color
-    let statusText: String?
+    let statusText: String
     let statusTitle: String
 
     var body: some View {
         Group {
             if !isRecordingStarted && isOverlayVisible {
                 FrameOverlay(boxSize: boxSize, borderColor: borderColor)
+                
+
 
                 GeometryReader { geo in
                     VStack {
@@ -55,6 +57,7 @@ struct PreRecordOverlay: View {
                 }
                 .offset(y: -8)
 
+
                 VStack {
                     HStack {
                         Button {
@@ -77,7 +80,8 @@ struct PreRecordOverlay: View {
                                 .font(.system(size: 20, weight: .bold))
                                 .foregroundColor(.white)
 
-                            Text(statusText ?? "")
+
+                            Text(statusText)
                                 .font(.system(size: 16, weight: .medium))
                                 .foregroundColor(.white)
                                 .padding(.horizontal, 16)

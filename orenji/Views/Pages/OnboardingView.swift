@@ -19,8 +19,10 @@ struct OnboardingView: View {
             TabView(selection: $currentPage) {
                 
                 OnboardingContainer(
+
                     imageName: "onboardwave3",
                     anotherImage: "imageOnboarding1",
+
                     downWave: true,
                     title: "Know What Went Wrong",
                     subtitle: "Capturing your posture and Identify incorrect postures with a detailed report.",
@@ -31,7 +33,9 @@ struct OnboardingView: View {
                 
                 OnboardingContainer(
                     imageName: "onboardwave2",
+
                     anotherImage: "imageOnboarding2",
+
                     title: "Correct Your Posture Instantly",
                     subtitle: "Real-time tips to help perfect your free-throw form.",
                     showStartButton: false,
@@ -41,8 +45,10 @@ struct OnboardingView: View {
                 .tag(1)
                 
                 OnboardingContainer(
+
                     imageName: "onboardwave1",
                     anotherImage: "Hand",
+
                     title: "Hands-Free Session Control",
                     subtitle: "Integrated with your Apple Watch — stop sessions and view posture guidance from a distance!",
                     showStartButton: true,

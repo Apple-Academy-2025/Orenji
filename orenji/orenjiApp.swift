@@ -66,20 +66,19 @@ struct PostureBasketApp: App {
                                 }
                             } 
                     }
-                    .onChange(of: scenePhase){ oldPhase, newPhase in
-                                            switch newPhase{
-                                            case .active:
-                                                print("")
-                                                connectivity.sendAppState(state: true)
-                                            case .inactive:
-                                                connectivity.sendAppState(state: false)
-                                            case .background:
-                                                print("")
-                                            default:
-                                                break
-                                            }
-                                        }
-                  .modelContainer(for: [PhaseData.self])
+
+                    .onChange(of: scenePhase) { oldPhase, newPhase in
+                        switch newPhase {
+                        case .active:
+                            connectivity.sendAppState(state: true)
+                        case .inactive:
+                            connectivity.sendAppState(state: false)
+                        case .background:
+                            break
+                        @unknown default:
+                            break
+                        }
+                    }
                     .environmentObject(router)
                 }
             }

@@ -74,7 +74,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		ADA3BC122E0C626600D9E1BA /* Exceptions for "orenji" folder in "orenjiWatchOS Watch App" target */ = {
+		F854A4A22E0D09C90079D7EC /* Exceptions for "orenji" folder in "orenjiWatchOS Watch App" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Models/AppState.swift,
@@ -85,6 +85,13 @@
 				Models/RecordAnalysisModel.swift,
 			);
 			target = F854A33E2E0C5E150079D7EC /* orenjiWatchOS Watch App */;
+		};
+		F854A4A92E0D0B870079D7EC /* Exceptions for "orenji" folder in "orenji" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = F862F5372DFBA9EF00D476A9 /* orenji */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -107,7 +114,8 @@
 		F862F53A2DFBA9EF00D476A9 /* orenji */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				ADA3BC122E0C626600D9E1BA /* Exceptions for "orenji" folder in "orenjiWatchOS Watch App" target */,
+				F854A4A92E0D0B870079D7EC /* Exceptions for "orenji" folder in "orenji" target */,
+				F854A4A22E0D09C90079D7EC /* Exceptions for "orenji" folder in "orenjiWatchOS Watch App" target */,
 			);
 			path = orenji;
 			sourceTree = "<group>";
@@ -524,7 +532,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"orenjiWatchOS Watch App/Preview Content\"";
-				DEVELOPMENT_TEAM = 8BSYY8W6GT;
+				DEVELOPMENT_TEAM = KMD5NUN6BL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = orenjiWatchOS;
@@ -554,7 +562,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"orenjiWatchOS Watch App/Preview Content\"";
-				DEVELOPMENT_TEAM = 8BSYY8W6GT;
+				DEVELOPMENT_TEAM = KMD5NUN6BL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = orenjiWatchOS;
@@ -781,10 +789,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"orenji/Preview Content\"";
-				DEVELOPMENT_TEAM = 8BSYY8W6GT;
+				DEVELOPMENT_TEAM = KMD5NUN6BL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSCameraUsageDescription = "We need camera access to detect your body pose in real-time";
+				INFOPLIST_FILE = orenji/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera to detect your posture in real-time.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -811,10 +820,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"orenji/Preview Content\"";
-				DEVELOPMENT_TEAM = 8BSYY8W6GT;
+				DEVELOPMENT_TEAM = KMD5NUN6BL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSCameraUsageDescription = "We need camera access to detect your body pose in real-time";
+				INFOPLIST_FILE = orenji/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera to detect your posture in real-time.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

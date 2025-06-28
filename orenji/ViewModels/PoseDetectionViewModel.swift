@@ -8,22 +8,19 @@ class PoseDetectionViewModel: ObservableObject {
     @Published var isUserInFrame: Bool = false
     @Published var jointPoints: [PoseJoint] = []
     @Published var recognizedPoints: [VNHumanBodyPoseObservation.JointName: VNRecognizedPoint] = [:]
-    
     @Published var holdProgress: CGFloat = 0
     @Published var isHoldingPose: Bool = false
     @Published var holdCompleted: Bool = false
     @Published var isEvaluatingPose: Bool = false
-    
     @Published var elbowAngleNow: Int = 0
     @Published var legAngleNow: Int = 0
     @Published var isPoseCorrect: Bool = false
-    
+
     private var sequenceHandler = VNSequenceRequestHandler()
     private var holdTimer: Timer? = nil
     private var holdTime: CGFloat = 0
     var overlayFrame: CGRect = .zero
     private var audioPlayer: AVAudioPlayer?
-    
     struct PoseJoint: Identifiable {
         let id = UUID()
         let position: CGPoint
@@ -84,12 +81,11 @@ class PoseDetectionViewModel: ObservableObject {
         holdProgress = 0
         holdCompleted = false
         isHoldingPose = true
-        
+
         holdTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] timer in
             guard let self = self else { return }
-            
+
             self.updatePoseCorrectness(for: EvaluateRealtimeView.currentGlobalPhase)
-            
             if self.isPoseCorrect {
                 self.holdTime += 0.1
                 self.holdProgress = min(self.holdTime / 3.0, 1.0)
@@ -107,12 +103,12 @@ class PoseDetectionViewModel: ObservableObject {
             }
         }
     }
-    
+
     func playSuccessFeedback(withMessage message: String) {
-//        DispatchQueue.main.async {
-//            NotificationCenter.default.post(name: .speakFromViewModel, object: message)
-//        }
-        
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .speakFromViewModel, object: message)
+        }
+
         guard let url = Bundle.main.url(forResource: "soundbel", withExtension: "mp3") else { return }
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
@@ -122,10 +118,10 @@ class PoseDetectionViewModel: ObservableObject {
             print("❌ Failed to play bell: \(error)")
         }
     }
-    
+
     func updatePoseCorrectness(for phase: EvaluateRealtimeView.Phase) {
         let useLeft = UserDefaults.standard.string(forKey: "shootingHand") == "Left"
-        
+
         guard let shoulder = recognizedPoints[useLeft ? .leftShoulder : .rightShoulder],
               let elbow = recognizedPoints[useLeft ? .leftElbow : .rightElbow],
               let wrist = recognizedPoints[useLeft ? .leftWrist : .rightWrist],
@@ -142,27 +138,28 @@ class PoseDetectionViewModel: ObservableObject {
             isPoseCorrect = false
             return
         }
-        
+
         let elbowAngle = calculateAngle(a: shoulder.location, b: elbow.location, c: wrist.location)
         let legAngle = calculateAngle(a: hip.location, b: knee.location, c: ankle.location)
-        
+
         DispatchQueue.main.async {
             self.elbowAngleNow = Int(elbowAngle)
             self.legAngleNow = Int(legAngle)
-            
+
             switch phase {
             case .checkPhase1:
                 self.isPoseCorrect = abs(elbowAngle - 90) < 5
             case .checkPhase2:
                 self.isPoseCorrect = abs(legAngle - 75) < 5
             case .checkPhase3:
-                let elbowOK = abs(elbowAngle - 170) < 10
-                let legOK = legAngle > 150
-                self.isPoseCorrect = elbowOK && legOK
+//                let elbowOK = abs(elbowAngle - 160) < 5
+//                   let legOK = legAngle > 150
+//                   self.isPoseCorrect = elbowOK && legOK
+                self.isPoseCorrect = abs(elbowAngle - 180) < 5
+
             default:
                 self.isPoseCorrect = false
             }
-            
             print("📌 [\(phase)] elbow: \(Int(elbowAngle)), leg: \(Int(legAngle)), correct: \(self.isPoseCorrect)")
         }
     }
@@ -192,6 +189,7 @@ class PoseDetectionViewModel: ObservableObject {
     //        }
     //    }
     
+
     func cancelHold() {
         holdTimer?.invalidate()
         holdProgress = 0
@@ -230,12 +228,11 @@ class PoseDetectionViewModel: ObservableObject {
         }
         
         print("🔍 Leg Angle: \(Int(legAngle))°, Elbow Angle: \(Int(elbowAngle))°")
-        
         if (150...165).contains(legAngle) && (115...125).contains(elbowAngle) {
             return .preparation
         } else if (70...80).contains(legAngle) && (45...55).contains(elbowAngle) {
             return .bending
-        } else if (160...170).contains(legAngle) && (165...175).contains(elbowAngle) {
+        } else if (160...170).contains(legAngle) && (120...180).contains(elbowAngle) {
             return .release
         } else {
             return .unknown
