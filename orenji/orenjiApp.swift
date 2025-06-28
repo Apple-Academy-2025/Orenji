@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AVFoundation // ⬅️ Tambahkan ini untuk akses audio session
+import AVFoundation
 
 @main
 struct PostureBasketApp: App {
@@ -16,7 +16,6 @@ struct PostureBasketApp: App {
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
     @Environment(\.scenePhase) private var scenePhase
 
-    // ✅ Aktifkan audio session saat app dijalankan
     init() {
         configureAudioSession()
     }
@@ -60,33 +59,35 @@ struct PostureBasketApp: App {
                                 }
                             }
                     }
-                    .onChange(of: scenePhase){ oldPhase, newPhase in
-                                            switch newPhase{
-                                            case .active:
-                                                print("")
-                                                connectivity.sendAppState(state: true)
-                                            case .inactive:
-                                                connectivity.sendAppState(state: false)
-                                            case .background:
-                                                print("")
-                                            default:
-                                                break
-                                            }
-                                        }
+                    .onChange(of: scenePhase) { oldPhase, newPhase in
+                        switch newPhase {
+                        case .active:
+                            connectivity.sendAppState(state: true)
+                        case .inactive:
+                            connectivity.sendAppState(state: false)
+                        case .background:
+                            break
+                        @unknown default:
+                            break
+                        }
+                    }
                     .environmentObject(router)
                 }
             }
         }
     }
 
-    /// 🔊 Fungsi untuk setup audio session
     private func configureAudioSession() {
         do {
-            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
+            try AVAudioSession.sharedInstance().setCategory(
+                .playback,
+                mode: .spokenAudio,
+                options: [.duckOthers, .defaultToSpeaker, .mixWithOthers]
+            )
             try AVAudioSession.sharedInstance().setActive(true)
-            print("✅ AVAudioSession is active and ready for TTS playback")
+            print("✅ AVAudioSession configured successfully for TTS")
         } catch {
-            print("❌ Failed to set AVAudioSession: \(error.localizedDescription)")
+            print("❌ Failed to configure AVAudioSession: \(error.localizedDescription)")
         }
     }
 }

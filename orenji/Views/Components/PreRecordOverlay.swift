@@ -23,27 +23,15 @@ struct PreRecordOverlay: View {
     let boxSize: CGSize
     let borderColor: Color
     let statusText: String
+    let statusTitle: String
 
     var body: some View {
         Group {
             if !isRecordingStarted && isOverlayVisible {
                 FrameOverlay(boxSize: boxSize, borderColor: borderColor)
 
-                GeometryReader { geo in
-                    VStack {
-                        Text(statusText)
-                            .font(.system(size: 20, weight: .bold))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(borderColor)
-                            .cornerRadius(20)
-                            .padding(.top, 12)
-                    }
-                    .position(x: geo.size.width / 2,
-                              y: (geo.size.height - boxSize.height) / 2 - 40)
-                }
-                .offset(y: -10)
+                
+
 
                 VStack {
                     HStack {
@@ -57,8 +45,27 @@ struct PreRecordOverlay: View {
                         Spacer()
                     }
                     .padding([.horizontal, .top], 20)
-                    Spacer()
+                    
+                    GeometryReader { geo in
+                        VStack() { // ⬅️ Tambahkan spacing
+                            Text(statusTitle)
+                                .font(.system(size: 20, weight: .bold))
+                                .foregroundColor(.white)
+
+                            Text(statusText)
+                                .font(.system(size: 16, weight: .medium))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 16)
+    
+                                .background(borderColor)
+                                .cornerRadius(20)
+                                .multilineTextAlignment(.center)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .offset(y: -20)
+                    }
                 }
+                
             }
 
             if !isRecordingStarted && isOverlayVisible && isUserInFrame {
@@ -103,3 +110,25 @@ struct PreRecordOverlay: View {
         }
     }
 }
+
+#Preview {
+    PreRecordOverlay(
+        isRecordingStarted: false,
+        isOverlayVisible: true,
+        isUserInFrame: false,
+        holdSeconds: 3,
+        showWarningText: false,
+        warningText: "Follow the instructions each phase!",
+        warningScale: 1.0,
+        isCountingDown: false,
+        countdown: 3,
+        showStartText: false,
+        boxSize: CGSize(width: 250, height: 500),
+        borderColor: .green,
+        statusText: "Make sure to keep your ball and feet visible within the frame",
+        statusTitle: "For best result"
+    )
+    .environmentObject(Router())
+    .background(Color.black)
+}
+
