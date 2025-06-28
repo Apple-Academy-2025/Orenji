@@ -88,9 +88,6 @@
                 }
                 
                 
-                
-                
-                
                 if phase == .preRecord {
                     PreRecordOverlay(
                         isRecordingStarted: isRecordingStarted,
