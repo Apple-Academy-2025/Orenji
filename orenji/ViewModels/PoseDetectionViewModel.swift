@@ -109,9 +109,9 @@ class PoseDetectionViewModel: ObservableObject {
     }
     
     func playSuccessFeedback(withMessage message: String) {
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: .speakFromViewModel, object: message)
-        }
+//        DispatchQueue.main.async {
+//            NotificationCenter.default.post(name: .speakFromViewModel, object: message)
+//        }
         
         guard let url = Bundle.main.url(forResource: "soundbel", withExtension: "mp3") else { return }
         do {

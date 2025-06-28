@@ -16,7 +16,6 @@ struct RecordAnalysisView: View {
     @State private var showCamera = true
     @StateObject private var vm = RecordFeatureViewModel()
     @State private var reportView: Bool = false
-    @EnvironmentObject var router: Router
     @StateObject var connectivity = WatchConnectivityManager.shared
     
     var body: some View {

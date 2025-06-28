@@ -23,15 +23,14 @@ struct ReportTabItem: View {
             if vm.predictions[idx].label.lowercased() == "preparation"{
                 if vm.predictions[idx].detectedDominant == nil {
                     CantAnalyzePoseComponent(onTap: {
-                        router.goTo(.RealtimePose(titlePage: "Test"))
+//                        router.goTo(.RealtimePose(titlePage: "Test"))
                     }, phase: vm.predictions[idx].label)
                 } else {
                     ReportComponent(
                         myImage: drawSkeleton(
                             image: prediction.imageForDisplay ?? UIImage(),
                             handLineColor:(elbowAngle < 86 || elbowAngle > 93) ? .red : .green,
-                            legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green,
-                        ),
+                            legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green),
                         joints: prediction.joints,
                         phase: vm.predictions[idx].label,
                         elbowAngle: elbowAngle,
@@ -54,14 +53,14 @@ struct ReportTabItem: View {
             } else if vm.predictions[idx].label.lowercased() == "bending" {
                 if vm.predictions[idx].detectedDominant == nil {
                     CantAnalyzePoseComponent(onTap: {
-                        router.goTo(.RealtimePose(titlePage: "Test"))}, phase: vm.predictions[idx].label)
+//                        router.goTo(.RealtimePose(titlePage: "Test"))
+                    }, phase: vm.predictions[idx].label)
                 }else{
                     ReportComponent(
                         myImage: drawSkeleton(
                             image: prediction.imageForDisplay ?? UIImage(),
                             handLineColor:(elbowAngle < 75 || elbowAngle > 90) ? .red : .green,
-                            legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green,
-                        ),
+                            legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green),
                         joints: prediction.joints,
                         phase: vm.predictions[idx].label,
                         elbowAngle: elbowAngle,
@@ -86,7 +85,7 @@ struct ReportTabItem: View {
                 if vm.predictions[idx].detectedDominant == nil {
                     CantAnalyzePoseComponent(
                         onTap: {
-                            router.goTo(.RealtimePose(titlePage: "Test"))
+//                            router.goTo(.RealtimePose(titlePage: "Test"))
                         },
                         phase: vm.predictions[idx].label)
                 }else{
@@ -94,8 +93,7 @@ struct ReportTabItem: View {
                         myImage: drawSkeleton(
                             image: prediction.imageForDisplay ?? UIImage(),
                             handLineColor:(elbowAngle < 160 || elbowAngle > 170) ? .red : .green,
-                            legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green,
-                        ),
+                            legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green),
                         joints: prediction.joints,
                         phase: vm.predictions[idx].label,
                         elbowAngle: elbowAngle,

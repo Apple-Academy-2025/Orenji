@@ -37,7 +37,7 @@ struct PoseOverlayView: View {
                     if let pointA = points[jointA], let pointB = points[jointB],
                        pointA.confidence > 0.1, pointB.confidence > 0.1 {
 
-                        let color = evaluationColors[jointA] ?? .yellow
+                        let color = evaluationColors[jointA] ?? .primer
 
                         Path { path in
                             let x1 = (1 - pointA.location.y) * geometry.size.width
@@ -61,8 +61,10 @@ struct PoseOverlayView: View {
                         let rotatedX = 1 - pointA.location.y
                         let rotatedY = pointA.location.x
                         
+                        let color = evaluationColors[jointA] ?? .primer
+                        
                         Circle()
-                            .fill(evaluationColor)
+                            .fill(color)
                             .frame(width: 10, height: 10)
                             .position(
                                 x: rotatedX * geometry.size.width,
@@ -75,10 +77,15 @@ struct PoseOverlayView: View {
                         let rotatedX = 1 - pointB.location.y
                         let rotatedY = pointB.location.x
                         
+                        let color = evaluationColors[jointB] ?? .primer
+                        
                         Circle()
-                            .fill(evaluationColor)
+                            .fill(color)
                             .frame(width: 10, height: 10)
-                            .position(x: x, y: y)
+                            .position(
+                                x: rotatedX * geometry.size.width,
+                                y: rotatedY * geometry.size.height
+                            )
                     }
                 }
             }

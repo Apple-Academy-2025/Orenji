@@ -77,7 +77,7 @@ struct PreRecordOverlay: View {
                                 .font(.system(size: 20, weight: .bold))
                                 .foregroundColor(.white)
 
-                            Text(statusText)
+                            Text(statusText ?? "")
                                 .font(.system(size: 16, weight: .medium))
                                 .foregroundColor(.white)
                                 .padding(.horizontal, 16)

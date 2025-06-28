@@ -37,8 +37,6 @@
         @State private var speechQueue: [String] = []
         @State private var isSpeaking = false
         
-        
-        
         private let boxSize = CGSize(width: 250, height: 500)
         static var currentGlobalPhase: Phase = .preRecord
         
@@ -46,15 +44,6 @@
         
         var evaluationColors: [VNHumanBodyPoseObservation.JointName: Color] {
             var colors: [VNHumanBodyPoseObservation.JointName: Color] = [:]
-            
-            if !poseDetector.recognizedPoints.isEmpty {
-                PoseOverlayView(
-                    points: poseDetector.recognizedPoints,
-                    evaluationColor: .yellow,
-                    isRightHand: UserDefaults.standard.string(forKey: "shootingHand") != "Left"
-                )
-            }
-            
             if phase == .checkPhase1 {
                 let angle = poseDetector.elbowAngleNow
                 let color = colorForElbowAngle(Double(angle), target: 120)
@@ -78,96 +67,13 @@
             
             return colors
         }
-        
-        
-        
+             
         var body: some View {
             ZStack {
-                CameraPreview(service: cameraService).ignoresSafeArea()
-                
-                
-                // 👇 Baru tampilkan PoseOverlayView dengan evaluationColors
-                if !poseDetector.recognizedPoints.isEmpty {
-                    PoseOverlayView(
-                        points: poseDetector.recognizedPoints,
-                        evaluationColors: evaluationColors,
-                        isRightHand: UserDefaults.standard.string(forKey: "shootingHand") != "Left"
-                    )
-                }
-                
-                
-                
-                
-                
-                if phase == .preRecord {
-                    PreRecordOverlay(
-                        isRecordingStarted: isRecordingStarted,
-                        isOverlayVisible: isOverlayVisible,
-                        isUserInFrame: poseDetector.isUserInFrame,
-                        holdSeconds: holdSeconds,
-                        showWarningText: showWarningText,
-                        warningText: warningText,
-                        warningScale: warningScale,
-                        isCountingDown: isCountingDown,
-                        countdown: countdown,
-                        showStartText: showStartText,
-                        boxSize: boxSize,
-                        borderColor: borderColor,
-                        statusText: statusText,
-                        statusTitle: statusTitle
-                    ).environmentObject(router)
-                }
-                
-                switch phase {
-                case .checkPhase1 , .checkPhase2, .checkPhase3 :
-                    HoldPose(
-                        phaseTitle: phaseTitleText,
-                        holdProgress: poseDetector.holdProgress,
-                        warningMessage: currentWarningMessage,
-                        warningScale: warningScale,
-                        correct: poseDetector.isPoseCorrect
-                    ).environmentObject(router)
-                
-                case .finished:
-                    EvaluationFinishedView(loopCount: loopCount)
-                        .environmentObject(router)
-                default:
-                    EmptyView()
-                }
-                
-                if [.checkPhase1, .checkPhase2, .checkPhase3].contains(phase) {
-                    VStack {
-                        Spacer()
-                        HStack {
-                            Button(action: {}) {
-                            Text("HINT")
-                                .padding(24)
-                                .font(.headline.bold())
-                                .foregroundColor(.white)
-                                .background(Color.black.opacity(0.6))
-                                .clipShape(Circle())
-                        }
-                        .padding(24)
-                        Spacer()
-                        Button(action: { showExitConfirmation = true }) {
-                            Text("STOP")
-                                .padding(32)
-                                .font(.title.bold())
-                                .foregroundColor(.white)
-                                .background(Color.red)
-                                .clipShape(Circle())
-                        }
-                        .padding(24)
-                        .confirmationDialog("Are you sure you want to stop?", isPresented: $showExitConfirmation, titleVisibility: .visible) {
-                            Button("Yes, Stop", role: .destructive) {
-                                phase = .finished
-                                connectivity.sendStopSessionCommand(sessionType: .realtime)
-                                connectivity.sendRealtimeResultsToWatch(total: loopCount)
-                            }
-                            Button("Cancel", role: .cancel) {}
-                        }
-                    }
-                }
+                cameraPreviewLayer
+                poseOverlayLayer
+                phaseSpecificOverlay
+                controlButtons
             }
             .onAppear {
                 setupCamera()
@@ -175,11 +81,11 @@
                     speechManager.speak("Voice system is ready")
                 }
             }
-            .onReceive(NotificationCenter.default.publisher(for: .speakFromViewModel)) { notif in
-                if let message = notif.object as? String {
-                    speechManager.speak(message)
-                }
-            }
+//            .onReceive(NotificationCenter.default.publisher(for: .speakFromViewModel)) { notif in
+//                if let message = notif.object as? String {
+//                    speechManager.speak(message)
+//                }
+//            }
             .onChange(of: poseDetector.holdCompleted) { oldCompleted, completed in
                 if completed {
                     poseDetector.cancelHold()
@@ -217,158 +123,117 @@
             }
             .navigationBarBackButtonHidden(true)
         }
-        .navigationBarBackButtonHidden(true)
-    }
-    
-    private var phaseTitleText: String {
-        switch phase {
-        case .checkPhase1: return "Preparation"
-        case .checkPhase2: return "Bending"
-        case .checkPhase3: return "Release"
-        default: return ""
-        }
-    }
-    
-    private var currentWarningMessage: String? {
-        if !poseDetector.isUserInFrame {
-            return "You're out of frame!"
+        
+        // MARK: - Sub-views
+        private var cameraPreviewLayer: some View {
+            CameraPreview(service: cameraService).ignoresSafeArea()
         }
         
-        let currentPhase = poseDetector.currentPhaseType()
-        
-        switch phase {
-        case .checkPhase1 where currentPhase != .preparation:
-            if poseDetector.elbowAngleNow < 115 {
-                return "Elbow too close, stretch more"
-            } else if poseDetector.elbowAngleNow > 125 {
-                return "Elbow too wide, lower slightly"
-            }
-            return nil
-            
-        case .checkPhase2 where currentPhase != .bending:
-            if poseDetector.legAngleNow < 70 {
-                return "Leg too bent, straighten slightly"
-            } else if poseDetector.legAngleNow > 80 {
-                return "Leg too straight, bend more"
-            }
-            return nil
-            
-        case .checkPhase3 where currentPhase != .release:
-            if poseDetector.elbowAngleNow < 165 {
-                return "Elbow too low, raise your arm"
-            } else if poseDetector.elbowAngleNow > 175 {
-                return "Elbow too high, relax a bit"
-            }
-            return nil
-            
-        default:
-            return nil
-        }
-    }
-    
-    private func speak(_ message: String) {
-        guard message != lastSpokenMessage else { return }
-        lastSpokenMessage = message
-        let utterance = AVSpeechUtterance(string: message)
-        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
-        utterance.rate = 0.45
-        speechSynthesizer.speak(utterance)
-    }
-    
-    private func setupCamera() {
-        cameraService.configure()
-        cameraService.start()
-        cameraService.onFrameCaptured = { buffer in
-            poseDetector.processBuffer(buffer)
-        }
-        
-        DispatchQueue.main.async {
-            let screen = UIScreen.main.bounds
-            let boxWidth = screen.width * 0.8
-            let boxHeight = screen.height * 0.7
-            let originX = (screen.width - boxWidth) / 2
-            let originY = (screen.height - boxHeight) / 2 + 60
-            poseDetector.overlayFrame = CGRect(x: originX, y: originY, width: boxWidth, height: boxHeight)
-        }
-    }
-    
-    private func handleFrameChange(_ inFrame: Bool) {
-        if phase != .preRecord { return }
-        if inFrame {
-            everDetected = true
-            if holdTimer == nil {
-                holdSeconds = 3
-                holdTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
-                    if holdSeconds > 1 {
-                        holdSeconds -= 1
-                    } else {
-                        timer.invalidate()
-                        holdTimer = nil
-                        triggerRecordingSequence()
-                    }
+        private var poseOverlayLayer: some View {
+            Group {
+                if !poseDetector.recognizedPoints.isEmpty {
+                    PoseOverlayView(
+                        points: poseDetector.recognizedPoints,
+                        evaluationColors: evaluationColors,
+                        isRightHand: UserDefaults.standard.string(forKey: "shootingHand") != "Left"
+                    )
                 }
             }
         }
-
-         private func startWarningLoop() {
-            warningTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { _ in
-                guard poseDetector.isUserInFrame, !poseDetector.isEvaluatingPose else {
-                    withAnimation(.easeInOut(duration: 0.3)) {
-                        showWarning = false
-                        warningScale = 1.0
-                    }
-                    return
-                }
-                
-                if poseDetector.isHoldingPose, let msg = currentWarningMessage {
-                    print("🔊 Attempting to speak: \(msg)")
-                    sendRealtimePoseToWatch(isCorrect: false, correctionMessage: msg, countdown: nil)
-                    withAnimation(.easeInOut(duration: 0.3)) {
-                        showWarning = true
-                        warningScale = 1.2
-                    }
-                    speechManager.speak(msg)
+        
+        private var phaseSpecificOverlay: some View {
+            Group {
+                if phase == .preRecord {
+                    PreRecordOverlay(
+                        isRecordingStarted: isRecordingStarted,
+                        isOverlayVisible: isOverlayVisible,
+                        isUserInFrame: poseDetector.isUserInFrame,
+                        holdSeconds: holdSeconds,
+                        showWarningText: showWarningText,
+                        warningText: warningText,
+                        warningScale: warningScale,
+                        isCountingDown: isCountingDown,
+                        countdown: countdown,
+                        showStartText: showStartText,
+                        boxSize: boxSize,
+                        borderColor: borderColor,
+                        statusText: statusText,
+                        statusTitle: statusTitle
+                    ).environmentObject(router)
                 } else {
-                    withAnimation(.easeInOut(duration: 0.3)) {
-                        showWarning = false
-                        warningScale = 1.0
+                    phaseOverlay
+                }
+            }
+        }
+        
+        private var phaseOverlay: some View {
+            Group {
+                switch phase {
+                case .checkPhase1, .checkPhase2, .checkPhase3:
+                    HoldPose(
+                        phaseTitle: phaseTitleText,
+                        holdProgress: poseDetector.holdProgress,
+                        warningMessage: currentWarningMessage,
+                        warningScale: warningScale,
+                        correct: poseDetector.isPoseCorrect
+                    ).environmentObject(router)
+                    
+                case .finished:
+                    EvaluationFinishedView(loopCount: loopCount)
+                        .environmentObject(router)
+                    
+                default:
+                    EmptyView()
+                }
+            }
+        }
+        
+        private var controlButtons: some View {
+            Group {
+                if [.checkPhase1, .checkPhase2, .checkPhase3].contains(phase) {
+                    VStack {
+                        Spacer()
+                        HStack {
+                            hintButton
+                            Spacer()
+                            stopButton
+                        }
                     }
                 }
             }
         }
         
-        var evaluationColor: Color {
-            switch phase {
-            case .checkPhase1:
-                return colorForElbowAngle(Double(poseDetector.elbowAngleNow), target: 120)
-            case .checkPhase2:
-                return colorForLegAngle(Double(poseDetector.legAngleNow), target: 75)
-            case .checkPhase3:
-                return colorForElbowAngle(Double(poseDetector.elbowAngleNow), target: 170)
-            default:
-                return .yellow
+        private var hintButton: some View {
+            Button(action: {}) {
+                Text("HINT")
+                    .padding(24)
+                    .font(.headline.bold())
+                    .foregroundColor(.white)
+                    .background(Color.black.opacity(0.6))
+                    .clipShape(Circle())
             }
+            .padding(24)
         }
         
-        
-        // ✅ Perbaikan audio session setup
-        //    private func setupAudioSession() {
-        //        do {
-        //            let audioSession = AVAudioSession.sharedInstance()
-        //            try audioSession.setCategory(
-        //                .playback,
-        //                mode: .spokenAudio,
-        //                options: [.duckOthers, .defaultToSpeaker, .mixWithOthers] // ini penting!
-        //            )
-        //            try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
-        //            print("🔊 Audio session setup successful")
-        //        } catch {
-        //            print("❌ Audio session setup failed: \(error)")
-        //        }
-        //    }
-        
-        
-        
+        private var stopButton: some View {
+            Button(action: { showExitConfirmation = true }) {
+                Text("STOP")
+                    .padding(32)
+                    .font(.title.bold())
+                    .foregroundColor(.white)
+                    .background(Color.red)
+                    .clipShape(Circle())
+            }
+            .padding(24)
+            .confirmationDialog("Are you sure you want to stop?", isPresented: $showExitConfirmation, titleVisibility: .visible) {
+                Button("Yes, Stop", role: .destructive) {
+                    phase = .finished
+                    connectivity.sendStopSessionCommand(sessionType: .realtime)
+                    connectivity.sendRealtimeResultsToWatch(total: loopCount)
+                }
+                Button("Cancel", role: .cancel) {}
+            }
+        }
         
         private var phaseTitleText: String {
             switch phase {
@@ -393,7 +258,7 @@
                 } else if poseDetector.elbowAngleNow > 125 {
                     return "Elbow too wide, lower slightly"
                 }
-                return "Hold Preparation Pose!"
+                return nil
                 
             case .checkPhase2 where currentPhase != .bending:
                 if poseDetector.legAngleNow < 70 {
@@ -401,7 +266,7 @@
                 } else if poseDetector.legAngleNow > 80 {
                     return "Leg too straight, bend more"
                 }
-                return "Hold Bending Pose!"
+                return nil
                 
             case .checkPhase3 where currentPhase != .release:
                 if poseDetector.elbowAngleNow < 165 {
@@ -409,7 +274,7 @@
                 } else if poseDetector.elbowAngleNow > 175 {
                     return "Elbow too high, relax a bit"
                 }
-                return "Hold Release Pose!"
+                return nil
                 
             default:
                 return nil
@@ -449,10 +314,33 @@
                         }
                     }
                 }
-            } else {
-                holdTimer?.invalidate()
-                holdTimer = nil
-                holdSeconds = 3
+            }
+        }
+        
+        private func startWarningLoop() {
+            warningTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { _ in
+                guard poseDetector.isUserInFrame, !poseDetector.isEvaluatingPose else {
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        showWarning = false
+                        warningScale = 1.0
+                    }
+                    return
+                }
+                
+                if poseDetector.isHoldingPose, let msg = currentWarningMessage {
+                    print("🔊 Attempting to speak: \(msg)")
+                    sendRealtimePoseToWatch(isCorrect: false, correctionMessage: msg, countdown: nil)
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        showWarning = true
+                        warningScale = 1.2
+                    }
+                    speechManager.speak(msg)
+                } else {
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        showWarning = false
+                        warningScale = 1.0
+                    }
+                }
             }
         }
         
@@ -469,69 +357,65 @@
                 }
             }
         }
-    }
-    
-    private func stopWarningLoop() {
-        warningTimer?.invalidate()
-        warningTimer = nil
-    }
-    
-    private var borderColor: Color {
-        if poseDetector.isUserInFrame {
-            connectivity.sendCameraPoseStatusToWatch(isCorrect: true)
-            return .green
-        }
-        else if everDetected {
-            connectivity.sendCameraPoseStatusToWatch(isCorrect: false)
-            return .red
-        }
-        else { return Color.clear }
-    }
-    
-    private var statusText: String? {
-        if poseDetector.isUserInFrame { return "DETECTED" }
-        else if everDetected { return "TOO CLOSE" }
         
-        return nil
-    }
-    
-    func sendRealtimePoseToWatch(isCorrect: Bool, correctionMessage: String?, countdown: Int?) {
-        let phaseName = self.phaseTitleText
-        
-        let poseData = RealtimePoseData(
-            phase: phaseName,
-            isPoseCorrect: isCorrect,
-            correctionMessage: correctionMessage,
-            holdCountdown: countdown
-        )
-        
-        if let encoded = try? JSONEncoder().encode(poseData) {
-            WatchConnectivityManager.shared.sendPoseUpdate(data: encoded)
+        private func stopWarningLoop() {
+            warningTimer?.invalidate()
+            warningTimer = nil
         }
-    }
-}
-
-
-struct EvaluationFinishedView: View {
-    @EnvironmentObject var router: Router
-    var loopCount: Int
-    
-    var body: some View {
-        ZStack {
-            Color.black.opacity(0.6)
-                .ignoresSafeArea()
+        
+        private var borderColor: Color {
+            if poseDetector.isUserInFrame {
+                connectivity.sendCameraPoseStatusToWatch(isCorrect: true)
+                return .green
+            }
+            else if everDetected {
+                connectivity.sendCameraPoseStatusToWatch(isCorrect: false)
+                return .red
+            }
+            else { return Color.clear }
+        }
+        
+        private var statusText: String? {
+            if poseDetector.isUserInFrame { return "DETECTED" }
+            else if everDetected { return "TOO CLOSE" }
             
-            VStack(spacing: 20) {
-                Text("✅ You have completed")
-                    .font(.title2)
-                    .foregroundColor(.white)
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
-                    withAnimation(.easeOut(duration: 0.3)) {
-                        showWarningText = false
-                        startCountdown()
-                    }
-                }
+            return nil
+        }
+        
+        func sendRealtimePoseToWatch(isCorrect: Bool, correctionMessage: String?, countdown: Int?) {
+            let phaseName = self.phaseTitleText
+            
+            let poseData = RealtimePoseData(
+                phase: phaseName,
+                isPoseCorrect: isCorrect,
+                correctionMessage: correctionMessage,
+                holdCountdown: countdown
+            )
+            
+            if let encoded = try? JSONEncoder().encode(poseData) {
+                WatchConnectivityManager.shared.sendPoseUpdate(data: encoded)
+            }
+        }
+        
+        func colorForElbowAngle(_ angle: Double, target: Double) -> Color {
+            let delta = abs(angle - target)
+            if delta < 5 {
+                return .green
+            } else if delta < 15 {
+                return .yellow
+            } else {
+                return .red
+            }
+        }
+        
+        func colorForLegAngle(_ angle: Double, target: Double) -> Color {
+            let delta = abs(angle - target)
+            if delta < 5 {
+                return .green
+            } else if delta < 15 {
+                return .yellow
+            } else {
+                return .red
             }
         }
         
@@ -563,8 +447,6 @@ struct EvaluationFinishedView: View {
             poseDetector.startHoldPose()
         }
         
-       
-        
         private func configureAudioSessionOnce() {
             do {
                 let session = AVAudioSession.sharedInstance()
@@ -575,76 +457,7 @@ struct EvaluationFinishedView: View {
                 print("❌ Audio session error: \(error)")
             }
         }
-        
-        
-        private func stopWarningLoop() {
-            warningTimer?.invalidate()
-            warningTimer = nil
-        }
-        
-        private var borderColor: Color {
-            if poseDetector.isUserInFrame {
-                connectivity.sendCameraPoseStatusToWatch(isCorrect: true)
-                return .green
-            }
-            else if everDetected {
-                connectivity.sendCameraPoseStatusToWatch(isCorrect: false)
-                return .red
-            }
-            else { return Color.clear }
-        }
-        
-        private var statusText: String {
-            if poseDetector.isUserInFrame { return "DETECTED" }
-            else if everDetected { return "TOO CLOSE" }
-            else { return "Make sure to keep your ball and feet visible within the frame" }
-        }
-        
-        func colorForElbowAngle(_ angle: Double, target: Double) -> Color {
-            let delta = abs(angle - target)
-            if delta < 5 {
-                return .green
-            } else if delta < 15 {
-                return .yellow
-            } else {
-                return .red
-            }
-        }
-        
-        func colorForLegAngle(_ angle: Double, target: Double) -> Color {
-            let delta = abs(angle - target)
-            if delta < 5 {
-                return .green
-            } else if delta < 15 {
-                return .yellow
-            } else {
-                return .red
-            }
-        }
-        
-        
-        
-        func sendRealtimePoseToWatch(isCorrect: Bool, correctionMessage: String?, countdown: Int?) {
-            let phaseName = self.phaseTitleText
-            
-            let poseData = RealtimePoseData(
-                phase: phaseName,
-                isPoseCorrect: isCorrect,
-                correctionMessage: correctionMessage,
-                holdCountdown: countdown
-            )
-            
-            if let encoded = try? JSONEncoder().encode(poseData) {
-                WatchConnectivityManager.shared.sendPoseUpdate(data: encoded)
-            }
-        }
     }
-
-
-    extension Notification.Name {
-        static let speakFromViewModel = Notification.Name("SpeakFromViewModel")
-    }
-
 
     struct EvaluationFinishedView: View {
         @EnvironmentObject var router: Router
@@ -685,7 +498,7 @@ struct EvaluationFinishedView: View {
         }
     }
 
-    #Preview {
-        EvaluateRealtimeView()
-            .environmentObject(Router())
-    }
+    //#Preview {
+    //    EvaluateRealtimeView()
+    //        .environmentObject(Router())
+    //}

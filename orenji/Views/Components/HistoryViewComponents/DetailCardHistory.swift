@@ -22,7 +22,6 @@ struct DetailCardHistory: View {
                 if prediction.detectedDominant == nil {
                     CantAnalyzePoseComponent(onTap: {
                         router.pop()
-                        router.goTo(.RealtimePose(titlePage: "Test"))
                     }, phase: prediction.label!)
                 } else {
                     ReportHistory(
@@ -53,7 +52,6 @@ struct DetailCardHistory: View {
                 if prediction.detectedDominant == nil {
                     CantAnalyzePoseComponent(onTap: {
                         router.pop()
-                        router.goTo(.RealtimePose(titlePage: "Test"))
                     }, phase: prediction.label!)
                 } else {
                     ReportHistory(
@@ -84,7 +82,7 @@ struct DetailCardHistory: View {
                 if prediction.detectedDominant == nil {
                     CantAnalyzePoseComponent(onTap: {
                         router.pop()
-                        router.goTo(.RealtimePose(titlePage: "Test"))
+//                        router.goTo(.RealtimePose(titlePage: "Test"))
                     }, phase: prediction.label!)
                 } else {
                     ReportHistory(
