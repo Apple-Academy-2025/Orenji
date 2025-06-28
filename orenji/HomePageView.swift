@@ -96,6 +96,8 @@ struct HomePageView: View {
             .offset(y: 50)
             
         }
+        .environmentObject(Router())
+        .padding()
         .ignoresSafeArea()
         .navigationBarBackButtonHidden(true)
     }

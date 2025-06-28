@@ -10,6 +10,7 @@ import SwiftUI
 import SwiftData
 
 struct ReportTabItem: View {
+    @EnvironmentObject var router: Router
     let prediction: FramePrediction
     let idx: Int
     let selectedTab: Int
@@ -19,82 +20,101 @@ struct ReportTabItem: View {
         let legAngle = Int(prediction.kneeAngle ?? 0)
         
         VStack {
-            if vm.predictions[idx].label == "Preparation"{
-                ReportComponent(
-                    myImage: drawSkeleton(
-                        image: prediction.imageForDisplay ?? UIImage(),
-                        handLineColor:(elbowAngle < 86 || elbowAngle > 93) ? .red : .green,
-                        legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green
-                    ),
-                    joints: prediction.joints,
-                    phase: vm.predictions[idx].label,
-                    elbowAngle: elbowAngle,
-                    elbowImprovement:
-                        (elbowAngle < 86 || elbowAngle > 93) ? "Need\nImprovement" : "Pass",
-                    elbowfeedback1:
-                        (elbowAngle < 86 || elbowAngle > 93) ? "Should be close to 86°–93°" : "Already close to 86°–93°",
-                    elbowfeedback2:
-                        vm.feedbackMethod(angle: elbowAngle, lowAngle: 86, highAngle: 93, whatAngle: "elbow"),
-                    legAngle: legAngle,
-                    legImprovement:
-                        (legAngle < 160 || legAngle > 160) ? "Need\nImprovement" : "Pass",
-                    legFeedback1:
-                        (legAngle < 160 || legAngle > 160) ? "Should be close to 160°" : "Already close to 160°",
-                    legFeedback2:
-                        vm.feedbackMethod(angle: legAngle, lowAngle: 160, highAngle: 160, whatAngle: "leg")
-                )
-                Spacer()
-                
-            } else if vm.predictions[idx].label == "Bending" {
-                ReportComponent(
-                    myImage: drawSkeleton(
-                        image: prediction.imageForDisplay ?? UIImage(),
-                        handLineColor:(elbowAngle < 75 || elbowAngle > 90) ? .red : .green,
-                        legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green
-                    ),
-                    joints: prediction.joints,
-                    phase: vm.predictions[idx].label,
-                    elbowAngle: elbowAngle,
-                    elbowImprovement:
-                        (elbowAngle < 75 || elbowAngle > 90) ? "Need\nImprovement" : "Pass",
-                    elbowfeedback1:
-                        (elbowAngle < 75 || elbowAngle > 90) ? "Should be close to 75°–93°" : "Already close to 86°–93°",
-                    elbowfeedback2:
-                        vm.feedbackMethod(angle: elbowAngle, lowAngle: 86, highAngle: 93, whatAngle: "elbow"),
-                    legAngle: legAngle,
-                    legImprovement:
-                        (legAngle < 124 || legAngle > 124) ? "Need\nImprovement" : "Pass",
-                    legFeedback1:
-                        (legAngle < 124 || legAngle > 124) ? "Should be close to 124°" : "Already close to 124°",
-                    legFeedback2:
-                        vm.feedbackMethod(angle: legAngle, lowAngle: 160, highAngle: 160, whatAngle: "leg")
-                )
-                Spacer()
-            } else if vm.predictions[idx].label == "FollowThrough" {
-                ReportComponent(
-                    myImage: drawSkeleton(
-                        image: prediction.imageForDisplay ?? UIImage(),
-                        handLineColor:(elbowAngle < 160 || elbowAngle > 170) ? .red : .green,
-                        legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green
-                    ),
-                    joints: prediction.joints,
-                    phase: vm.predictions[idx].label,
-                    elbowAngle: elbowAngle,
-                    elbowImprovement:
-                        (elbowAngle < 160 || elbowAngle > 170) ? "Need\nImprovement" : "Pass",
-                    elbowfeedback1:
-                        (elbowAngle < 160 || elbowAngle > 170) ? "Should be close to 160°–170°" : "Already close to 160°–170°",
-                    elbowfeedback2:
-                        vm.feedbackMethod(angle: elbowAngle, lowAngle: 86, highAngle: 93, whatAngle: "elbow"),
-                    legAngle: legAngle,
-                    legImprovement:
-                        (legAngle < 160 || legAngle > 160) ? "Need\nImprovement" : "Pass",
-                    legFeedback1:
-                        (legAngle < 160 || legAngle > 160) ? "Should be close to 160°" : "Already close to 160°",
-                    legFeedback2:
-                        vm.feedbackMethod(angle: legAngle, lowAngle: 160, highAngle: 160, whatAngle: "leg")
-                )
-                Spacer()
+            if vm.predictions[idx].label.lowercased() == "preparation"{
+                if vm.predictions[idx].detectedDominant == nil {
+                    CantAnalyzePoseComponent(onTap: {
+                        router.goTo(.RealtimePose(titlePage: "Test"))
+                    }, phase: vm.predictions[idx].label)
+                } else {
+                    ReportComponent(
+                        myImage: drawSkeleton(
+                            image: prediction.imageForDisplay ?? UIImage(),
+                            handLineColor:(elbowAngle < 86 || elbowAngle > 93) ? .red : .green,
+                            legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green,
+                        ),
+                        joints: prediction.joints,
+                        phase: vm.predictions[idx].label,
+                        elbowAngle: elbowAngle,
+                        elbowImprovement:
+                            (elbowAngle < 86 || elbowAngle > 93) ? "Need\nImprovement" : "Pass",
+                        elbowfeedback1:
+                            (elbowAngle < 86 || elbowAngle > 93) ? "Should be close to 86°–93°" : "Already close to 86°–93°",
+                        elbowfeedback2:
+                            vm.feedbackMethod(angle: elbowAngle, lowAngle: 86, highAngle: 93, whatAngle: "elbow"),
+                        legAngle: legAngle,
+                        legImprovement:
+                            (legAngle < 160 || legAngle > 160) ? "Need\nImprovement" : "Pass",
+                        legFeedback1:
+                            (legAngle < 160 || legAngle > 160) ? "Should be close to 160°" : "Already close to 160°",
+                        legFeedback2:
+                            vm.feedbackMethod(angle: legAngle, lowAngle: 160, highAngle: 160, whatAngle: "leg")
+                    )
+                    Spacer()
+                }
+            } else if vm.predictions[idx].label.lowercased() == "bending" {
+                if vm.predictions[idx].detectedDominant == nil {
+                    CantAnalyzePoseComponent(onTap: {
+                        router.goTo(.RealtimePose(titlePage: "Test"))}, phase: vm.predictions[idx].label)
+                }else{
+                    ReportComponent(
+                        myImage: drawSkeleton(
+                            image: prediction.imageForDisplay ?? UIImage(),
+                            handLineColor:(elbowAngle < 75 || elbowAngle > 90) ? .red : .green,
+                            legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green,
+                        ),
+                        joints: prediction.joints,
+                        phase: vm.predictions[idx].label,
+                        elbowAngle: elbowAngle,
+                        elbowImprovement:
+                            (elbowAngle < 75 || elbowAngle > 90) ? "Need\nImprovement" : "Pass",
+                        elbowfeedback1:
+                            (elbowAngle < 75 || elbowAngle > 90) ? "Should be close to 75°–93°" : "Already close to 86°–93°",
+                        elbowfeedback2:
+                            vm.feedbackMethod(angle: elbowAngle, lowAngle: 86, highAngle: 93, whatAngle: "elbow"),
+                        legAngle: legAngle,
+                        legImprovement:
+                            (legAngle < 124 || legAngle > 124) ? "Need\nImprovement" : "Pass",
+                        legFeedback1:
+                            (legAngle < 124 || legAngle > 124) ? "Should be close to 124°" : "Already close to 124°",
+                        legFeedback2:
+                            vm.feedbackMethod(angle: legAngle, lowAngle: 160, highAngle: 160, whatAngle: "leg")
+                    )
+                    Spacer()
+                }
+
+            } else if vm.predictions[idx].label.lowercased() == "followthrough" {
+                if vm.predictions[idx].detectedDominant == nil {
+                    CantAnalyzePoseComponent(
+                        onTap: {
+                            router.goTo(.RealtimePose(titlePage: "Test"))
+                        },
+                        phase: vm.predictions[idx].label)
+                }else{
+                    ReportComponent(
+                        myImage: drawSkeleton(
+                            image: prediction.imageForDisplay ?? UIImage(),
+                            handLineColor:(elbowAngle < 160 || elbowAngle > 170) ? .red : .green,
+                            legLineColor:(elbowAngle < 160 || elbowAngle > 160) ? .red : .green,
+                        ),
+                        joints: prediction.joints,
+                        phase: vm.predictions[idx].label,
+                        elbowAngle: elbowAngle,
+                        elbowImprovement:
+                            (elbowAngle < 160 || elbowAngle > 170) ? "Need\nImprovement" : "Pass",
+                        elbowfeedback1:
+                            (elbowAngle < 160 || elbowAngle > 170) ? "Should be close to 160°–170°" : "Already close to 160°–170°",
+                        elbowfeedback2:
+                            vm.feedbackMethod(angle: elbowAngle, lowAngle: 86, highAngle: 93, whatAngle: "elbow"),
+                        legAngle: legAngle,
+                        legImprovement:
+                            (legAngle < 160 || legAngle > 160) ? "Need\nImprovement" : "Pass",
+                        legFeedback1:
+                            (legAngle < 160 || legAngle > 160) ? "Should be close to 160°" : "Already close to 160°",
+                        legFeedback2:
+                            vm.feedbackMethod(angle: legAngle, lowAngle: 160, highAngle: 160, whatAngle: "leg")
+                    )
+                    Spacer()
+                }
             }
         }
         .tag(idx)
@@ -170,18 +190,24 @@ struct ReportView: View {
     
     var body: some View {
         ZStack {
-            TabView(selection: $selectedTab) {
-                ForEach(Array(vm.predictions.enumerated()), id: \.offset) { idx, prediction in
-                    ReportTabItem(
-                        prediction: prediction,
-                        idx: idx,
-                        selectedTab: selectedTab,
-                        vm: vm
-                    )
+            if !vm.predictions.isEmpty && vm.predictions.allSatisfy({ $0.detectedDominant == nil }) {
+                CantAnalyzeAllComponent()
+            } else {
+                TabView(selection: $selectedTab) {
+                    ForEach(Array(vm.predictions.enumerated()), id: \.offset) { idx, prediction in
+                        ReportTabItem(
+                            prediction: prediction,
+                            idx: idx,
+                            selectedTab: selectedTab,
+                            vm: vm
+                        ).environmentObject(router)
+                    }
                 }
+                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                .frame(alignment: .top)
             }
-            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-            .frame(alignment: .top)
+
+
             
             VStack {
                 LinearGradient(colors: [Color.black.opacity(1), Color.black.opacity(0)], startPoint: .top, endPoint:.bottom )
@@ -195,26 +221,30 @@ struct ReportView: View {
             VStack{
                 Spacer()
                 HStack{
-                    ForEach(0..<vm.predictions.count, id: \.self) { idx in
-                        if idx == selectedTab {
-                            Capsule()
-                                .frame(width: 24, height: 8)
-                                .foregroundColor(.orange)
-                        } else {
-                            Circle()
-                                .frame(width: 8, height: 8)
-                                .foregroundColor(.brown)
+                    if !vm.predictions.isEmpty && vm.predictions.allSatisfy({ $0.detectedDominant == nil }) {
+                    }else{
+                        ForEach(0..<vm.predictions.count, id: \.self) { idx in
+                            if idx == selectedTab {
+                                Capsule()
+                                    .frame(width: 24, height: 8)
+                                    .foregroundColor(.orange)
+                            } else {
+                                Circle()
+                                    .frame(width: 8, height: 8)
+                                    .foregroundColor(.brown)
+                            }
                         }
                     }
+                    
+
                 }
                 .padding(.top, 8)
                 .padding(.bottom, 16)
                 
                 VStack(spacing: 16) {
                     Button("Back to Home") {
-                        vm.printAllPhaseData(phase)
+                        router.pop()
                         reportView.toggle()
-                        presentationMode.wrappedValue.dismiss()
                         vm.lastVideoURL = nil
                         vm.frames = []
                         vm.frameTimes = []
@@ -256,10 +286,16 @@ struct ReportView: View {
                         Spacer()
                         Button {
                             showFullImage = true
-                        } label: {
-                            Image(systemName: "plus.magnifyingglass")
-                                .font(.system(size: 27))
-                                .foregroundColor(Color(uiColor: UIColor(hex: "#FF7200")))
+                        } label:
+                        {
+                            if !vm.predictions.isEmpty && vm.predictions.allSatisfy({ $0.detectedDominant == nil }) {
+                            }else{
+                                Image(systemName: "plus.magnifyingglass")
+                                    .font(.system(size: 27))
+                                    .foregroundColor(Color(uiColor: UIColor(hex: "#FF7200")))
+                            }
+                            
+
                         }
                     }
                     .padding(.trailing, 16)
@@ -314,3 +350,4 @@ struct ReportView: View {
         }
     }
 }
+

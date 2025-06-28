@@ -6,24 +6,36 @@
 //
 
 import SwiftUI
+import AVKit
 
 struct RecordLoadingView: View {
-    @State private var rotateBall = false
+    @State private var player: AVPlayer? = nil
     @State private var dotCount = 0
-    
+
     let dotTimer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
 
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
             VStack(spacing: 24) {
-                Image("BasketBallIcon")
-                    .resizable()
-                    .frame(width: 64, height: 64)
-                    .rotationEffect(.degrees(rotateBall ? 360 : 0))
-                    .animation(.linear(duration: 1.2).repeatForever(autoreverses: false), value: rotateBall)
-                    .onAppear { rotateBall = true }
-
+                if let player = player {
+                      VideoPlayer(player: player)
+                          .frame(width: 120, height: 120)
+                          .clipShape(Circle())
+                          .onAppear {
+                              player.play()
+                              NotificationCenter.default.addObserver(
+                                  forName: .AVPlayerItemDidPlayToEndTime,
+                                  object: player.currentItem,
+                                  queue: .main
+                              ) { _ in
+                                  player.seek(to: .zero)
+                                  player.play()
+                              }
+                          }
+                  } else {
+                      Text("Video not found").foregroundColor(.white)
+                  }
                 Text("Hold on while we check your form" + String(repeating: ".", count: dotCount))
                     .font(.system(size: 24))
                     .fontWeight(.bold)
@@ -32,11 +44,17 @@ struct RecordLoadingView: View {
                     .onReceive(dotTimer) { _ in
                         dotCount = (dotCount + 1) % 4
                     }
+              }
+              .onAppear {
+                  if let url = Bundle.main.url(forResource: "recording-analysis-loading-screen", withExtension: "mp4") {
+                      player = AVPlayer(url: url)
+                  }
+              }
+
             }
             .padding(32)
         }
     }
-}
 
 #Preview {
     RecordLoadingView()

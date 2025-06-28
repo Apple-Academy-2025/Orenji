@@ -60,7 +60,8 @@ class RecordFeatureViewModel: ObservableObject {
         return result
     }
     func processML(
-        from url: URL
+        from url: URL,
+        completion: @escaping () -> Void
     ) {
         print("Proses ML dimulai")
         isProcessingML = true
@@ -168,8 +169,10 @@ class RecordFeatureViewModel: ObservableObject {
 
             group.notify(queue: .main) {
                 self.predictions = updatedPredictions
+                self.predictions = self.orderedBestFramesWithPlaceholder(from: self.predictions)
                 self.isProcessingML = false
                 print(self.predictions)
+                completion()
             }
         }
     }
@@ -202,7 +205,7 @@ class RecordFeatureViewModel: ObservableObject {
         }
     }
     ////===================================================
-    func extractAllFramesProcess(from url: URL) {
+    func extractAllFramesProcess(from url: URL, completion: @escaping () -> Void) {
         frames = []
         frameTimes = []
         predictions = []
@@ -217,7 +220,9 @@ class RecordFeatureViewModel: ObservableObject {
                 self.frames = processedFrames
                 self.frameTimes = times
                 self.isExtracting = false
-                self.processML(from: url)
+                self.processML(from: url,completion: {completion()})
+                
+                
                 
             }
 
@@ -507,6 +512,28 @@ class RecordFeatureViewModel: ObservableObject {
             )
         }
     }
+    func orderedBestFramesWithPlaceholder(from frames: [FramePrediction]) -> [FramePrediction] {
+        let phases = ShotPhase.allCases
+        return phases.map { phase in
+            if let found = frames.first(where: { $0.label.lowercased() == phase.rawValue }) {
+                return found
+            } else {
+                // Placeholder (pakai property kosong/null)
+                return FramePrediction(
+                    imageForDisplay: nil,
+                    imageForMLProcess: UIImage(),
+                    imageTime: 0,
+                    label: phase.rawValue,
+                    joints: nil,
+                    detectedDominant: nil,
+                    elbowAngle: nil,
+                    kneeAngle: nil,
+                    date: nil
+                )
+            }
+        }
+    }
+
 
     ////===================================================
 }

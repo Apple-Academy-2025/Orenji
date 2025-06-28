@@ -13,86 +13,103 @@ struct HistoryDetailView: View {
     @State var selectedTab: Int = 0
     @State var Number : Int = 0
     @State var showFullImage: Bool = false
-
+    
+    // Urutan label yang diinginkan
+    let labelOrder = ["preparation", "bending", "followthrough"]
+    
+    // Sorted frames berdasarkan label
+    var sortedFrames: [FrameData] {
+        PhaseDatas.frames.sorted {
+            let idx0 = labelOrder.firstIndex(of: $0.label?.lowercased() ?? "") ?? Int.max
+            let idx1 = labelOrder.firstIndex(of: $1.label?.lowercased() ?? "") ?? Int.max
+            return idx0 < idx1
+        }
+    }
     
     var body: some View {
-        let elbowAngle = Int(PhaseDatas.frames[selectedTab].elbowAngle ?? 0)
-        let legAngle = Int(PhaseDatas.frames[selectedTab].kneeAngle ?? 0)
+        // Agar aman saat frames kosong, jangan akses selectedTab di luar range
+        let elbowAngle = selectedTab < sortedFrames.count ? Int(sortedFrames[selectedTab].elbowAngle ?? 0) : 0
+        let legAngle = selectedTab < sortedFrames.count ? Int(sortedFrames[selectedTab].kneeAngle ?? 0) : 0
         
         ZStack {
-            VStack{
-                TabView(selection: $selectedTab) {
-                    ForEach(Array(PhaseDatas.frames.enumerated()), id: \.offset){
-                        idx, predictions in
-                        DetailCardHistory(prediction: predictions, idx: idx)
+            VStack {
+                // Kalau semua frame tidak bisa dianalisis atau kosong
+                if sortedFrames.isEmpty || sortedFrames.allSatisfy({ $0.detectedDominant == nil }) {
+                    CantAnalyzeAllComponent()
+                } else {
+                    TabView(selection: $selectedTab) {
+                        ForEach(Array(sortedFrames.enumerated()), id: \.offset) { idx, prediction in
+                            DetailCardHistory(prediction: prediction, idx: idx)
+                        }
                     }
-                    
+                    .tag(selectedTab)
+                    .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                    .frame(alignment: .top)
                 }
-                .tag(selectedTab)
-                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                .frame(alignment: .top)
             }
             VStack {
-                LinearGradient(colors: [Color.black.opacity(1), Color.black.opacity(0)], startPoint: .top, endPoint:.bottom )
+                LinearGradient(colors: [Color.black.opacity(1), Color.black.opacity(0)], startPoint: .top, endPoint: .bottom)
                     .frame(height: 300)
                 Spacer()
-                LinearGradient(colors: [Color.black, Color(uiColor: UIColor(hex: "#FF7200")).opacity(0.5)], startPoint: .top, endPoint:.bottom )
+                LinearGradient(colors: [Color.black, Color(uiColor: UIColor(hex: "#FF7200")).opacity(0.5)], startPoint: .top, endPoint: .bottom)
                     .frame(height: 30)
             }
             .ignoresSafeArea()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
-            
-            VStack{
+            VStack {
                 Spacer()
-                HStack{
-                    ForEach(0..<3, id: \.self) { idx in
-                        if idx == selectedTab {
-                            Capsule()
-                                .frame(width: 24, height: 8)
-                                .foregroundColor(.orange)
-                        } else {
-                            Circle()
-                                .frame(width: 8, height: 8)
-                                .foregroundColor(.brown)
+                if sortedFrames.isEmpty || sortedFrames.allSatisfy({ $0.detectedDominant == nil }) {
+                }else{
+                    HStack {
+                        ForEach(0..<sortedFrames.count, id: \.self) { idx in
+                            if idx == selectedTab {
+                                Capsule()
+                                    .frame(width: 24, height: 8)
+                                    .foregroundColor(.orange)
+                            } else {
+                                Circle()
+                                    .frame(width: 8, height: 8)
+                                    .foregroundColor(.brown)
+                            }
                         }
                     }
+                    .padding(.top, 8)
+                    .padding(.bottom, 16)
                 }
-                .padding(.top, 8)
-                .padding(.bottom, 16)
-            
+
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
             .padding(.bottom, 32)
-
             
             VStack {
                 ZStack {
                     Text("Report Analysis")
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(.white)
-                    HStack{
-                            Button( action: {
-                                dismiss()
+                    HStack {
+                        Button(action: {
+                            dismiss()
+                        }) {
+                            HStack {
+                                Image(systemName: "chevron.left")
+                                Text("Back")
                             }
-   
-                            ) {
-                                HStack() {
-                                    Image(systemName: "chevron.left")
-                                    Text("Back")
-                                }
-                                .font(.system(size: 16))
-                                .foregroundColor(Color(uiColor: UIColor(hex: "#FF7200")))
-                            }
-
-                        Spacer()
-                        Button {
-                            showFullImage = true
-                        } label: {
-                            Image(systemName: "plus.magnifyingglass")
-                                .font(.system(size: 26))
-                                .foregroundColor(Color(uiColor: UIColor(hex: "#FF7200")))
+                            .font(.system(size: 16))
+                            .foregroundColor(Color(uiColor: UIColor(hex: "#FF7200")))
                         }
+                        Spacer()
+                        if sortedFrames.isEmpty || sortedFrames.allSatisfy({ $0.detectedDominant == nil }) {
+                        } else {
+                            Button {
+                                showFullImage = true
+                            } label: {
+                                Image(systemName: "plus.magnifyingglass")
+                                    .font(.system(size: 26))
+                                    .foregroundColor(Color(uiColor: UIColor(hex: "#FF7200")))
+                            }
+                        }
+  
                     }
                     .padding(.horizontal, 16)
                     .frame(maxWidth: .infinity)
@@ -100,8 +117,6 @@ struct HistoryDetailView: View {
                 Spacer()
             }
             .padding(.top, 54)
-
-
         }
         .navigationBarBackButtonHidden(true)
         .ignoresSafeArea()
@@ -109,14 +124,12 @@ struct HistoryDetailView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .fullScreenCover(isPresented: $showFullImage) {
             ZStack(alignment: .topLeading) {
-                if let uiImg =
-                    drawSkeleton(
-                        image: convertDataToUIImage(PhaseDatas.frames[selectedTab].imageForDisplay) ?? UIImage(),
-                        handLineColor:(elbowAngle < 75 || elbowAngle > 90) ? .red : .green,
-                        legLineColor:(legAngle < 160 || legAngle > 160) ? .red : .green
-                    )
-
-                {
+                if selectedTab < sortedFrames.count,
+                   let uiImg = drawSkeleton(
+                        image: convertDataToUIImage(sortedFrames[selectedTab].imageForDisplay) ?? UIImage(),
+                        handLineColor: (elbowAngle < 75 || elbowAngle > 90) ? .red : .green,
+                        legLineColor: (legAngle < 160 || legAngle > 160) ? .red : .green
+                   ) {
                     Image(uiImage: uiImg)
                         .resizable()
                         .scaledToFill()
@@ -147,6 +160,6 @@ struct HistoryDetailView: View {
             .ignoresSafeArea(edges: .all)
         }
     }
-
 }
+
 
