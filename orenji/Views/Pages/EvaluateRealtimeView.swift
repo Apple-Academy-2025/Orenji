@@ -72,9 +72,6 @@ struct EvaluateRealtimeView: View {
     var body: some View {
         ZStack {
             CameraPreview(service: cameraService).ignoresSafeArea()
-            
-            
-            // 👇 Baru tampilkan PoseOverlayView dengan evaluationColors
             if !poseDetector.recognizedPoints.isEmpty {
                 PoseOverlayView(
                     points: poseDetector.recognizedPoints,
