@@ -12,7 +12,6 @@ struct InstruksiView: View {
     var destination: Route
     var idPage: String
     @StateObject var connectivity = WatchConnectivityManager.shared
-    
     @State private var currentPage = 0
     let totalPages = 3
     
@@ -33,7 +32,7 @@ struct InstruksiView: View {
             .font(.system(size: 14, weight: .medium))
             .padding(.top, UIApplication.safeAreaTop + 8)
             .padding(.trailing, 20)
-            .zIndex(1)
+            .zIndex(999)
         }
         .ignoresSafeArea()
         .background(Color.black)

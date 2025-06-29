@@ -23,6 +23,22 @@ struct EmptyView: View {
     }
 }
 
+struct EmptyViewRT: View {
+    var body: some View {
+        VStack{
+            Image("?")
+                .resizable()
+                .frame(width: 80, height: 80)
+                .foregroundColor(.primary)
+            Spacer().frame(height: 16)
+//            Text("there is no recorded\nhistory yet")
+//                .foregroundColor(.white)
+//                .font(.system(size: 20).bold())
+//                .multilineTextAlignment(.center)
+        }
+    }
+}
+
 #Preview {
     EmptyView()
 }
