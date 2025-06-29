@@ -23,6 +23,7 @@ enum Route: Hashable {
     case TutorialView
     case RecordPose
     case RealtimePose
+    case FinishRealtime(loopCount: Int, durationInSeconds: Int)
 }
 
 
