@@ -51,7 +51,7 @@ struct InstruksiView: View {
             alignment: .bottom
             
         )
-        .navigationBarHidden(true)
+        .navigationBarHidden(false)
     }
     
     @ViewBuilder
