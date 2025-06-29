@@ -113,7 +113,7 @@ struct EvaluateRealtimeView: View {
                 EvaluationFinishedView(loopCount: loopCount)
                     .environmentObject(router)
             default:
-                EmptyView()
+                EmptyViewRT()
             }
             
             if [.checkPhase1, .checkPhase2, .checkPhase3].contains(phase) {

@@ -166,28 +166,7 @@ class PoseDetectionViewModel: ObservableObject {
     
     
     
-    //    func updatePoseCorrectness(for phase: EvaluateRealtimeView.Phase) {
-    //        switch phase {
-    //        case .checkPhase1:
-    //            let elbowOK = abs(elbowAngleNow - 120) < 5
-    //            let legOK = (150...165).contains(CGFloat(legAngleNow))
-    //            isPoseCorrect = elbowOK && legOK
-    //
-    //        case .checkPhase2:
-    //            let legOK = abs(legAngleNow - 75) < 5
-    //            let elbowOK = abs(elbowAngleNow - 85) < 5
-    ////            let elbowOK = (45...90).contains(CGFloat(elbowAngleNow))
-    //            isPoseCorrect = legOK && elbowOK
-    //
-    //        case .checkPhase3:
-    //            let elbowOK = abs(elbowAngleNow - 170) < 5
-    //            let legOK = (160...170).contains(CGFloat(legAngleNow))
-    //            isPoseCorrect = elbowOK && legOK
-    //
-    //        default:
-    //            isPoseCorrect = false
-    //        }
-    //    }
+    
     
 
     func cancelHold() {

@@ -12,114 +12,64 @@ struct InstruksiView: View {
     var destination: Route
     var idPage: String
     @StateObject var connectivity = WatchConnectivityManager.shared
-    
-    
     @State private var currentPage = 0
     let totalPages = 3
-
+    
     var body: some View {
-        VStack {
-            if idPage == "realtime"{
-                TabView(selection: $currentPage) {
-                    InstructionContainer(
-                        imageName: "Tutor1",
-                        title: "Put your tripod on your side",
-                        subtitle: "Make sure to capture your full body and from your side.",
-                        showStartButton: false,
-                        currentPage: $currentPage,
-                        destination: destination
-                    )
-                    .tag(0)
-
-                    InstructionContainer(
-                        imageName: "Tutor2",
-                        downWave: true,
-                        title: "Shoot Alone",
-                        subtitle: "Keep the background clear to avoid analysis errors.",
-                        showStartButton: false,
-                        currentPage: $currentPage,
-                        destination: destination
-                    )
-                    .tag(1)
-
-                    InstructionContainer(
-                        imageName: "Tutor3",
-                        title: "Wrap Up When You're Done",
-                        subtitle: "The session will keep going until you press Stop.",
-                        showStartButton: true,
-                        currentPage: $currentPage,
-                        destination: destination,
-                        onStart: {
-                                startSession()
-                            }
-                    )
-                    .tag(2)
-                }
-                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                .frame(maxHeight: .infinity)
-
-                HStack(spacing: 8) {
-                    ForEach(0..<totalPages, id: \.self) { index in
-                        Circle()
-                            .fill(currentPage == index ? Color.primer : Color.gray.opacity(0.4))
-                            .frame(width: 8, height: 8)
-                    }
-                }
-                .padding(.bottom, 30)
+        ZStack(alignment: .topTrailing) {
+            // Background hitam + konten TabView
+            TabView(selection: $currentPage) {
+                getInstructionPages()
             }
+            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
             
-            else{
-                TabView(selection: $currentPage) {
-                    InstructionContainer(
-                        imageName: "Tutor1",
-                        title: "Put your tripod on your side",
-                        subtitle: "Make sure to capture your full body and from your side.",
-                        showStartButton: false,
-                        currentPage: $currentPage,
-                        destination: destination
-                    )
-                    .tag(0)
-
-                    InstructionContainer(
-                        imageName: "Tutor2",
-                        downWave: true,
-                        title: "One Shot, One Throw",
-                        subtitle: "Record only one free throw per video. Keep it clean and focused.",
-                        showStartButton: false,
-                        currentPage: $currentPage,
-                        destination: destination
-                    )
-                    .tag(1)
-
-                    InstructionContainer(
-                        imageName: "Tutor3",
-                        title: "Correct Your Posture Instantly",
-                        subtitle: "Keep the background clear to avoid analysis errors.",
-                        showStartButton: true,
-                        currentPage: $currentPage,
-                        destination: destination,
-                        onStart: {
-                                startSession()
-                            }
-                    )
-                    .tag(2)
-                }
-                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                .frame(maxHeight: .infinity)
-
-                HStack(spacing: 8) {
-                    ForEach(0..<totalPages, id: \.self) { index in
-                        Circle()
-                            .fill(currentPage == index ? Color.primer : Color.gray.opacity(0.4))
-                            .frame(width: 8, height: 8)
-                    }
-                }
-                .padding(.bottom, 30)
+            // ✅ "Skip all" button always on top
+            Button("Skip all") {
+                startSession()
+                router.goTo(destination)
             }
-            
+            .foregroundColor(.white)
+            .font(.system(size: 14, weight: .medium))
+            .padding(.top, UIApplication.safeAreaTop + 8)
+            .padding(.trailing, 20)
+            .zIndex(999)
         }
-        .frame(maxHeight: .infinity)
+        .ignoresSafeArea()
         .background(Color.black)
+        .overlay(
+            // ✅ Page indicators (di bawah)
+            HStack(spacing: 8) {
+                ForEach(0..<totalPages, id: \.self) { index in
+                    Capsule()
+                        .fill(currentPage == index ? Color.orange : Color.white.opacity(0.3))
+                        .frame(width: currentPage == index ? 18 : 8, height: 8)
+                }
+            }
+                .offset(y:40)
+                .padding(.bottom, 40),
+            alignment: .bottom
+            
+        )
+        .navigationBarHidden(false)
+    }
+    
+    @ViewBuilder
+    private func getInstructionPages() -> some View {
+        if idPage == "realtime" {
+            InstructionContainer(imageName: "instruction1", title: "Put your tripod on your side", subtitle: "Make sure to capture your full body and from your side.", showStartButton: false, currentPage: $currentPage, destination: destination)
+                .tag(0)
+            InstructionContainer(imageName: "instruction2", title: "Shoot Alone", subtitle: "Keep the background clear to avoid analysis errors.", showStartButton: false, currentPage: $currentPage, destination: destination)
+                .tag(1)
+            InstructionContainer(imageName: "instruction3", title: "Wrap Up When You're Done", subtitle: "The session will keep going until you press Stop.", showStartButton: true, currentPage: $currentPage, destination: destination, onStart: { startSession() })
+                .tag(2)
+        } else {
+            InstructionContainer(imageName: "instruction1", title: "Put your tripod on your side", subtitle: "Make sure to capture your full body and from your side.", showStartButton: false, currentPage: $currentPage, destination: destination)
+                .tag(0)
+            InstructionContainer(imageName: "instruction2", title: "One Shot, One Throw", subtitle: "Record only one free throw per video. Keep it clean and focused.", showStartButton: false, currentPage: $currentPage, destination: destination)
+                .tag(1)
+            InstructionContainer(imageName: "instruction3", title: "Correct Your Posture Instantly", subtitle: "Keep the background clear to avoid analysis errors.", showStartButton: true, currentPage: $currentPage, destination: destination, onStart: { startSession() })
+                .tag(2)
+        }
     }
     
     private func startSession() {
@@ -129,96 +79,126 @@ struct InstruksiView: View {
             connectivity.sendStartSessionCommand(type: .recording)
         }
     }
-
 }
 
 struct InstructionContainer: View {
     @EnvironmentObject var router: Router
-
+    
     var imageName: String
-    var anotherImage: String? = nil
-    var downWave: Bool? = nil
     var title: String
     var subtitle: String
     var showStartButton: Bool
     @Binding var currentPage: Int
     var destination: Route
     var onStart: (() -> Void)? = nil
-
+    
     var body: some View {
-        VStack(spacing: 17) {
-            Spacer()
-            ZStack {
-                Image(imageName)
-                    .aspectRatio(contentMode: .fit)
-                    .frame(maxHeight: 650)
-
-                if let overlay = anotherImage {
-                    Image(overlay)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 580)
-                        .offset(x: 20, y: -45)
-                }
-            }
-            .frame(height: 350)
-
-            VStack {
-                HStack(alignment: .bottom, spacing: 20) {
-                    VStack(alignment: .leading, spacing: 5) {
+        VStack(spacing: 0) {
+            // 🔳 Gambar full screen
+            Image(imageName)
+                .resizable()
+                .scaledToFill()
+                .ignoresSafeArea()
+            
+            // 🔳 Box hitam teks menumpuk di bawah gambar (offset naik)
+            ZStack(alignment: .top) {
+                Color.black
+                
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 8) {
                         Text(title)
-                            .font(.system(size: 35, weight: .bold))
-                            .foregroundColor(Color("Primer"))
-                            .fixedSize(horizontal: false, vertical: true)
-                            .lineLimit(nil)
-
-                        Text(subtitle)
-                            .font(.system(size: 20))
+                            .font(.system(size: 36, weight: .bold))
                             .foregroundColor(.white)
                             .fixedSize(horizontal: false, vertical: true)
-                            .lineLimit(nil)
-                    }
-                    .padding(.leading)
-                    .layoutPriority(1)
 
-                    if showStartButton {
+                        Text(subtitle)
+                            .font(.system(size: 16))
+                            .foregroundColor(.white.opacity(0.85))
+                            .frame(width: .infinity, alignment: .leading)
+                            .fixedSize(horizontal: false, vertical: true)
+                            
+                        
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                   
+                    Spacer()
+                    Spacer()
+                    // Tombol diletakkan di bawah dengan tinggi penuh
+                    VStack {
+                        Spacer()
                         Button(action: {
-                            onStart?()
-                            router.goTo(destination)
-                        }) {
-                            Image(systemName: "chevron.right")
-                                .foregroundColor(.black)
-                                .padding()
-                                .background(Color.orange)
-                                .clipShape(Circle())
-                        }
-                        .padding(.leading)
-                    } else {
-                        Button {
-                            withAnimation {
-                                currentPage += 1
+                            if showStartButton {
+                                onStart?()
+                                router.goTo(destination)
+                            } else {
+                                withAnimation {
+                                    currentPage += 1
+                                }
                             }
-                        } label: {
-                            Image(systemName: "chevron.right")
+                        }) {
+                            Image(systemName: showStartButton ? "play.fill" : "chevron.right")
                                 .foregroundColor(.black)
-                                .padding()
+                                .font(.system(size: 20, weight: .bold))
+                                .frame(width: 56, height: 56)
                                 .background(Color.orange)
                                 .clipShape(Circle())
                         }
-                        .padding(.leading)
                     }
+                    .frame(maxHeight: .infinity) // ✅ Tombol isi tinggi HStack
                 }
-                .frame(maxHeight: 180)
-                .offset(y: 30)
+                .padding(.horizontal, 24)
+                .padding(.bottom, 36)
+                .frame(maxWidth: .infinity, minHeight: 170)
+                
+                
+                
             }
-
-            Spacer(minLength: 30)
+            .frame(maxWidth: .infinity, minHeight: 170, alignment: .top)
+            .offset(y: -24) // naikin agar overlapping ke gambar
         }
+        
+    }
+    
+}
+
+
+
+
+
+
+
+extension View {
+    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+        clipShape(RoundedCorner(radius: radius, corners: corners))
+    }
+}
+
+extension UIApplication {
+    static var safeAreaTop: CGFloat {
+        let keyWindow = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first { $0.isKeyWindow }
+        return keyWindow?.safeAreaInsets.top ?? 44
     }
 }
 
 
+struct RoundedCorner: Shape {
+    var radius: CGFloat = 16
+    var corners: UIRectCorner
+    
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(
+            roundedRect: rect,
+            byRoundingCorners: corners,
+            cornerRadii: CGSize(width: radius, height: radius)
+        )
+        return Path(path.cgPath)
+    }
+}
+
 #Preview {
-    InstruksiView(destination: .RecordPose, idPage: "record")
+    InstruksiView(destination: .RecordPose, idPage: "realtime")
         .environmentObject(Router())
 }
