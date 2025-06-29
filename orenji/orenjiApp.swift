@@ -79,6 +79,7 @@ struct PostureBasketApp: App {
                             break
                         }
                     }
+                    .modelContainer(for: [FrameData.self, PhaseData.self])
                     .environmentObject(router)
                 }
             }
