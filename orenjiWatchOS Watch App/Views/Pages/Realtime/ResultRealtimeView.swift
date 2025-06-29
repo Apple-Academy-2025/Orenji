@@ -34,12 +34,10 @@ struct ResultRealtimeView: View {
                     RoundedRectangle(cornerRadius: 20)
                         .fill(Color(.sRGB, red: 0.15, green: 0.15, blue: 0.17))
                 )
-                
                 Spacer()
                 
                 Button(action: {
                     connectivity.resetToIdle()
-                    connectivity.sendRealtimeAction(["endSessionChoice": true])
                 }) {
                     Text("Close")
                         .font(.headline)

@@ -251,24 +251,32 @@ struct EvaluateRealtimeView: View {
                 return "Elbow too close, stretch more"
             } else if poseDetector.elbowAngleNow > 125 {
                 return "Elbow too wide, lower slightly"
+            }else{
+                connectivity.sendHapticSignalToWatch()
+                return "Hold Preparation Pose!"
             }
-            return "Hold Preparation Pose!"
             
         case .checkPhase2 where currentPhase != .bending:
             if poseDetector.legAngleNow < 70 {
                 return "Leg too bent, straighten slightly"
             } else if poseDetector.legAngleNow > 80 {
                 return "Leg too straight, bend more"
+            }else{
+                connectivity.sendHapticSignalToWatch()
+                return "Hold Bending Pose!"
             }
-            return "Hold Bending Pose!"
+            
             
         case .checkPhase3 where currentPhase != .release:
             if poseDetector.elbowAngleNow < 165 {
                 return "Elbow too low, raise your arm"
             } else if poseDetector.elbowAngleNow > 175 {
                 return "Elbow too high, relax a bit"
+            }else{
+                connectivity.sendHapticSignalToWatch()
+                return "Hold Release Pose!"
             }
-            return "Hold Release Pose!"
+            
             
         default:
             return nil
