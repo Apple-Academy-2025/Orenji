@@ -1,19 +1,22 @@
-//
-//  FinishRealtime.swift
-//  orenji
-//
-//  Created by Adithya Firmansyah Putra on 26/06/25.
-//
-
 import SwiftUI
 
 struct FinishRealtimeView: View {
     @EnvironmentObject var router: Router
-    @State var loopCount: Int = 0
+    var loopCount: Int
+    var durationInSeconds: Int
+    
+    var minutesText: String {
+        let minutes = durationInSeconds / 60
+        let seconds = durationInSeconds % 60
+        return String(format: "%02d:%02d", minutes, seconds)
+    }
+    
+    var displayLoopCount: Int {
+        loopCount % 3
+    }
     
     var body: some View {
         VStack {
-            
             Spacer()
             
             Text("SESSION WRAP UP!")
@@ -21,17 +24,17 @@ struct FinishRealtimeView: View {
                 .multilineTextAlignment(.center)
                 .frame(alignment: .center)
                 .background(.black)
-                .font(.system(size: 32, weight: .bold, design: .default))
+                .font(.system(size: 32, weight: .bold))
                 .foregroundColor(.white)
-                
+            
             Spacer()
             
             VStack {
-                Text("You Spend")
+                Text("You Spent")
                     .font(.system(size: 24, weight: .light))
                     .foregroundColor(.white)
-                    
-                Text("01:00")
+                
+                Text(minutesText)
                     .font(.system(size: 80, weight: .bold))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
@@ -42,11 +45,9 @@ struct FinishRealtimeView: View {
                             .fill(Color.gray.opacity(0.2))
                     )
                 
-                    Text("Minutes")
-                        .font(.system(size: 24, weight: .light))
-                        .foregroundColor(.white)
-                        
-                
+                Text("Minutes")
+                    .font(.system(size: 24, weight: .light))
+                    .foregroundColor(.white)
             }
             .frame(width: .infinity)
             .padding(.vertical, 16)
@@ -61,8 +62,8 @@ struct FinishRealtimeView: View {
                 Text("You did Shooting")
                     .font(.system(size: 24, weight: .light))
                     .foregroundColor(.white)
-                    
-                Text("\(loopCount)")
+                
+                Text("\(displayLoopCount)")
                     .font(.system(size: 80, weight: .bold))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
@@ -73,11 +74,9 @@ struct FinishRealtimeView: View {
                             .fill(Color.gray.opacity(0.2))
                     )
                 
-                    Text("Times")
-                        .font(.system(size: 24, weight: .light))
-                        .foregroundColor(.white)
-                        
-                
+                Text("Times")
+                    .font(.system(size: 24, weight: .light))
+                    .foregroundColor(.white)
             }
             .padding(.vertical, 16)
             .padding(.horizontal, 32)
@@ -89,7 +88,6 @@ struct FinishRealtimeView: View {
             
             Spacer()
             
-            
             Button(action: {
                 router.goTo(.Home)
             }) {
@@ -99,11 +97,8 @@ struct FinishRealtimeView: View {
                     .frame(maxWidth: .infinity)
             }
             .padding()
-            .frame(maxWidth: .infinity)
             .background(Color.primer)
-            .foregroundStyle(.black)
             .cornerRadius(14)
-
         }
         .frame(maxHeight: .infinity)
         .padding()
@@ -113,6 +108,6 @@ struct FinishRealtimeView: View {
 }
 
 #Preview {
-    FinishRealtimeView(loopCount: 4)
+    FinishRealtimeView(loopCount: 7, durationInSeconds: 85)
         .environmentObject(Router())
 }

@@ -63,6 +63,9 @@ struct PostureBasketApp: App {
                                     EmptyView()
                                 case .TutorialView:
                                     EmptyView()
+                                case .FinishRealtime(let loopCount, let durationInSeconds):
+                                    FinishRealtimeView(loopCount: loopCount, durationInSeconds: durationInSeconds)
+
                                 }
                             } 
                     }

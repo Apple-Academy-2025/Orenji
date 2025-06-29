@@ -37,6 +37,10 @@ struct EvaluateRealtimeView: View {
     @State private var speechQueue: [String] = []
     @State private var isSpeaking = false
     
+    @State private var totalSeconds = 0
+    @State private var sessionTimer: Timer?
+
+    
     private let boxSize = CGSize(width: 250, height: 500)
     static var currentGlobalPhase: Phase = .preRecord
     
@@ -131,9 +135,17 @@ struct EvaluateRealtimeView: View {
                         }
                         .padding(24)
                         .confirmationDialog("Are you sure you want to stop?", isPresented: $showExitConfirmation, titleVisibility: .visible) {
-                            Button("Yes, Stop", role: .destructive) { phase = .finished }
+                            Button("Yes, Stop", role: .destructive) {
+                                cameraService.stop()
+                                sessionTimer?.invalidate()
+                                sessionTimer = nil
+                                
+                                router.goTo(.FinishRealtime(loopCount: loopCount, durationInSeconds: totalSeconds))
+                            }
+
                             Button("Cancel", role: .cancel) {}
                         }
+
                     }
                 }
             }
@@ -185,6 +197,10 @@ struct EvaluateRealtimeView: View {
             sendRealtimePoseToWatch(isCorrect: true, correctionMessage: nil, countdown: countdown)
         }
         .navigationBarBackButtonHidden(true)
+        .onDisappear {
+            cameraService.stop()
+            print("🛑 Camera stopped on disappear")
+        }
     }
     
     private func startWarningLoop() {
@@ -362,7 +378,14 @@ struct EvaluateRealtimeView: View {
         isRecordingStarted = true
         phase = .checkPhase1
         poseDetector.startHoldPose()
+
+        // 🔁 Start session timer
+        totalSeconds = 0
+        sessionTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+            totalSeconds += 1
+        }
     }
+
     
     
     
