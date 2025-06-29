@@ -243,14 +243,17 @@ struct ReportView: View {
                 VStack(spacing: 16) {
                     Button("Back to Home") {
                         router.pop()
-                        reportView.toggle()
-                        vm.lastVideoURL = nil
-                        vm.frames = []
-                        vm.frameTimes = []
-                        vm.predictions = []
-                        vm.bestFrame = []
-                        vm.bestFrameData = []
-                        connectivity.sendIdleState()
+                        router.pop()
+                        DispatchQueue.main.async {
+                            vm.lastVideoURL = nil
+                            vm.frames = []
+                            vm.frameTimes = []
+                            vm.predictions = []
+                            vm.bestFrame = []
+                            vm.bestFrameData = []
+                            connectivity.sendIdleState()
+                        }
+
                     }
                     .font(.system(size: 18, weight: .bold))
                     .foregroundColor(.black)

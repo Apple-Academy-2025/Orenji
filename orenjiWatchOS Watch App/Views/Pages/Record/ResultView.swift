@@ -6,35 +6,29 @@ import SwiftUI
 struct ResultRecordView: View {
     @State var isLoading: Bool = true
     @ObservedObject var connectivity = WatchConnectivityManager.shared
-    
+
     var body: some View {
         ZStack {
             if isLoading {
                 LoadingView()
                     .transition(.opacity.animation(.easeOut))
             } else if !connectivity.trainingSessions.isEmpty {
-                TabView {
-                    ForEach(connectivity.trainingSessions) { session in
-                        if session.phases.isEmpty {
-                            VStack {
-                                Spacer()
-                                Text("Start a session from your iPhone.")
-                                    .foregroundStyle(.secondary)
-                                    .multilineTextAlignment(.center)
-                                    .padding()
-                                Spacer()
-                            }
-                        } else {
+                let validSessions = connectivity.trainingSessions.filter { session in
+                    session.phases.contains { $0.imageModel != nil && !($0.imageModel?.isEmpty ?? true) }
+                }
+
+                if validSessions.isEmpty {
+                    fallbackText
+                } else {
+                    TabView {
+                        ForEach(validSessions) { session in
                             SessionItemView(session: session)
                         }
                     }
+                    .tabViewStyle(.page)
                 }
-                .tabViewStyle(.page)
             } else {
-                Text("Start a session from your iPhone.")
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding()
+                fallbackText
             }
         }
         .navigationTitle("Report Analysis")
@@ -49,7 +43,19 @@ struct ResultRecordView: View {
         }
         .animation(.easeInOut, value: isLoading)
     }
+
+    private var fallbackText: some View {
+        VStack {
+            Spacer()
+            Text("Start a session from your iPhone.")
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .padding()
+            Spacer()
+        }
+    }
 }
+
 
 
 #Preview {
