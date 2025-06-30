@@ -1,6 +1,7 @@
 import SwiftUI
 import Vision
 import AVFoundation
+import RiveRuntime
 
 struct EvaluateRealtimeView: View {
     @EnvironmentObject var router: Router
@@ -39,7 +40,7 @@ struct EvaluateRealtimeView: View {
     
     @State private var totalSeconds = 0
     @State private var sessionTimer: Timer?
-
+    
     
     private let boxSize = CGSize(width: 250, height: 500)
     static var currentGlobalPhase: Phase = .preRecord
@@ -69,12 +70,16 @@ struct EvaluateRealtimeView: View {
             let joint: VNHumanBodyPoseObservation.JointName = UserDefaults.standard.string(forKey: "shootingHand") == "Left" ? .leftElbow : .rightElbow
             colors[joint] = color
         }
-        
         return colors
     }
     
     var body: some View {
         ZStack {
+            if isCountingDown {
+                CountdownRiveView()
+                    .transition(.scale)
+                    .zIndex(10)
+            }
             CameraPreview(service: cameraService).ignoresSafeArea()
             if !poseDetector.recognizedPoints.isEmpty {
                 PoseOverlayView(
@@ -128,10 +133,12 @@ struct EvaluateRealtimeView: View {
                         Button(action: { showExitConfirmation = true }) {
                             Text("STOP")
                                 .font(.headline)
+                                .frame(width: 50, height: 50)
                                 .foregroundColor(.white)
                                 .padding()
                                 .background(Color.red)
                                 .clipShape(Circle())
+                            
                         }
                         .padding(24)
                         .confirmationDialog("Are you sure you want to stop?", isPresented: $showExitConfirmation, titleVisibility: .visible) {
@@ -142,10 +149,10 @@ struct EvaluateRealtimeView: View {
                                 
                                 router.goTo(.FinishRealtime(loopCount: loopCount, durationInSeconds: totalSeconds))
                             }
-
+                            
                             Button("Cancel", role: .cancel) {}
                         }
-
+                        
                     }
                 }
             }
@@ -386,14 +393,14 @@ struct EvaluateRealtimeView: View {
         isRecordingStarted = true
         phase = .checkPhase1
         poseDetector.startHoldPose()
-
+        
         // 🔁 Start session timer
         totalSeconds = 0
         sessionTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
             totalSeconds += 1
         }
     }
-
+    
     
     
     
@@ -473,6 +480,14 @@ struct EvaluateRealtimeView: View {
 
 extension Notification.Name {
     static let speakFromViewModel = Notification.Name("SpeakFromViewModel")
+}
+
+struct CountdownRiveView: View {
+    var body: some View {
+        RiveViewRepresentable(viewModel: countdownModel)
+            .aspectRatio(contentMode: .fit)
+            .frame(width: 300, height: 300)
+    }
 }
 
 

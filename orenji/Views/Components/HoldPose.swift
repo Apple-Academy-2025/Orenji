@@ -22,14 +22,16 @@ struct HoldPose: View {
         GeometryReader { geo in
             ZStack {
                 // Background fill progress
-                Rectangle()
-                    .fill(Color.green.opacity(0.4))
-                    .frame(height: geo.size.height * holdProgress)
-                    .position(
-                        x: geo.size.width / 2,
-                        y: geo.size.height - (geo.size.height * holdProgress / 2)
-                    )
-                    .animation(.linear(duration: 0.1), value: holdProgress)
+                VStack {
+                    Spacer()
+                    Rectangle()
+                        .fill(Color.green.opacity(0.4))
+                        .frame(height: geo.size.height * holdProgress)
+                        .animation(.linear(duration: 0.1), value: holdProgress)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .ignoresSafeArea()
+
 
                 
                 VStack{
@@ -57,18 +59,25 @@ struct HoldPose: View {
                     
                 }
                 
-               
+                Text(phaseTitle)
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundColor(.black)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(Color.black.opacity(0.4))
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .offset(y:-265)
                 VStack(spacing: 8) {
                     // phaseTitle (selalu tampil, di bawah warning)
-                    Text(phaseTitle)
-                        .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                        .background(Color.black.opacity(0.4))
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .offset(y:-90)
-                    
+                   
+//                    Text(phaseTitle)
+//                        .font(.system(size: 24, weight: .bold))
+//                        .foregroundColor(.black)
+//                        .padding(.horizontal, 16)
+//                        .padding(.vertical, 8)
+//                        .background(Color.black.opacity(0.4))
+//                        .clipShape(RoundedRectangle(cornerRadius: 16))
+//                        .offset(y:-90)
 
                       
                     if correct {
@@ -90,5 +99,16 @@ struct HoldPose: View {
             .edgesIgnoringSafeArea(.top) // pastikan banner naik ke top
         }
     }
+}
+
+#Preview {
+    HoldPose(
+        phaseTitle: "Preparation",
+        holdProgress: 1.0,
+        warningMessage: "Elbow too close, stretch more",
+        warningScale: 1.2,
+        correct: true
+    )
+    .environmentObject(Router()) // jangan lupa ini kalau view pakai EnvironmentObject
 }
 
