@@ -326,7 +326,8 @@ struct ReportView: View {
                 {
                     Image(uiImage: uiImg)
                         .resizable()
-                        .scaledToFit()
+                        .scaledToFill()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .ignoresSafeArea()
                 } else {
                     Color.gray.opacity(0.3)

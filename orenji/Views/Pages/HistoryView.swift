@@ -81,7 +81,7 @@ struct HistoryView: View {
                                     .foregroundColor(.white)
                                     .font(.system(size: 28, weight: .bold))
                                 Spacer()
-                            }
+                            }.padding(.top,24)
                         }
                         Spacer()
                     }
@@ -107,6 +107,7 @@ struct HistoryView: View {
                                 }
                             HStack() {
                                 Text("Record History")
+                                    .padding(.top,24)
                                     .foregroundColor(.white)
                                     .font(.system(size: 28, weight: .bold))
                                 Spacer()

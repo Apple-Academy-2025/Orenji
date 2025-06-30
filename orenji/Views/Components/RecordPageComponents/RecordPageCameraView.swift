@@ -47,12 +47,14 @@ struct RecordPageCameraFrame: View {
                     isRecording.toggle()
                     isRecording ? connectivity.sendDisplayStateToWatch("activelyRecording") : print("")
                 }) {
-                    Text(isRecording ? "Stop" : "Rekam")
-                        .font(.title3)
-                        .frame(width: 100, height: 44)
-                        .background(isRecording ? Color.red : Color.green)
-                        .foregroundColor(.white)
-                        .cornerRadius(22)
+                    Text(isRecording ? "Stop" : "Record")
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(.black)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 8)
+                        .background(isRecording ? Color.red : Color(uiColor: UIColor(hex: "#FF7200")))
+                        .cornerRadius(12)
+                        .padding(.horizontal, 48)
                 }
                 .padding(.bottom, 45)
             }
