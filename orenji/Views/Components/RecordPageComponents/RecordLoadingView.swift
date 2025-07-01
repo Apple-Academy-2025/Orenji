@@ -20,7 +20,7 @@ struct RecordLoadingView: View {
             VStack(spacing: 24) {
                 if let player = player {
                       VideoPlayer(player: player)
-                          .frame(width: 120, height: 120)
+                          .frame(width: 350, height: 350)
                           .clipShape(Circle())
                           .onAppear {
                               player.play()

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct InstruksiView: View {
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var router: Router
     var destination: Route
     var idPage: String
@@ -24,15 +25,29 @@ struct InstruksiView: View {
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
             
             // ✅ "Skip all" button always on top
-            Button("Skip all") {
-                startSession()
-                router.goTo(destination)
+            HStack(alignment: .top){
+                Button(action: {
+                    dismiss()
+                }) {
+                    HStack {
+                        Image(systemName: "chevron.left")
+                        Text("Back")
+                    }
+                    .padding(.leading, 20)
+                    .font(.system(size: 16))
+                    .foregroundColor(.blue)
+                }
+                Spacer()
+                Button("Skip all") {
+                    startSession()
+                    router.goTo(destination)
+                }
+                .foregroundColor(.white)
+                .font(.system(size: 14, weight: .medium))
+                .padding(.trailing, 20)
+                .zIndex(999)
             }
-            .foregroundColor(.white)
-            .font(.system(size: 14, weight: .medium))
-            .padding(.top, UIApplication.safeAreaTop + 8)
-            .padding(.trailing, 20)
-            .zIndex(999)
+                .frame(maxWidth: .infinity, maxHeight: 140)
         }
         .ignoresSafeArea()
         .background(Color.black)
@@ -50,7 +65,8 @@ struct InstruksiView: View {
             alignment: .bottom
             
         )
-        .navigationBarHidden(false)
+        .navigationBarBackButtonHidden(true)
+        .navigationBarHidden(true) // ini harus TRUE
     }
     
     @ViewBuilder
