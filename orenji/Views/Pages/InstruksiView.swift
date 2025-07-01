@@ -60,14 +60,14 @@ struct InstruksiView: View {
                 .tag(0)
             InstructionContainer(imageName: "instruction2", title: "Shoot Alone", subtitle: "Keep the background clear to avoid analysis errors.", showStartButton: false, currentPage: $currentPage, destination: destination)
                 .tag(1)
-            InstructionContainer(imageName: "instruction3", title: "Wrap Up When You're Done", subtitle: "The session will keep going until you press Stop.", showStartButton: true, currentPage: $currentPage, destination: destination, onStart: { startSession() })
+            InstructionContainer(imageName: "instruction3", title: "Wrap Up When You're Done", subtitle: "The session will keep going until you press Stop.", showStartButton: true, currentPage: $currentPage, destination: destination, onStart: { router.goTo(.TutorialView) })
                 .tag(2)
         } else {
             InstructionContainer(imageName: "instruction1", title: "Put your tripod on your side", subtitle: "Make sure to capture your full body and from your side.", showStartButton: false, currentPage: $currentPage, destination: destination)
                 .tag(0)
             InstructionContainer(imageName: "instruction2", title: "One Shot, One Throw", subtitle: "Record only one free throw per video. Keep it clean and focused.", showStartButton: false, currentPage: $currentPage, destination: destination)
                 .tag(1)
-            InstructionContainer(imageName: "instruction3", title: "Correct Your Posture Instantly", subtitle: "Keep the background clear to avoid analysis errors.", showStartButton: true, currentPage: $currentPage, destination: destination, onStart: { startSession() })
+            InstructionContainer(imageName: "instruction3", title: "Correct Your Posture Instantly", subtitle: "Keep the background clear to avoid analysis errors.", showStartButton: true, currentPage: $currentPage, destination: destination, onStart: {  router.goTo(.TutorialView) })
                 .tag(2)
         }
     }
@@ -116,8 +116,6 @@ struct InstructionContainer: View {
                             .foregroundColor(.white.opacity(0.85))
                             .frame(width: .infinity, alignment: .leading)
                             .fixedSize(horizontal: false, vertical: true)
-                            
-                        
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                    
@@ -129,7 +127,7 @@ struct InstructionContainer: View {
                         Button(action: {
                             if showStartButton {
                                 onStart?()
-                                router.goTo(destination)
+                                router.goTo(.TutorialView)
                             } else {
                                 withAnimation {
                                     currentPage += 1
@@ -160,11 +158,6 @@ struct InstructionContainer: View {
     }
     
 }
-
-
-
-
-
 
 
 extension View {
