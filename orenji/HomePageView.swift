@@ -35,15 +35,30 @@ struct HomePageView: View {
                     .padding(.bottom,40)
                 
                 FeatureCardView(
-                    title: "Record Analysis", subtitle: "Record and review your free-throw posture", imageName: "imageRecordAnalysis", action: {
-                        router.goTo(.Instruksi(destination: .RecordPose, idPage: "record"))
+                    title: "Record Analysis",
+                    subtitle: "Record and review your free-throw posture",
+                    imageName: "imageRecordAnalysis",
+                    action: {
+                        router.goTo(
+                            .Instruksi(
+                                destination: .RecordPose,
+                                idPage: "record"
+                            )
+                        )
                     }
                 )
                 
                 FeatureCardView(
-                    title: "Evaluate Realtime", subtitle: "Learn to free-throw shooting in realtime", imageName: "evaluateRealtimeImage", action: {
-                        router.goTo(.Instruksi(destination: .RealtimePose, idPage: "realtime"))
-                        
+                    title: "Evaluate Realtime",
+                    subtitle: "Learn to free-throw shooting in realtime",
+                    imageName: "evaluateRealtimeImage",
+                    action: {
+                        router.goTo(
+                            .Instruksi(
+                                destination: .RealtimePose,
+                                idPage: "realtime"
+                            )
+                        )
                     }
                 )
                 
@@ -153,8 +168,8 @@ struct FeatureCardView: View {
                             .cornerRadius(20)
                     }
                     .padding()
-                    .frame(width: 250)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .padding(.leading, 120)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
         }

@@ -62,7 +62,7 @@ struct PostureBasketApp: App {
                                 case .RecordAnalysisView:
                                     EmptyView()
                                 case .TutorialView:
-                                    EmptyView()
+                                    TutorialView()
                                 case .FinishRealtime(let loopCount, let durationInSeconds):
                                     FinishRealtimeView(loopCount: loopCount, durationInSeconds: durationInSeconds)
 

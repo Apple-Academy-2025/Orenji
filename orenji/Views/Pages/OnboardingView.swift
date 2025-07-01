@@ -138,7 +138,7 @@ struct OnboardingContainer: View {
 
                 VStack(spacing: 17) {
                     Text(title)
-                        .font(.system(size: 45))
+                        .font(.system(size: 30))
                         .fontWeight(.bold)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
