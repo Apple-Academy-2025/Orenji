@@ -61,7 +61,7 @@ struct HoldPose: View {
                 
                 Text(phaseTitle)
                     .font(.system(size: 24, weight: .bold))
-                    .foregroundColor(.black)
+                    .foregroundColor(.white)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 8)
                     .background(Color.black.opacity(0.4))
