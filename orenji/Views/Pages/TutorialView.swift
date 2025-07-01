@@ -11,7 +11,7 @@ import AVKit
 struct TutorialView: View {
     @EnvironmentObject var router: Router
     private let player = AVPlayer(url: Bundle.main.url(forResource: "video-tutorial-postur", withExtension: "mp4")!)
-    
+    var title: String
     var body: some View {
         ZStack {
             
@@ -52,7 +52,11 @@ struct TutorialView: View {
                    
                     
                     Button(action: {
-                        router.goTo(.RealtimePose)
+                        if (title == "realtime"){
+                            router.goTo(.RealtimePose)
+                        }else{
+                            router.goTo(.RecordPose)
+                        }
                     }) {
                         Text("Start")
                             .foregroundColor(.black)

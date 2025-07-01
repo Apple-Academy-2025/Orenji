@@ -83,7 +83,7 @@ struct InstruksiView: View {
                 .tag(0)
             InstructionContainer(imageName: "instruction2", title: "One Shot, One Throw", subtitle: "Record only one free throw per video. Keep it clean and focused.", showStartButton: false, currentPage: $currentPage, destination: destination)
                 .tag(1)
-            InstructionContainer(imageName: "instruction3", title: "Correct Your Posture Instantly", subtitle: "Keep the background clear to avoid analysis errors.", showStartButton: true, currentPage: $currentPage, destination: destination, onStart: {  router.goTo(.TutorialView) })
+            InstructionContainer(imageName: "instruction3", title: "Correct Your Posture Instantly", subtitle: "Keep the background clear to avoid analysis errors.", showStartButton: true, currentPage: $currentPage, destination: destination, onStart: {  router.goTo(.RecordAnalysisView) })
                 .tag(2)
         }
     }
