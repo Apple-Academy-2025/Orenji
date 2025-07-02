@@ -45,8 +45,6 @@ struct PostureBasketApp: App {
                                 switch route {
                                 case .Home:
                                     HomePageView()
-                                case .Tutorial:
-                                    TutorialView()
                                 case .Instruksi(let destination, let idPage):
                                     InstruksiView(destination: destination, idPage: idPage)
                                 case .RecordPose:
@@ -61,13 +59,13 @@ struct PostureBasketApp: App {
                                     PreferencesView()
                                 case .RecordAnalysisView:
                                     EmptyView()
-                                case .TutorialView:
-                                    TutorialView()
+                                case .Tutorial(let destination):
+                                    TutorialView(destination: destination)
                                 case .FinishRealtime(let loopCount, let durationInSeconds):
                                     FinishRealtimeView(loopCount: loopCount, durationInSeconds: durationInSeconds)
 
                                 }
-                            } 
+                            }
                     }
 
                     .onChange(of: scenePhase) { oldPhase, newPhase in

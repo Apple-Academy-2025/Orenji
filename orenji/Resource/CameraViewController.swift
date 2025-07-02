@@ -43,7 +43,7 @@ class CameraViewController: UIViewController, AVCaptureFileOutputRecordingDelega
         // Input kamera belakang
         guard let videoCaptureDevice = AVCaptureDevice.default(.builtInWideAngleCamera,
                                                                for: .video,
-                                                               position: .back),
+                                                               position: .front),
               let videoInput = try? AVCaptureDeviceInput(device: videoCaptureDevice),
               captureSession.canAddInput(videoInput) else {
             print("Gagal inisialisasi kamera belakang")

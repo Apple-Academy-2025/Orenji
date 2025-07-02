@@ -12,15 +12,14 @@ import SwiftData
 
 // Guys ini contoh buat sistem pages route biar scaleable
 
-enum Route: Hashable {
+indirect enum Route: Hashable {
     case Home
     case History
-    case Tutorial
     case Prefereces
-    indirect case Instruksi(destination: Route, idPage: String)
+    case Instruksi(destination: Route, idPage: String)
     case RecordAnalysisView
     case HistoryDetailView(PhaseData: PhaseData, selectedTab: Int)
-    case TutorialView
+    case Tutorial(destination: Route)
     case RecordPose
     case RealtimePose
     case FinishRealtime(loopCount: Int, durationInSeconds: Int)

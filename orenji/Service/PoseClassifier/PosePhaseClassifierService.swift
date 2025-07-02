@@ -9,6 +9,5 @@ import Foundation
 import UIKit
 
 protocol PosePhaseClassifierService {
-    /// Mengklasifikasikan satu gambar menjadi salah satu fase pose
     func classifyPhase(from image: UIImage) throws -> PosePhase
 }

@@ -40,10 +40,7 @@ struct HomePageView: View {
                     imageName: "imageRecordAnalysis",
                     action: {
                         router.goTo(
-                            .Instruksi(
-                                destination: .RecordPose,
-                                idPage: "record"
-                            )
+                            .RecordPose
                         )
                     }
                 )
