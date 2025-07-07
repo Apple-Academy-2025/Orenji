@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-final class PostureEvaluationManager {
+class PostureEvaluationManager {
     
     private let classifier: PosePhaseClassifierService
     private let angleService: AngleEvaluationService
@@ -35,7 +35,6 @@ final class PostureEvaluationManager {
         self.ballService = ballService
     }
 
-    /// Evaluasi kumpulan gambar + landmark → hasil evaluasi 1 sesi
     func evaluateSession(
         frames: [UIImage],
         landmarks: [[BodyLandmark]]
@@ -47,28 +46,19 @@ final class PostureEvaluationManager {
         var bestFrameByPhase: [PosePhase: (UIImage, [BodyLandmark])] = [:]
 
         for (index, image) in frames.enumerated() {
-            // 🔍 Deteksi apakah bola masih di tangan
             let ballStillInHand = try ballService.isBallInHand(from: image)
-
-            // 🚨 Jika sebelumnya di tangan dan sekarang tidak → hentikan proses
             if wasBallInHand && !ballStillInHand {
                 print("🚨 Bola sudah tidak di tangan → STOP evaluasi")
                 break
             }
             wasBallInHand = ballStillInHand
-
-            // 🧠 Klasifikasi fase shooting
             let predictedPhase = try classifier.classifyPhase(from: image)
             guard predictedPhase != .unknown else { continue }
-
-            // ✅ Simpan frame pertama untuk masing-masing fase
             if bestFrameByPhase[predictedPhase] == nil {
                 bestFrameByPhase[predictedPhase] = (image, landmarks[index])
             }
         }
-
         var phaseModels: [PhaseModel] = []
-
         for phase in PosePhase.allCases where phase != .unknown {
             guard let (image, landmark) = bestFrameByPhase[phase] else { continue }
 
@@ -89,4 +79,5 @@ final class PostureEvaluationManager {
         let record = RecordAnalysisModel(date: Date(), phases: phaseModels)
         try recordService.saveAnalysisRecord(record)
     }
+    
 }

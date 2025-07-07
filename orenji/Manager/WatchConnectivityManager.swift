@@ -116,7 +116,7 @@ class WatchConnectivityManager: NSObject, ObservableObject, WCSessionDelegate {
             let fileName = "\(UUID().uuidString).json"
             let fileURL = temporaryDirectory.appendingPathComponent(fileName)
             try encodedData.write(to: fileURL)
-            let fileTransfer = WCSession.default.transferFile(fileURL, metadata: nil)
+            _ = WCSession.default.transferFile(fileURL, metadata: nil)
             print("Berhasil memulai transfer file \(fileName) ke Watch.")
             
         } catch {

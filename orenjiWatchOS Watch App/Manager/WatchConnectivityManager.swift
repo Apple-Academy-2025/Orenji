@@ -24,7 +24,6 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
     @Published var realtimePoseData: RealtimePoseData?
     @Published var realtimeResult: Int?
     
-    // MARK: - Initializer
     override init() {
         super.init()
         
@@ -35,13 +34,11 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
         }
     }
 
-    // MARK: - Session Message Handlers
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
         DispatchQueue.main.async {
             
             if let fullState = message["fullStateUpdate"] as? [String: Any] {
                 self.isCompanionAppReachable = true
-                print("Menerima full state update dari iPhone.")
                 
                 if let sessionControl = fullState["sessionControl"] as? String {
                     self.handleSessionControl(action: sessionControl, message: fullState)
@@ -52,10 +49,11 @@ class WatchConnectivityManager: NSObject, WCSessionDelegate, ObservableObject {
                 if let cameraPoseStatus = fullState["isCameraPoseCorrect"] as? Bool {
                     self.isCameraPoseCorrect = cameraPoseStatus
                 }
+                
                 return
             }
             
-            if let sessionControl = message["idleState"] as? String {
+            if message["idleState"] is String {
                 self.resetToIdle()
             }
             

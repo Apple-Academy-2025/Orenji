@@ -49,3 +49,12 @@ enum SessionType: String {
     case recording
     case realtime
 }
+
+enum Phase {
+    case preRecord, checkPhase1, checkPhase2, checkPhase3, finished
+}
+
+enum ShootingPhase {
+    case preparation, bending, release, unknown
+}
+

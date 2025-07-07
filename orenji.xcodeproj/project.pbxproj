@@ -78,12 +78,12 @@
 		F854A4A22E0D09C90079D7EC /* Exceptions for "orenji" folder in "orenjiWatchOS Watch App" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Models/AppState.swift,
-				Models/PhaseModel.swift,
-				Models/PosePhase.swift,
 				Models/PostureModels.swift,
-				Models/RealtimePoseData.swift,
-				Models/RecordAnalysisModel.swift,
+				Models/Trash/PosePhase.swift,
+				Models/Watch/AppState.swift,
+				Models/Watch/PhaseModel.swift,
+				Models/Watch/RealtimePoseData.swift,
+				Models/Watch/RecordAnalysisModel.swift,
 			);
 			target = F854A33E2E0C5E150079D7EC /* orenjiWatchOS Watch App */;
 		};

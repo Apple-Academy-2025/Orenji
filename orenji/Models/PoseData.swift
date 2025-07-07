@@ -37,8 +37,6 @@ let phaseTargets: [PhaseTarget] = [
     .init(name: .followthrough, elbowRange: 160...170, kneeValue: 160)
 ]
 
-
-
 @Model
 class PhaseData {
     var uuid = UUID()

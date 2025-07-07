@@ -1,6 +1,6 @@
 import SwiftUI
 
-enum ShootingPhase: Int {
+enum PhaseShooting: Int {
     case preparation = 0
     case bending = 1
     case release = 2
@@ -29,8 +29,8 @@ struct FinishRealtimeView: View {
         max(0, loopCount / 3)
     }
 
-    var currentPhase: ShootingPhase {
-        ShootingPhase(rawValue: loopCount % 3) ?? .preparation
+    var currentPhase: PhaseShooting {
+        PhaseShooting(rawValue: loopCount % 3) ?? .preparation
     }
 
     var currentPhaseName: String {

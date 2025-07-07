@@ -31,11 +31,13 @@ struct PreRecordOverlay: View {
             if !isRecordingStarted && isOverlayVisible {
                 FrameOverlay(boxSize: boxSize, borderColor: borderColor)
                 
-                
                 VStack{
                     
                     HStack {
-                        Button { router.pop() } label: {
+                        Button {
+                            router.pop()
+                            connectivity.sendIdleState()
+                        } label: {
                             Image(systemName: "chevron.left")
                                 .foregroundColor(.black)
                                 .padding()

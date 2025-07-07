@@ -6,13 +6,9 @@ import RiveRuntime
 struct EvaluateRealtimeView: View {
     @EnvironmentObject var router: Router
     @StateObject private var cameraService = CameraService()
-    @StateObject private var poseDetector = PoseDetectionViewModel()
-    @StateObject var connectivity = WatchConnectivityManager.shared
+    @StateObject private var poseDetector = DIContainer.shared.makeEvaluateRealtimeViewModel()
     @StateObject private var speechManager = SpeechManager()
-    
-    enum Phase {
-        case preRecord, checkPhase1, checkPhase2, checkPhase3, finished
-    }
+    @StateObject var connectivity = WatchConnectivityManager.shared
     
     @State private var phase: Phase = .preRecord
     @State private var showWarning = false
@@ -49,24 +45,26 @@ struct EvaluateRealtimeView: View {
     
     var evaluationColors: [VNHumanBodyPoseObservation.JointName: Color] {
         var colors: [VNHumanBodyPoseObservation.JointName: Color] = [:]
+        let allRelevantJoints: [VNHumanBodyPoseObservation.JointName] = [.leftElbow, .rightElbow, .leftKnee, .rightKnee]
         
+        for joint in allRelevantJoints {
+            colors[joint] = Color.gray.opacity(0.4)
+        }
         if phase == .checkPhase1 {
             let angle = poseDetector.elbowAngleNow
-            let color = colorForElbowAngle(Double(angle), target: 120)
+            let color = poseDetector.colorForJoint(angle: Double(angle), target: 120)
             let joint: VNHumanBodyPoseObservation.JointName = UserDefaults.standard.string(forKey: "shootingHand") == "Left" ? .leftElbow : .rightElbow
             colors[joint] = color
         }
-        
         if phase == .checkPhase2 {
             let angle = poseDetector.legAngleNow
-            let color = colorForLegAngle(Double(angle), target: 75)
+            let color = poseDetector.colorForJoint(angle: Double(angle), target: 75)
             let joint: VNHumanBodyPoseObservation.JointName = UserDefaults.standard.string(forKey: "shootingHand") == "Left" ? .leftKnee : .rightKnee
             colors[joint] = color
         }
-        
         if phase == .checkPhase3 {
             let angle = poseDetector.elbowAngleNow
-            let color = colorForElbowAngle(Double(angle), target: 170)
+            let color = poseDetector.colorForJoint(angle: Double(angle), target: 170)
             let joint: VNHumanBodyPoseObservation.JointName = UserDefaults.standard.string(forKey: "shootingHand") == "Left" ? .leftElbow : .rightElbow
             colors[joint] = color
         }
@@ -76,7 +74,7 @@ struct EvaluateRealtimeView: View {
     var body: some View {
         ZStack {
             if isCountingDown {
-                CountdownRiveView()
+                CountdownRiveComponent()
                     .transition(.scale)
                     .zIndex(10)
             }
@@ -146,13 +144,12 @@ struct EvaluateRealtimeView: View {
                                 cameraService.stop()
                                 sessionTimer?.invalidate()
                                 sessionTimer = nil
-                                
                                 router.goTo(.FinishRealtime(loopCount: loopCount, durationInSeconds: totalSeconds))
+                                connectivity.sendStopSessionCommand(sessionType: .realtime)
+                                connectivity.sendRealtimeResultsToWatch(total: loopCount)
                             }
-                            
                             Button("Cancel", role: .cancel) {}
                         }
-                        
                     }
                 }
             }
@@ -161,6 +158,12 @@ struct EvaluateRealtimeView: View {
             setupCamera()
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 speechManager.speak("Hold in frame position")
+            }
+            connectivity.endSessionChoiceHandler = { choice in
+                if choice {
+                    showExitConfirmation = true
+                    speechManager.speak("Apple Watch requested to stop")
+                }
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .speakFromViewModel)) { notif in
@@ -180,28 +183,25 @@ struct EvaluateRealtimeView: View {
                 default: break
                 }
                 EvaluateRealtimeView.currentGlobalPhase = phase
-                poseDetector.startHoldPose()
+                poseDetector.startHoldPose(currentPhase: phase)
             }
         }
         .onChange(of: poseDetector.isUserInFrame, perform: handleFrameChange)
         .onChange(of: phase) { oldPhase, newPhase in
             EvaluateRealtimeView.currentGlobalPhase = newPhase
-            print("📍 Phase berubah dari \(oldPhase) ke \(newPhase)")
-            
             if [.checkPhase1, .checkPhase2, .checkPhase3].contains(newPhase) {
                 startWarningLoop()
                 DispatchQueue.main.async {
-                    poseDetector.startHoldPose()
+                    poseDetector.startHoldPose(currentPhase: newPhase)
                 }
             } else {
                 stopWarningLoop()
-                
             }
         }
         .onChange(of: poseDetector.holdProgress) { oldProgress, progress in
             guard progress > 0, progress < 1 else { return }
             let countdown = Int(ceil(3.0 - (progress * 3.0)))
-            sendRealtimePoseToWatch(isCorrect: true, correctionMessage: nil, countdown: countdown)
+            poseDetector.sendRealtimePoseToWatch(phaseName: phaseTitleText, isCorrect: true, correctionMessage: nil, countdown: countdown)
         }
         .navigationBarBackButtonHidden(true)
         .onDisappear {
@@ -212,23 +212,30 @@ struct EvaluateRealtimeView: View {
     
     private func startWarningLoop() {
         warningTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { _ in
-            guard poseDetector.isUserInFrame else {
-                withAnimation(.easeInOut(duration: 0.3)) {
-                    showWarning = false
-                    warningScale = 1.0
+            Task{ @MainActor in
+                self.poseDetector.updatePhase()
+                guard poseDetector.isUserInFrame else {
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        showWarning = false
+                        warningScale = 1.0
+                    }
+                    return
                 }
-                return
             }
             
             if let msg = currentWarningMessage {
-                print("🔊 Warning Message Triggered: \(msg)")
-                sendRealtimePoseToWatch(isCorrect: false, correctionMessage: msg, countdown: nil)
-                
+                Task { @MainActor in
+                    poseDetector.sendRealtimePoseToWatch(
+                        phaseName: phaseTitleText,
+                        isCorrect: false,
+                        correctionMessage: msg,
+                        countdown: nil
+                    )
+                }
                 withAnimation(.easeInOut(duration: 0.3)) {
                     showWarning = true
                     warningScale = 1.2
                 }
-                
                 speechManager.speak(msg)
             } else {
                 withAnimation(.easeInOut(duration: 0.3)) {
@@ -242,11 +249,11 @@ struct EvaluateRealtimeView: View {
     var evaluationColor: Color {
         switch phase {
         case .checkPhase1:
-            return colorForElbowAngle(Double(poseDetector.elbowAngleNow), target: 120)
+            return poseDetector.colorForJoint(angle: Double(poseDetector.elbowAngleNow), target: 120)
         case .checkPhase2:
-            return colorForLegAngle(Double(poseDetector.legAngleNow), target: 75)
+            return poseDetector.colorForJoint(angle: Double(poseDetector.legAngleNow), target: 75)
         case .checkPhase3:
-            return colorForElbowAngle(Double(poseDetector.elbowAngleNow), target: 170)
+            return poseDetector.colorForJoint(angle: Double(poseDetector.elbowAngleNow), target: 170)
         default:
             return .yellow
         }
@@ -266,7 +273,7 @@ struct EvaluateRealtimeView: View {
             return "You're out of frame!"
         }
         
-        let currentPhase = poseDetector.currentPhaseType()
+        let currentPhase = poseDetector.currentPhase
         
         switch phase {
         case .checkPhase1 where currentPhase != .preparation:
@@ -299,8 +306,6 @@ struct EvaluateRealtimeView: View {
                 connectivity.sendHapticSignalToWatch()
                 return "Hold Release Pose!"
             }
-            
-            
         default:
             return nil
         }
@@ -392,17 +397,12 @@ struct EvaluateRealtimeView: View {
         connectivity.sendDisplayStateToWatch("activelyRealtime")
         isRecordingStarted = true
         phase = .checkPhase1
-        poseDetector.startHoldPose()
-        
-        // 🔁 Start session timer
+        poseDetector.startHoldPose(currentPhase: phase)
         totalSeconds = 0
         sessionTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
             totalSeconds += 1
         }
     }
-    
-    
-    
     
     private func configureAudioSessionOnce() {
         do {
@@ -438,98 +438,8 @@ struct EvaluateRealtimeView: View {
         else if everDetected { return "TOO CLOSE" }
         else { return "Make sure to keep your ball and feet visible within the frame" }
     }
-    
-    func colorForElbowAngle(_ angle: Double, target: Double) -> Color {
-        let delta = abs(angle - target)
-        if delta < 5 {
-            return .green
-        } else if delta < 15 {
-            return .yellow
-        } else {
-            return .red
-        }
-    }
-    
-    func colorForLegAngle(_ angle: Double, target: Double) -> Color {
-        let delta = abs(angle - target)
-        if delta < 5 {
-            return .green
-        } else if delta < 15 {
-            return .yellow
-        } else {
-            return .red
-        }
-    }
-    
-    
-    func sendRealtimePoseToWatch(isCorrect: Bool, correctionMessage: String?, countdown: Int?) {
-        let phaseName = self.phaseTitleText
-        let poseData = RealtimePoseData(
-            phase: phaseName,
-            isPoseCorrect: isCorrect,
-            correctionMessage: correctionMessage,
-            holdCountdown: countdown
-        )
-        if let encoded = try? JSONEncoder().encode(poseData) {
-            connectivity.sendPoseUpdate(data: encoded)
-        }
-    }
-    
 }
 
-
-extension Notification.Name {
-    static let speakFromViewModel = Notification.Name("SpeakFromViewModel")
-}
-
-struct CountdownRiveView: View {
-    var body: some View {
-        RiveViewRepresentable(viewModel: countdownModel)
-            .aspectRatio(contentMode: .fit)
-            .frame(width: 300, height: 300)
-    }
-}
-
-
-struct EvaluationFinishedView: View {
-    @EnvironmentObject var router: Router
-    var loopCount: Int
-    
-    var body: some View {
-        ZStack {
-            Color.black.opacity(0.6)
-                .ignoresSafeArea()
-            
-            VStack(spacing: 20) {
-                Text("✅ You have completed")
-                    .font(.title2)
-                    .foregroundColor(.white)
-                
-                Text("\(loopCount) phase\(loopCount > 1 ? "s" : "")!")
-                    .font(.system(size: 48, weight: .bold))
-                    .foregroundColor(.green)
-                
-                Button(action: {
-                    router.pop()
-                }) {
-                    Text("Done")
-                        .font(.headline)
-                        .padding()
-                        .frame(width: 120)
-                        .background(Color.green)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
-                .padding(.top, 20)
-            }
-            .padding()
-            .background(Color.black.opacity(0.75))
-            .cornerRadius(20)
-            .padding(.horizontal, 40)
-        }
-    }
-    
-}
 #Preview {
     EvaluateRealtimeView()
         .environmentObject(Router())
