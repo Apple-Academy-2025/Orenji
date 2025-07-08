@@ -8,29 +8,44 @@
 import SwiftUI
 
 struct InstruksiView: View {
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var router: Router
     var destination: Route
     var idPage: String
     @StateObject var connectivity = WatchConnectivityManager.shared
     @State private var currentPage = 0
     let totalPages = 3
-
+    
     var body: some View {
         ZStack(alignment: .topTrailing) {
             TabView(selection: $currentPage) {
                 getInstructionPages()
             }
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-
-            Button("Skip all") {
-                startSession()
-                router.goTo(destination)
+            
+            HStack(alignment: .top){
+                Button(action: {
+                    dismiss()
+                }) {
+                    HStack {
+                        Image(systemName: "chevron.left")
+                        Text("Back")
+                    }
+                    .padding(.leading, 20)
+                    .font(.system(size: 16))
+                    .foregroundColor(.blue)
+                }
+                Spacer()
+                Button("Skip all") {
+                    startSession()
+                    router.goTo(destination)
+                }
+                .foregroundColor(.white)
+                .font(.system(size: 14, weight: .medium))
+                .padding(.trailing, 20)
+                .zIndex(999)
             }
-            .foregroundColor(.white)
-            .font(.system(size: 14, weight: .medium))
-            .padding(.top, UIApplication.safeAreaTop + 8)
-            .padding(.trailing, 20)
-            .zIndex(999)
+                .frame(maxWidth: .infinity, maxHeight: 140)
         }
         .ignoresSafeArea()
         .background(Color.black)
@@ -42,48 +57,34 @@ struct InstruksiView: View {
                         .frame(width: currentPage == index ? 18 : 8, height: 8)
                 }
             }
-            .offset(y: 40)
-            .padding(.bottom, 40),
+                .offset(y:40)
+                .padding(.bottom, 40),
             alignment: .bottom
+            
         )
-        .navigationBarHidden(false)
+        .navigationBarBackButtonHidden(true)
+        .navigationBarHidden(true) // ini harus TRUE
     }
-
+    
     @ViewBuilder
     private func getInstructionPages() -> some View {
-        let pages: [(String, String, String)] = {
-            if idPage == "realtime" {
-                return [
-                    ("instruction1", "Put your tripod on your side", "Make sure to capture your full body and from your side."),
-                    ("instruction2", "Shoot Alone", "Keep the background clear to avoid analysis errors."),
-                    ("instruction3", "Wrap Up When You're Done", "The session will keep going until you press Stop.")
-                ]
-            } else {
-                return [
-                    ("instruction1", "Put your tripod on your side", "Make sure to capture your full body and from your side."),
-                    ("instruction2", "One Shot, One Throw", "Record only one free throw per video. Keep it clean and focused."),
-                    ("instruction3", "Correct Your Posture Instantly", "Keep the background clear to avoid analysis errors.")
-                ]
-            }
-        }()
-
-        ForEach(0..<pages.count, id: \.self) { index in
-            InstructionContainer(
-                imageName: pages[index].0,
-                title: pages[index].1,
-                subtitle: pages[index].2,
-                showStartButton: index == pages.count - 1,
-                currentPage: $currentPage,
-                destination: destination,
-                onStart: {
-                    startSession()
-                    router.goTo(.Tutorial(destination: destination)) // ✅ dinamis ke Tutorial tujuan
-                }
-            )
-            .tag(index)
+        if idPage == "realtime" {
+            InstructionContainer(idPage: idPage,imageName: "instruction1", title: "Put your tripod on your side", subtitle: "Make sure to capture your full body and from your side.", showStartButton: false, currentPage: $currentPage, destination: destination)
+                .tag(0)
+            InstructionContainer(idPage: idPage,imageName: "instruction2", title: "Shoot Alone", subtitle: "Keep the background clear to avoid analysis errors.", showStartButton: false, currentPage: $currentPage, destination: destination)
+                .tag(1)
+            InstructionContainer(idPage: idPage,imageName: "instruction3", title: "Wrap Up When You're Done", subtitle: "The session will keep going until you press Stop.", showStartButton: true, currentPage: $currentPage, destination: destination, onStart: { startSession() })
+                .tag(2)
+        } else {
+            InstructionContainer(idPage: idPage,imageName: "instruction1", title: "Put your tripod on your side", subtitle: "Make sure to capture your full body and from your side.", showStartButton: false, currentPage: $currentPage, destination: destination)
+                .tag(0)
+            InstructionContainer(idPage: idPage,imageName: "instruction2", title: "One Shot, One Throw", subtitle: "Record only one free throw per video. Keep it clean and focused.", showStartButton: false, currentPage: $currentPage, destination: destination)
+                .tag(1)
+            InstructionContainer(idPage: idPage,imageName: "instruction3", title: "Correct Your Posture Instantly", subtitle: "Keep the background clear to avoid analysis errors.", showStartButton: true, currentPage: $currentPage, destination: destination, onStart: { startSession() })
+                .tag(2)
         }
     }
-
+    
     private func startSession() {
         if idPage == "realtime" {
             connectivity.sendStartSessionCommand(type: .realtime)
@@ -94,6 +95,8 @@ struct InstruksiView: View {
 }
 
 struct InstructionContainer: View {
+    @EnvironmentObject var router: Router
+    var idPage: String
     var imageName: String
     var title: String
     var subtitle: String
@@ -101,17 +104,16 @@ struct InstructionContainer: View {
     @Binding var currentPage: Int
     var destination: Route
     var onStart: (() -> Void)? = nil
-
+    
     var body: some View {
         VStack(spacing: 0) {
             Image(imageName)
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()
-
             ZStack(alignment: .top) {
                 Color.black
-
+                
                 HStack(alignment: .top) {
                     VStack(alignment: .leading, spacing: 8) {
                         Text(title)
@@ -122,18 +124,25 @@ struct InstructionContainer: View {
                         Text(subtitle)
                             .font(.system(size: 16))
                             .foregroundColor(.white.opacity(0.85))
+                            .frame(width: .infinity, alignment: .leading)
                             .fixedSize(horizontal: false, vertical: true)
+                            
+                        
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-
+                   
                     Spacer()
                     Spacer()
-
                     VStack {
                         Spacer()
                         Button(action: {
                             if showStartButton {
                                 onStart?()
+                                if idPage == "realtime"{
+                                    router.goTo(.Tutorial(destination: destination))
+                                }else{
+                                    router.goTo(destination)
+                                }
                             } else {
                                 withAnimation {
                                     currentPage += 1
@@ -153,14 +162,24 @@ struct InstructionContainer: View {
                 .padding(.horizontal, 24)
                 .padding(.bottom, 36)
                 .frame(maxWidth: .infinity, minHeight: 170)
+                
+                
+                
             }
             .frame(maxWidth: .infinity, minHeight: 170, alignment: .top)
             .offset(y: -24)
         }
+        
     }
+    
 }
 
-// MARK: - Utilities
+
+
+
+
+
+
 extension View {
     func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
         clipShape(RoundedCorner(radius: radius, corners: corners))
@@ -177,10 +196,11 @@ extension UIApplication {
     }
 }
 
+
 struct RoundedCorner: Shape {
     var radius: CGFloat = 16
     var corners: UIRectCorner
-
+    
     func path(in rect: CGRect) -> Path {
         let path = UIBezierPath(
             roundedRect: rect,

@@ -39,9 +39,7 @@ struct HomePageView: View {
                     subtitle: "Record and review your free-throw posture",
                     imageName: "imageRecordAnalysis",
                     action: {
-                        router.goTo(
-                            .RecordPose
-                        )
+                        router.goTo(.Instruksi(destination: .RecordPose, idPage: "record"))
                     }
                 )
                 
